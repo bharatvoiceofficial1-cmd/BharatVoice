@@ -9,6 +9,7 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
   :root{
     --night: #140f2b;
@@ -570,6 +571,20 @@
   .plan-card .razorpay-slot{ min-height:40px; display:flex; justify-content:center; align-items:center; }
   .plan-card .razorpay-slot form{ width:100%; display:flex; justify-content:center; }
   .plan-card .fallback-note{ font-size:11px; color:rgba(207,198,184,0.55); text-align:center; }
+  .plan-card .rzp-pay-btn{
+    width:100%; padding:10px 14px; border-radius:10px; border:none; cursor:pointer;
+    background:linear-gradient(90deg, var(--saffron), var(--marigold)); color:#221200;
+    font-family:'Poppins',sans-serif; font-weight:600; font-size:13px;
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;
+    box-shadow:0 3px 12px rgba(255,159,28,0.25);
+  }
+  .plan-card .rzp-pay-btn:hover{
+    filter:brightness(1.08); transform:translateY(-1px);
+    box-shadow:0 5px 16px rgba(255,159,28,0.38);
+  }
+  .plan-card .rzp-pay-btn:active{ transform:scale(0.98); }
+  .plan-card .rzp-pay-btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; }
   .redeem-row{ display:flex; gap:8px; margin-top:16px; }
   .redeem-row input{
     flex:1; padding:11px 12px; border-radius:10px;
@@ -1264,6 +1279,9 @@
           try { localStorage.setItem(PERFORMANCE_KEY, JSON.stringify(studentPerformance)); } catch(e){}
           renderPerformance();
         }
+        if (authData.user && authData.user.plan && authData.user.plan !== 'free'){
+          activatePlan(authData.user.plan);
+        }
       }
     } catch(err){
       console.warn('Backend auth sync warning (offline fallback):', err);
@@ -1695,28 +1713,164 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
   plansCloseBtn.addEventListener('click', closePlans);
   plansOverlay.addEventListener('click', (e) => { if (e.target === plansOverlay) closePlans(); });
 
-  function renderRazorpayButtons(){
-    const shaktiId = ls(RZP_SHAKTI_KEY);
-    const mahaId = ls(RZP_MAHA_KEY);
-    const shaktiSlot = document.getElementById('razorpaySlotShakti');
-    const mahaSlot = document.getElementById('razorpaySlotMaha');
-    const fbShakti = document.getElementById('fallbackShakti');
-    const fbMaha = document.getElementById('fallbackMaha');
-
-    function mount(slot, fallback, buttonId){
-      slot.innerHTML = '';
-      if (!buttonId){ fallback.style.display = 'block'; return; }
-      fallback.style.display = 'none';
-      const form = document.createElement('form');
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
-      script.dataset.payment_button_id = buttonId;
-      script.async = true;
-      form.appendChild(script);
-      slot.appendChild(form);
+  async function startRazorpayCheckout(planId){
+    plansStatus.textContent = '';
+    const jwtToken = localStorage.getItem('bharatVoice.jwt');
+    if (!jwtToken){
+      plansStatus.textContent = '⚠️ Please sign in with Google first so your plan is saved to your account.';
+      plansStatus.className = 'plans-status no';
+      return;
     }
-    mount(shaktiSlot, fbShakti, shaktiId);
-    mount(mahaSlot, fbMaha, mahaId);
+
+    if (typeof Razorpay === 'undefined'){
+      plansStatus.textContent = 'Razorpay Checkout is initializing... please try again in a few seconds.';
+      plansStatus.className = 'plans-status no';
+      return;
+    }
+
+    plansStatus.textContent = 'Connecting to Razorpay gateway...';
+    plansStatus.className = 'plans-status';
+
+    const orderUrl = apiUrl.includes('/api/chat')
+      ? apiUrl.replace('/api/chat', '/api/payment/create-order')
+      : 'https://api.bharatvoiceduai.website/api/payment/create-order';
+
+    try {
+      const orderRes = await fetch(orderUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtToken
+        },
+        body: JSON.stringify({ planId })
+      });
+
+      const orderData = await orderRes.json();
+      if (!orderRes.ok || !orderData.orderId){
+        throw new Error(orderData.error?.message || 'Unable to create payment order. Please ensure server is running.');
+      }
+
+      const verifyUrl = apiUrl.includes('/api/chat')
+        ? apiUrl.replace('/api/chat', '/api/payment/verify')
+        : 'https://api.bharatvoiceduai.website/api/payment/verify';
+
+      let sessionUser = {};
+      try {
+        sessionUser = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+      } catch(e){}
+
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency || 'INR',
+        name: 'Bharat Voice',
+        description: orderData.planName || 'Study Companion Plan',
+        order_id: orderData.orderId,
+        theme: {
+          color: '#ff9f1c',
+          backdrop_color: '#140f2b'
+        },
+        prefill: {
+          name: sessionUser.name || '',
+          email: sessionUser.email || ''
+        },
+        handler: async function (response) {
+          plansStatus.textContent = 'Verifying payment with gateway...';
+          plansStatus.className = 'plans-status';
+
+          try {
+            const verifyRes = await fetch(verifyUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + jwtToken
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                planId: planId
+              })
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok && verifyData.status === 'success'){
+              activatePlan(planId);
+              plansStatus.textContent = `🎉 Payment verified! ${PLAN_CATALOG[planId]?.label || planId} is now active!`;
+              plansStatus.className = 'plans-status ok';
+              if (typeof statusText !== 'undefined' && statusText){
+                statusText.textContent = `🎉 Subscribed to ${PLAN_CATALOG[planId]?.label || planId}!`;
+              }
+              setTimeout(() => { closePlans(); }, 2200);
+            } else {
+              throw new Error(verifyData.error?.message || 'Payment signature verification failed.');
+            }
+          } catch (vErr) {
+            console.error('Payment verification failed:', vErr);
+            plansStatus.textContent = 'Verification error: ' + vErr.message;
+            plansStatus.className = 'plans-status no';
+          }
+        },
+        modal: {
+          ondismiss: function(){
+            plansStatus.textContent = 'Payment window closed.';
+            plansStatus.className = 'plans-status no';
+          }
+        }
+      };
+
+      const rzpInstance = new Razorpay(options);
+      rzpInstance.on('payment.failed', function(resp){
+        plansStatus.textContent = 'Payment failed: ' + (resp.error?.description || 'Transaction declined.');
+        plansStatus.className = 'plans-status no';
+      });
+
+      rzpInstance.open();
+      plansStatus.textContent = 'Razorpay checkout opened — please complete payment.';
+      plansStatus.className = 'plans-status';
+    } catch (err) {
+      console.error('Checkout error:', err);
+      plansStatus.textContent = 'Checkout error: ' + err.message;
+      plansStatus.className = 'plans-status no';
+    }
+  }
+  window.startRazorpayCheckout = startRazorpayCheckout;
+
+  function renderRazorpayButtons(){
+    const planConfigs = [
+      { slotId: 'razorpaySlotShakti', fbId: 'fallbackShakti', plan: 'shakti', label: '💳 Pay ₹49 with Razorpay', legacyKey: RZP_SHAKTI_KEY },
+      { slotId: 'razorpaySlotMaha',   fbId: 'fallbackMaha',   plan: 'mahashakti', label: '🔱 Pay ₹549 with Razorpay', legacyKey: RZP_MAHA_KEY },
+      { slotId: 'razorpaySlotPro',    fbId: 'fallbackPro',    plan: 'bharatpro', label: '🚀 Pay ₹99 with Razorpay' },
+      { slotId: 'razorpaySlotMax',    fbId: 'fallbackMax',    plan: 'bharatmax', label: '👑 Pay ₹199 with Razorpay' },
+      { slotId: 'razorpaySlotScholar',fbId: 'fallbackScholar',plan: 'scholarpro', label: '📚 Pay ₹149 with Razorpay' }
+    ];
+
+    planConfigs.forEach(cfg => {
+      const slot = document.getElementById(cfg.slotId);
+      const fb = cfg.fbId ? document.getElementById(cfg.fbId) : null;
+      if (!slot) return;
+
+      const legacyBtnId = cfg.legacyKey ? ls(cfg.legacyKey) : '';
+      if (legacyBtnId){
+        if (fb) fb.style.display = 'none';
+        slot.innerHTML = '';
+        const form = document.createElement('form');
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+        script.dataset.payment_button_id = legacyBtnId;
+        script.async = true;
+        form.appendChild(script);
+        slot.appendChild(form);
+      } else {
+        if (fb) fb.style.display = 'none';
+        slot.innerHTML = `
+          <button type="button" class="rzp-pay-btn" onclick="startRazorpayCheckout('${cfg.plan}')">
+            <svg style="width:15px;height:15px;fill:currentColor;flex-shrink:0;" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+            <span>${cfg.label}</span>
+          </button>
+        `;
+      }
+    });
   }
 
   // Owner config: Razorpay button IDs
