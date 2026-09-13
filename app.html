@@ -95,8 +95,9 @@
   .splash-orb-stage{
     position:relative; width:220px; height:220px; margin:30px 0 36px;
     display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
   }
-  .splash-ring{ position:absolute; border-radius:50%; border:1px solid rgba(255,159,28,0.25); }
+  .splash-ring{ position:absolute; border-radius:50%; border:1px solid rgba(255,159,28,0.25); pointer-events:none; }
   .splash-ring.r1{ width:100%; height:100%; animation:spin 22s linear infinite; }
   .splash-ring.r2{ width:78%; height:78%; border-color:rgba(28,154,146,0.3); animation:spin 16s linear infinite reverse; }
   .splash-ring.r3{ width:56%; height:56%; border-color:rgba(255,201,60,0.35); animation:spin 30s linear infinite; }
@@ -109,12 +110,18 @@
     display:flex; align-items:center; justify-content:center;
     z-index:3;
     animation:splash-glow 3.2s ease-in-out infinite;
+    cursor:pointer;
+    transition:transform .2s ease, filter .2s ease, box-shadow .2s ease;
   }
-  @keyframes splash-glow{
-    0%,100%{ box-shadow:0 0 40px 6px rgba(255,159,28,0.35), inset 0 0 30px rgba(122,31,43,0.5); transform:scale(1); }
-    50%{ box-shadow:0 0 58px 14px rgba(255,201,60,0.5), inset 0 0 30px rgba(122,31,43,0.5); transform:scale(1.04); }
+  .splash-orb:hover, .splash-orb-stage:hover .splash-orb{
+    transform:scale(1.06);
+    filter:brightness(1.12);
+    box-shadow:0 0 58px 14px rgba(255,201,60,0.65), inset 0 0 30px rgba(122,31,43,0.5);
   }
-  .splash-orb svg{ width:46px; height:46px; fill:#2a1204; opacity:0.9; }
+  .splash-orb:active, .splash-orb-stage:active .splash-orb{
+    transform:scale(0.96);
+  }
+  .splash-orb svg{ width:46px; height:46px; fill:#2a1204; opacity:0.9; pointer-events:none; }
 
   .enter-btn{
     position:relative; padding:16px 46px; border-radius:32px;
@@ -699,11 +706,11 @@
     <h1>Bharat Voice</h1>
     <p class="tagline">Namaste 🙏 — apni awaaz mein baat kariye, ya likh kar poochiye. Ek saathi jo sunta hai, samajhta hai.</p>
 
-    <div class="splash-orb-stage">
+    <div class="splash-orb-stage" id="splashOrbStage" role="button" tabindex="0" title="Tap to enter Bharat Voice" aria-label="Enter Bharat Voice">
       <div class="splash-ring r1"></div>
       <div class="splash-ring r2 dashed"></div>
       <div class="splash-ring r3"></div>
-      <div class="splash-orb">
+      <div class="splash-orb" id="splashOrb">
         <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 003-3V6a3 3 0 00-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.92V21h2v-2.08A7 7 0 0019 12h-2z"/></svg>
       </div>
     </div>
@@ -1123,14 +1130,30 @@
     loginScreen.classList.add('visible');
   }
 
-  enterBtn.addEventListener('click', () => {
+  const splashOrb = document.getElementById('splashOrb');
+  const splashOrbStage = document.getElementById('splashOrbStage');
+
+  function enterBharatVoice(){
+    if (enterBtn.disabled) return;
     enterBtn.disabled = true;
     splashStage.classList.add('leaving');
     // Returning users who already picked guest/Google before skip straight to the app.
     const existingSession = loadSession();
     veilSwap(existingSession ? goToApp : goToLogin);
     if (existingSession) applySessionToUI(existingSession);
-  });
+  }
+
+  enterBtn.addEventListener('click', enterBharatVoice);
+  if (splashOrb) splashOrb.addEventListener('click', enterBharatVoice);
+  if (splashOrbStage) {
+    splashOrbStage.addEventListener('click', enterBharatVoice);
+    splashOrbStage.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        enterBharatVoice();
+      }
+    });
+  }
 
   // ================= Login: session storage, Google Sign-In, Guest mode =================
   const SESSION_KEY = 'bharatVoice.session';
