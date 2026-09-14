@@ -8,6 +8,7 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251310303606994"
      crossorigin="anonymous"></script>
 <meta name="google-adsense-account" content="ca-pub-6251310303606994">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <meta name="description" content="Bharat Voice: a bilingual voice study companion for Indian students. Learn how it works and start learning online.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
@@ -361,9 +362,18 @@
       </div>
       <div class="access-col access-divider">
         <h3>OTHER OPTIONS</h3>
-        <div class="oauth-row">
-          <button class="btn btn-ghost" disabled>Sign in with Google</button>
-          <span class="soon">Coming soon — guest access works today.</span>
+        <div class="oauth-row" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+          <div id="googleBtnContainerLanding" style="min-height:44px; display:flex; justify-content:center; align-items:center; width:100%;"></div>
+          <button class="btn btn-ghost" id="googleSignInLandingBtn" style="display:inline-flex; align-items:center; justify-content:center; gap:10px; width:100%; font-size:14px; padding:12px 18px; cursor:pointer;">
+            <svg width="18" height="18" viewBox="0 0 18 18">
+              <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.616z"/>
+              <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+              <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/>
+              <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/>
+            </svg>
+            <span>Sign in with Google</span>
+          </button>
+          <span class="soon" id="googleStatusLanding">Syncs your study progress, profile &amp; scores.</span>
         </div>
       </div>
     </div>
@@ -463,18 +473,113 @@
   document.getElementById('guestBtn').addEventListener('click', (e) => {
     const name = document.getElementById('guestName').value.trim();
     document.getElementById('welcomeLine').textContent = name ? ('Welcome, ' + name) : 'Welcome, Guest';
-    if (name) {
-      try {
-        let sess = JSON.parse(localStorage.getItem('bharatVoice.session') || '{}');
-        if (!sess.user) sess.user = {};
-        sess.user.name = name;
-        sess.user.email = sess.user.email || '';
-        sess.user.plan = sess.user.plan || 'free';
-        localStorage.setItem('bharatVoice.session', JSON.stringify(sess));
-      } catch (err) {}
-    }
+    try {
+      const session = {
+        type: 'guest',
+        name: name || 'Guest',
+        email: '',
+        picture: '',
+        token: ''
+      };
+      localStorage.setItem('bharatVoice.session', JSON.stringify(session));
+    } catch (err) {}
     goTo(3, e.currentTarget);
   });
+
+  const CLIENT_ID_KEY = 'bharatVoice.googleClientId';
+  const DEFAULT_CLIENT_ID = '776102824567-n3t4nlj7kvt8aosi85jo968eebehkc84.apps.googleusercontent.com';
+
+  function getStoredClientId(){
+    try { return localStorage.getItem(CLIENT_ID_KEY) || DEFAULT_CLIENT_ID; } catch (e) { return DEFAULT_CLIENT_ID; }
+  }
+
+  function decodeJwtPayload(jwt){
+    try {
+      const base64 = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const json = decodeURIComponent(atob(base64).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+      return JSON.parse(json);
+    } catch (e) { return null; }
+  }
+
+  async function handleGoogleLandingLogin(response){
+    const payload = decodeJwtPayload(response.credential);
+    if (!payload) return;
+    const name = payload.name || payload.given_name || 'Learner';
+    const session = {
+      type: 'google',
+      name: name,
+      email: payload.email || '',
+      picture: payload.picture || '',
+      token: ''
+    };
+    try {
+      localStorage.setItem('bharatVoice.session', JSON.stringify(session));
+    } catch(e){}
+
+    try {
+      fetch('https://api.bharatvoiceduai.website/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: response.credential })
+      }).then(r => r.json()).then(authData => {
+        if (authData.token) {
+          try { localStorage.setItem('bharatVoice.jwt', authData.token); } catch(e){}
+        }
+      }).catch(()=>{});
+    } catch(e){}
+
+    document.getElementById('welcomeLine').textContent = 'Welcome, ' + name;
+    goTo(3);
+  }
+
+  let landingAttempts = 0;
+  function initLandingGoogle(){
+    const clientId = getStoredClientId();
+    const container = document.getElementById('googleBtnContainerLanding');
+    const fallbackBtn = document.getElementById('googleSignInLandingBtn');
+    if (!container) return;
+
+    if (!window.google || !window.google.accounts || !window.google.accounts.id){
+      if (landingAttempts < 15) {
+        landingAttempts++;
+        setTimeout(initLandingGoogle, 300);
+      }
+      return;
+    }
+
+    try {
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleGoogleLandingLogin,
+        auto_select: false
+      });
+      window.google.accounts.id.renderButton(container, {
+        theme: 'filled_black',
+        size: 'large',
+        shape: 'pill',
+        width: 260,
+        text: 'signin_with'
+      });
+      if (fallbackBtn) fallbackBtn.style.display = 'none';
+    } catch(err){
+      console.warn('Google Sign-In initialization note:', err);
+    }
+  }
+
+  const landingGoogleBtn = document.getElementById('googleSignInLandingBtn');
+  if (landingGoogleBtn) {
+    landingGoogleBtn.addEventListener('click', () => {
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        window.google.accounts.id.prompt();
+      } else {
+        window.location.href = 'app.html';
+      }
+    });
+  }
+
+  initLandingGoogle();
+  window.addEventListener('load', initLandingGoogle);
 
   function buildAppBlobUrl(){
     const b64 = document.getElementById('appSourceB64').textContent.trim();

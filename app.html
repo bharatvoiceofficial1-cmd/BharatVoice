@@ -1394,6 +1394,7 @@
     try { return localStorage.getItem(CLIENT_ID_KEY) || DEFAULT_CLIENT_ID; } catch (e) { return DEFAULT_CLIENT_ID; }
   }
 
+  let gsiAttempts = 0;
   function initGoogleButton(){
     const clientId = getStoredClientId();
     googleBtnContainer.innerHTML = '';
@@ -1401,13 +1402,18 @@
       googleConfigWarning.classList.add('show');
       return;
     }
-    googleConfigWarning.classList.remove('show');
     if (!window.google || !window.google.accounts || !window.google.accounts.id){
+      if (gsiAttempts < 15) {
+        gsiAttempts++;
+        setTimeout(initGoogleButton, 300);
+        return;
+      }
       // GSI script may still be loading (or blocked/offline) — fall back gracefully.
       googleConfigWarning.classList.add('show');
       googleConfigWarning.textContent = "Google Sign-In script didn't load (offline or blocked) — use Guest mode below.";
       return;
     }
+    googleConfigWarning.classList.remove('show');
     try {
       window.google.accounts.id.initialize({
         client_id: clientId,
