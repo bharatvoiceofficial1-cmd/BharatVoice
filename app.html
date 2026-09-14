@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bharat Voice · All-Rounder Education Assistant</title>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251310303606994"
+     crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-6251310303606994">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -689,8 +693,56 @@
 .dev-status{min-height:18px;margin-top:8px;font-size:12px}.dev-status.ok{color:#7fdc9a}.dev-status.no{color:#e39b9b}.dev-panel{display:none}.dev-panel.open{display:block}
 .dev-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.dev-card{border:1px solid rgba(255,201,60,.19);border-radius:16px;padding:15px;background:rgba(253,246,233,.035);display:flex;flex-direction:column;gap:8px}.dev-card.featured{border-color:rgba(28,154,146,.42);background:rgba(28,154,146,.08)}
 .dev-card .dev-name{font-size:15px;font-weight:700;color:var(--marigold)}.dev-card .dev-price{font-size:20px;font-weight:700;color:var(--ivory)}.dev-card .dev-price span{font-size:11px;font-weight:400;color:var(--ivory-dim)}.dev-card ul{margin:0;padding-left:18px;color:var(--ivory-dim);font-size:11.5px;line-height:1.55}.dev-card .dev-claim{margin-top:auto}.dev-note{margin-top:12px;font-size:11px;color:rgba(207,198,184,.62);line-height:1.5}.dev-close{width:100%;margin-top:14px;padding:10px;border-radius:10px;cursor:pointer;background:none;border:1px solid rgba(255,201,60,.2);color:var(--ivory-dim);font:600 12px "Poppins",sans-serif}
-@media(max-width:560px){.dev-grid{grid-template-columns:1fr}.dev-modal{padding:16px;border-radius:18px}.dev-gate{flex-direction:column}.dev-gate button{width:100%}.plan-badge{font-size:11px}}
-
+  /* Guest-Only Google AdSense Container */
+  .guest-ad-wrapper{
+    margin: 18px 0 10px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(253, 246, 233, 0.03);
+    border: 1px dashed rgba(255, 201, 60, 0.25);
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .guest-ad-label{
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(207, 198, 184, 0.55);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .guest-ad-slot{
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+    background: rgba(20, 15, 43, 0.4);
+  }
+  .guest-ad-slot ins{
+    width: 100%;
+  }
+  .guest-ad-upgrade-note{
+    font-size: 11.5px;
+    color: var(--ivory-dim);
+    margin-top: 8px;
+  }
+  .guest-ad-upgrade-note a{
+    color: var(--marigold);
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .ad-placeholder-box{
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .ad-placeholder-icon{ font-size: 20px; opacity: 0.8; }
+  .ad-placeholder-title{ font-size: 12px; font-weight: 600; color: var(--marigold); }
+  .ad-placeholder-sub{ font-size: 11px; color: var(--ivory-dim); opacity: 0.7; }
 </style>
 </head>
 <body class="no-scroll">
@@ -836,6 +888,16 @@
       <button type="button" class="dev-console-btn" id="openDevConsoleBtn">🛠️ <span>Developer Console</span> — advanced plan testing</button>
       <p style="font-size:11px;opacity:.68;margin:7px 0 0;">Enter the developer access code to open the testing console.</p>
     </div>
+
+    <h3 style="margin-top:22px;">📢 Google AdSense (Guest Mode Ads)</h3>
+    <p>Advertisements are displayed <b>only to Guest users</b> to support free access. Logged-in Google users and Pro members never see ads.</p>
+    <label>Google AdSense Publisher ID</label>
+    <input type="text" id="adsensePubIdInput" placeholder="ca-pub-xxxxxxxxxxxxxxxx">
+    <label>Ad Unit Slot ID (optional for responsive banner)</label>
+    <input type="text" id="adsenseSlotIdInput" placeholder="e.g. 1234567890">
+    <button class="save-btn" id="saveAdsenseBtn">Save AdSense settings</button>
+    <div class="key-status" id="adsenseStatus"></div>
+    <p style="font-size:11px; opacity:0.7; margin-top:6px;">Find your Publisher ID in your Google AdSense dashboard under <b>Account → Settings → Account information</b>.</p>
 
     <h3 class="chapter-panel" style="margin-top:22px;">📄 NCERT / Textbook Source Text</h3>
     <div class="chapter-panel">
@@ -1000,6 +1062,13 @@
     </div>
     <div class="status-text" id="statusText">Tap the diya to speak</div>
 
+    <!-- Guest-Only AdSense: Top Banner -->
+    <div class="guest-ad-wrapper" id="guestAdTop" style="display:none;">
+      <div class="guest-ad-label">Advertisement</div>
+      <div class="guest-ad-slot" id="guestAdSlotTop"></div>
+      <div class="guest-ad-upgrade-note">Remove ads — <a id="guestAdUpgradeTop">sign in with Google</a></div>
+    </div>
+
     <div class="transcript" id="transcript">
       <div class="empty-hint" id="emptyHint">A Groq API key is already built in — no setup needed. Optionally add your <b>learning profile</b> (role, grade, subject) in settings. Tap the glowing orb to speak, or type below — <b>Bharat Voice</b> can teach a concept, solve a problem step by step, mentor your code, build a lesson plan/worksheet/quiz, or <b>generate an image</b>. For an <b>NCERT concept map or exact-chapter detail</b>, paste the chapter text via the 📄 <b>Add chapter source</b> chip (or attach page photos with 📷) so answers track the real book instead of a general guess.</div>
     </div>
@@ -1075,6 +1144,13 @@
       <button class="send-btn" id="sendBtn" title="Send">
         <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
       </button>
+    </div>
+
+    <!-- Guest-Only AdSense: Bottom Banner -->
+    <div class="guest-ad-wrapper" id="guestAdBottom" style="display:none;">
+      <div class="guest-ad-label">Advertisement</div>
+      <div class="guest-ad-slot" id="guestAdSlotBottom"></div>
+      <div class="guest-ad-upgrade-note">Remove ads — <a id="guestAdUpgradeBottom">sign in with Google</a></div>
     </div>
 
     <footer>Bharat Voice · All-Rounder education + all-round education assistant · built with care</footer>
