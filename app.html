@@ -2211,13 +2211,13 @@ You cannot open, browse, or search any textbook, PDF, or website — you only ha
 
 VISUAL CONCEPT MAPS & DIAGRAMS
 When the user asks for a concept map, mind map, flowchart, process diagram, relationship graph, or visual structure:
-1. Provide an interactive, well-structured ```mermaid code block at the very beginning of your response.
+1. Provide an interactive, well-structured \`\`\`mermaid code block at the very beginning of your response.
 2. Structure for clarity and legibility:
    - Prefer "graph TD" (top-down) for hierarchies, concept trees, and causal relationships.
    - Prefer "graph LR" (left-to-right) for processes, life cycles, timelines, and sequential pathways.
    - When using "mindmap", keep the topic tree balanced and node labels concise (2 to 5 words max per node) so the map stays bold, spacious, and immediately readable.
 3. Keep node IDs clean alphanumeric (e.g. A, B, C, N1, N2) and wrap all labels in double quotes inside brackets ["Label Here"] so spaces, punctuation, and icons render cleanly. Example:
-```mermaid
+\`\`\`mermaid
 graph TD
   A["🌱 Photosynthesis"] --> B["⚡ Light Reactions"]
   A --> C["🔄 Calvin Cycle (Dark)"]
@@ -2226,7 +2226,7 @@ graph TD
   C --> F["🧪 Stroma"]
   C --> G["🍯 Glucose Synthesized"]
   E -.-> C
-```
+\`\`\`
 4. Follow the diagram with a clear educational breakdown:
    - Core concept & central premise
    - Key connections & how parts relate
