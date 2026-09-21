@@ -3163,17 +3163,19 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
     status.textContent = 'Generating 8K image via NVIDIA FLUX…';
 
     // 1. Try Backend Proxy if available
-    const endpoints = [];
+    const endpointSet = new Set();
     if (apiUrl && apiUrl.includes('/api/chat')){
-      endpoints.push(apiUrl.replace('/api/chat', '/api/generate-image'));
+      endpointSet.add(apiUrl.replace('/api/chat', '/api/generate-image'));
     }
-    endpoints.push('https://api.bharatvoiceduai.website/api/generate-image');
-    endpoints.push('http://127.0.0.1:3000/api/generate-image');
+    endpointSet.add('https://api.bharatvoiceduai.website/api/generate-image');
+    endpointSet.add('http://127.0.0.1:3000/api/generate-image');
+    const endpoints = [...endpointSet];
 
     for (const ep of endpoints){
       try {
+        status.textContent = `Connecting to image server…`;
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 18000);
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
         const res = await fetch(ep, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
