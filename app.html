@@ -4336,25 +4336,24 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
   });
 
   /* ---------- Show button after app is ready ---------- */
-  // Wait for appScreen to appear
+  // Wait for appScreen to appear (appScreen uses .visible class for opacity/visibility, not display)
   function showArBtn(){
     const appScreen = document.getElementById('appScreen');
     if (!appScreen) { setTimeout(showArBtn, 400); return; }
-    const obs = new MutationObserver(()=>{
-      if (appScreen.style.display !== 'none' && !appScreen.hidden){
+    function syncArBtn(){
+      if (appScreen.classList.contains('visible')){
         openBtn && openBtn.classList.add('visible');
       } else {
         openBtn && openBtn.classList.remove('visible');
       }
-    });
-    obs.observe(appScreen, { attributes: true, attributeFilter: ['style','hidden'] });
-    // Also check immediately
-    if (appScreen.style.display !== 'none' && !appScreen.hidden){
-      openBtn && openBtn.classList.add('visible');
     }
+    const obs = new MutationObserver(syncArBtn);
+    obs.observe(appScreen, { attributes: true, attributeFilter: ['class','style','hidden'] });
+    // Also check immediately
+    syncArBtn();
   }
   // Use a short delay so main app JS has time to set up
-  setTimeout(showArBtn, 600);
+  setTimeout(showArBtn, 500);
 
   /* ---------- Auto-resize textarea ---------- */
   function autoResizeArInput(){
