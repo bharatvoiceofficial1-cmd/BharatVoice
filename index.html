@@ -48,34 +48,48 @@
     *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
   }
 
-  /* ============ progress rail ============ */
+  /* ============ Navigation Header ============ */
   .rail{
     position:fixed; top:0; left:0; right:0; z-index:40;
     display:flex; align-items:center; justify-content:space-between;
-    padding:22px clamp(20px,5vw,56px);
-    pointer-events:none;
+    padding:16px clamp(20px,5vw,56px);
+    background:rgba(20,15,43,0.9);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+    pointer-events:auto;
   }
   .rail-mark{
-    display:flex; align-items:center; gap:10px; pointer-events:auto;
+    display:flex; align-items:center; gap:10px; text-decoration:none;
   }
-  .rail-mark .flame{ width:20px; height:20px; }
-  .rail-mark span{ font-family:'Yatra One',cursive; font-size:19px; color:var(--marigold); letter-spacing:0.01em; }
-  .rail-steps{ display:flex; gap:8px; pointer-events:auto; }
-  .rail-step{
-    width:26px; height:3px; border-radius:2px;
-    background:rgba(253,246,233,0.16);
-    transition:background .3s ease, width .3s ease;
+  .rail-mark .flame{ width:22px; height:22px; }
+  .rail-mark span{ font-family:'Yatra One',cursive; font-size:21px; color:var(--marigold); letter-spacing:0.01em; }
+  .nav-menu-links{
+    display:flex; align-items:center; gap:20px; font-size:13.5px;
   }
-  .rail-step.done{ background:var(--peacock-light); }
-  .rail-step.active{ background:var(--saffron); width:38px; }
+  .nav-menu-links a{
+    color:var(--ivory-dim); text-decoration:none; transition:color .2s;
+  }
+  .nav-menu-links a:hover{
+    color:var(--marigold);
+  }
+  .nav-action-btn{
+    background:linear-gradient(90deg, var(--saffron), var(--marigold));
+    color:#221200 !important; font-weight:600; font-size:13px;
+    padding:8px 20px; border-radius:24px; text-decoration:none !important;
+    transition:transform .15s ease, filter .2s ease;
+  }
+  .nav-action-btn:hover{ transform:translateY(-1px); filter:brightness(1.08); }
+  @media (max-width: 768px){
+    .nav-menu-links{ display:none; }
+  }
 
-  /* ============ layers ============ */
+  /* ============ sections / layers ============ */
   .layer{
-    position:relative; z-index:2; min-height:100vh;
-    display:none;
-    padding:104px clamp(20px,6vw,72px) 64px;
+    position:relative; z-index:2;
+    display:block;
+    padding:100px clamp(20px,6vw,72px) 60px;
+    border-bottom:1px solid var(--line);
   }
-  .layer.current{ display:block; }
   .layer-inner{ max-width:1080px; margin:0 auto; }
 
   .enter-motion{ animation:layer-in .6s cubic-bezier(.2,.7,.3,1) both; }
@@ -274,17 +288,23 @@
 </head>
 <body>
 
-<div class="rail">
-  <div class="rail-mark">
+<header class="rail">
+  <a href="#layer1" class="rail-mark">
     <svg class="flame" viewBox="0 0 24 24"><path fill="#ffc93c" d="M12 2c1 3-2 4-2 7a3 3 0 006 0c0-1-.4-2-1-2.5 1.6.6 3 2.4 3 5.2C18 15.5 15.3 18 12 18s-6-2.5-6-6.3c0-4.6 3.6-7 6-9.7z"/></svg>
     <span>Bharat Voice</span>
-  </div>
-  <div class="rail-steps" id="railSteps">
-    <div class="rail-step active" data-n="1"></div>
-    <div class="rail-step" data-n="2"></div>
-    <div class="rail-step" data-n="3"></div>
-  </div>
-</div>
+  </a>
+  <nav class="nav-menu-links">
+    <a href="#layer1">About</a>
+    <a href="#layer2">Features</a>
+    <a href="#subjects">Curriculum</a>
+    <a href="#layer3">Launch App</a>
+    <a href="#faq">FAQ</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a href="app.html" class="nav-action-btn">Open App</a>
+</header>
 
 <div class="veil" id="veil"></div>
 
@@ -306,8 +326,8 @@
         </div>
 
         <div class="about-cta">
-          <button class="btn btn-primary" id="toLayer2Btn">Continue</button>
-          <span class="hint">Next: see how it works and start learning</span>
+          <a href="#layer2" class="btn btn-primary" id="toLayer2Btn">Explore Features &amp; Access</a>
+          <span class="hint">Scroll or click to see how it works and start learning</span>
         </div>
       </div>
 
@@ -320,7 +340,7 @@
         <div class="plaque danish">
           <div class="role">Owned by</div>
           <div class="who">Danish</div>
-          <div class="note">Owns and backs Bharat Voice as a product, keeping it free to download and focused on students rather than ads or paywalls.</div>
+          <div class="note">Owns and backs Bharat Voice as an educational platform, keeping core learning tools free and accessible for every student across India.</div>
         </div>
       </div>
     </div>
@@ -444,6 +464,80 @@
   </div>
 </section>
 
+<!-- ===================== CURRICULUM & SUBJECTS ===================== -->
+<section class="layer" id="subjects">
+  <div class="layer-inner enter-motion">
+    <div class="layer2-head">
+      <div class="eyebrow-tag"><span class="dot"></span>Curriculum &amp; Syllabi</div>
+      <h2>Every Class, Every Board</h2>
+      <p>Bharat Voice is built to support students from school level to competitive exam preparation with bilingual understanding.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-cell">
+        <div class="icon">📐</div>
+        <h3>Mathematics</h3>
+        <p>Algebra, Trigonometry, Geometry, Real Numbers, Calculus, and Statistics with step-by-step KaTeX formula breakdown.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="icon">🔬</div>
+        <h3>Science &amp; Physics</h3>
+        <p>Newton's laws, Thermodynamics, Optics, Electricity, Magnetism, and Motion explained with everyday real-world examples.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="icon">🧪</div>
+        <h3>Chemistry</h3>
+        <p>Chemical reactions, Organic chemistry, Periodic tables, and Molecular structures broken down into clear notes.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="icon">🧬</div>
+        <h3>Biology &amp; Environmental</h3>
+        <p>Cell biology, Genetics, Human physiology, Plant anatomy, and Ecology mapped to NCERT chapter guidelines.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="icon">📜</div>
+        <h3>Social Studies &amp; History</h3>
+        <p>Indian Freedom Struggle, World History, Civics, Geography, and Indian Constitution simplified for quick recall.</p>
+      </div>
+      <div class="feature-cell">
+        <div class="icon">📖</div>
+        <h3>Languages &amp; Grammar</h3>
+        <p>English and Hindi grammar (Vyakaran), vocabulary building, essay outlines, and comprehension practice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ SECTION ===================== -->
+<section class="layer" id="faq">
+  <div class="layer-inner enter-motion">
+    <div class="layer2-head">
+      <div class="eyebrow-tag"><span class="dot"></span>Got questions?</div>
+      <h2>Frequently Asked Questions</h2>
+      <p>Everything you need to know about using Bharat Voice, data privacy, and learning out loud.</p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+      <div class="feature-cell" style="min-height:auto;">
+        <h3 style="color:var(--marigold); margin-top:0;">Is Bharat Voice free to use?</h3>
+        <p>Yes! Bharat Voice provides completely free access in Guest Mode so any student can ask doubts, generate sample papers, and practice without paying or providing a credit card.</p>
+      </div>
+      <div class="feature-cell" style="min-height:auto;">
+        <h3 style="color:var(--marigold); margin-top:0;">How does voice recognition work with Hinglish?</h3>
+        <p>Bharat Voice is specifically calibrated for Indian student speech patterns. You can speak pure Hindi, pure English, or mix both mid-sentence naturally.</p>
+      </div>
+      <div class="feature-cell" style="min-height:auto;">
+        <h3 style="color:var(--marigold); margin-top:0;">Do I need to install or download anything?</h3>
+        <p>No downloads or apps are required. Bharat Voice runs directly inside your web browser on Android phones, iPhones, tablets, Chromebooks, and laptops.</p>
+      </div>
+      <div class="feature-cell" style="min-height:auto;">
+        <h3 style="color:var(--marigold); margin-top:0;">How is student data and privacy protected?</h3>
+        <p>We do not sell student data. Guest sessions are stored only in your local browser, and Google Sign-in is only used to sync your study goals and test scores. Read our full <a href="privacy.html" style="color:var(--peacock-light);">Privacy Policy</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer class="site-footer">
   <div class="footer-content">
     <div>
@@ -477,27 +571,21 @@
   }
 
   function goTo(n, originEl){
-    if (n === current) return;
-    if (originEl){
-      const r = originEl.getBoundingClientRect();
-      veil.style.setProperty('--vx', (r.left + r.width/2) + 'px');
-      veil.style.setProperty('--vy', (r.top + r.height/2) + 'px');
-    }
-    veil.classList.remove('run'); void veil.offsetWidth; veil.classList.add('run');
-
-    setTimeout(() => {
-      layers[current].classList.remove('current');
-      layers[n].classList.add('current');
-      layers[n].querySelector('.layer-inner').classList.remove('enter-motion');
-      void layers[n].offsetWidth;
-      layers[n].querySelector('.layer-inner').classList.add('enter-motion');
+    const target = layers[n];
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       current = n;
       updateSteps(n);
-      window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
-    }, 430);
+    }
   }
 
-  document.getElementById('toLayer2Btn').addEventListener('click', (e) => goTo(2, e.currentTarget));
+  const toLayer2Btn = document.getElementById('toLayer2Btn');
+  if (toLayer2Btn) {
+    toLayer2Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      goTo(2, e.currentTarget);
+    });
+  }
 
   document.getElementById('guestBtn').addEventListener('click', (e) => {
     const name = document.getElementById('guestName').value.trim();
