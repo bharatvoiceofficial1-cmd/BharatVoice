@@ -1129,6 +1129,18 @@
   color:var(--ivory); font:500 12px 'Poppins',sans-serif; cursor:pointer;
 }
 #arModelSelect:focus{ outline:none; border-color:var(--marigold); }
+#arModelSelect option{ background:#1d1640; color:var(--ivory); }
+.ar-refresh-models{
+  background:rgba(29,22,64,0.9); border:1px solid rgba(255,201,60,0.3); border-radius:10px;
+  color:var(--marigold); width:30px; height:30px; flex:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:14px; transition:.2s;
+}
+.ar-refresh-models:hover{ border-color:var(--marigold); background:rgba(255,159,28,0.18); }
+.ar-refresh-models.spin{ animation:arSpin 1s linear infinite; pointer-events:none; }
+@keyframes arSpin{ to{ transform:rotate(360deg); } }
+.ar-model-status{ font-size:11px; color:var(--ivory-dim); opacity:.85; }
+.ar-model-status.ok{ color:#5fe3a1; opacity:1; }
+.ar-model-status.err{ color:#ff8a8a; opacity:1; }
 .ar-close-btn{
   background:none; border:1px solid rgba(253,246,233,0.15); border-radius:10px;
   color:var(--ivory-dim); font-size:16px; cursor:pointer; padding:5px 10px; line-height:1;
@@ -4159,52 +4171,9 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
     <div class="ar-model-wrap">
       <label for="arModelSelect">Model:</label>
       <select id="arModelSelect">
-        <optgroup label="⚡ Fast & Capable">
-          <option value="gpt-4o" selected>GPT-4o</option>
-          <option value="gpt-5-mini">GPT-5 Mini</option>
-          <option value="gpt-4o-mini">GPT-4o Mini</option>
-          <option value="o4-mini">o4-mini (Reasoning)</option>
-          <option value="o3">o3 (Advanced Reasoning)</option>
-        </optgroup>
-        <optgroup label="🚀 OpenAI Frontier">
-          <option value="gpt-5">GPT-5</option>
-          <option value="gpt-5.1">GPT-5.1</option>
-          <option value="gpt-5.4">GPT-5.4</option>
-        </optgroup>
-        <optgroup label="🎭 Anthropic Claude">
-          <option value="claude-sonnet-4.5">Claude Sonnet 4.5</option>
-          <option value="claude-sonnet-5">Claude Sonnet 5</option>
-          <option value="claude-haiku-4.5">Claude Haiku 4.5 (Fast)</option>
-          <option value="claude-opus-4.5">Claude Opus 4.5</option>
-        </optgroup>
-        <optgroup label="✨ Google Gemini">
-          <option value="gemini-3.8-flash">Gemini 3.8 Flash</option>
-          <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-          <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-          <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
-        </optgroup>
-        <optgroup label="🧠 DeepSeek Reasoning">
-          <option value="deepseek-r1">DeepSeek R1 (Reasoning)</option>
-          <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
-          <option value="deepseek-v4-pro">DeepSeek V4 Pro</option>
-        </optgroup>
-        <optgroup label="⚡ xAI Grok">
-          <option value="grok-4">Grok-4</option>
-          <option value="grok-4.20">Grok-4.20</option>
-          <option value="grok-code-fast-1">Grok Code Fast</option>
-        </optgroup>
-        <optgroup label="🔮 Mistral / Qwen">
-          <option value="mistral-large-3">Mistral Large 3</option>
-          <option value="codestral-2508">Codestral (Code)</option>
-          <option value="qwen3-max">Qwen3 Max</option>
-          <option value="qwen3.8-max">Qwen3.8 Max</option>
-          <option value="qwen3-coder-480b-a35b-instruct">Qwen3 Coder 480B</option>
-        </optgroup>
-        <optgroup label="🔍 Search & Reasoning">
-          <option value="sonar-pro">Perplexity Sonar Pro (Search)</option>
-          <option value="sonar-reasoning-pro">Sonar Reasoning Pro</option>
-        </optgroup>
+        <option value="">Loading model catalog…</option>
       </select>
+      <button class="ar-refresh-models" id="arRefreshModels" title="Reload the live model list from the API">⟳</button>
     </div>
     <button class="ar-close-btn" id="arCloseBtn" title="Close Allrounder">✕</button>
   </div>
@@ -4212,6 +4181,7 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
   <!-- INFO BAR -->
   <div class="ar-infobar">
     <div><span class="ar-provider-dot"></span>Experiential Labs API · OpenAI-compatible</div>
+    <div class="ar-model-status" id="arModelStatus">Loading model catalog…</div>
     <div class="ar-timing" id="arTimingInfo">Ready</div>
   </div>
 
@@ -4262,6 +4232,20 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
   /* ---------- Config ---------- */
   const AR_API_KEY   = 'xpl_bbe6742a38c4f56721cb28160f3409e13666ffff';
   const AR_BASE_URL  = 'https://api.experientiallabs.ai/v1/chat/completions';
+  const AR_MODELS_URL= 'https://api.experientiallabs.ai/v1/models';
+
+  /* The model list is fetched live from the provider so we only ever offer IDs
+     that really exist on this account. Cached briefly to spare /v1/models. */
+  const AR_MODELS_CACHE_KEY = 'bv.ar.models.v2';
+  const AR_MODELS_CACHE_TTL = 6 * 60 * 60 * 1000;          // 6 hours
+  const AR_FALLBACK_MODELS  = [                            // used only if /v1/models fails
+    'gpt-4o-mini','gpt-4o','gpt-5','gpt-5-mini','o4-mini','o3-mini',
+    'claude-sonnet-4-5','claude-3-5-haiku-latest','claude-opus-4-1',
+    'gemini-2.5-flash','gemini-2.5-pro',
+    'deepseek-chat','deepseek-reasoner',
+    'mistral-large-latest','codestral-latest','qwen3-max'
+  ];
+  const AR_MAX_FALLBACK_TRIES = 4;   // extra models to try before giving up
   const AR_SYS_PROMPT = `You are Bharat Voice Allrounder — a powerful, versatile AI assistant available exclusively to Maha Shakti members. You can help with absolutely anything: advanced coding, creative writing, scientific analysis, complex mathematics, history, philosophy, translation, legal and financial concepts, business strategy, and more. Be thorough, accurate, and helpful. Format responses with clear structure when appropriate. For code, always use proper code blocks.`;
 
   /* ---------- Elements ---------- */
@@ -4286,9 +4270,13 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
   const charHint      = document.getElementById('arCharHint');
   const timingInfo    = document.getElementById('arTimingInfo');
   const upgradeBtn    = document.getElementById('arUpgradeBtn');
+  const modelStatus   = document.getElementById('arModelStatus');
+  const refreshBtn    = document.getElementById('arRefreshModels');
 
   /* ---------- State ---------- */
   let arMessages  = [];   // { role, content } history
+  let arModelIds  = [];   // real model IDs loaded from /v1/models
+  let arModelsLoaded = false;
   let isStreaming = false;
   let arImgB64    = null; // base64 image for vision
   let arImgMime   = null;
@@ -4307,6 +4295,144 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
     } catch(e){ return false; }
   }
 
+  /* ---------- Live model catalog (replaces the old hardcoded list) ---------- */
+  const AR_GROUPS = [
+    /* vendor groups first — otherwise "flash"/"mini" would steal gemini, gpt, etc. */
+    { label:'🚀 OpenAI',               re:/^(gpt|chatgpt|codex|o[134])/i },
+    { label:'🎭 Anthropic Claude',     re:/claude/i },
+    { label:'✨ Google Gemini',         re:/gemini|gemma/i },
+    { label:'🐘 DeepSeek',             re:/deepseek/i },
+    { label:'⚡ xAI Grok',              re:/grok/i },
+    { label:'🔮 Mistral / Qwen / GLM',  re:/mistral|mixtral|codestral|qwen|glm|kimi/i },
+    { label:'🐴 Meta Llama',           re:/llama/i },
+    { label:'🧠 Reasoning',             re:/reason|thinking|\br1\b/i },
+    { label:'⚡ Fast & Reliable',       re:/mini|flash|haiku|lite|nano|small|turbo|sonar/i },
+    { label:'🌍 Other',                re:/.+/ }
+  ];
+
+  /* o-series / gpt-5 reject max_tokens + temperature, and need max_completion_tokens */
+  const AR_STRICT_PARAMS = /^(o1|o3|o4|gpt-5)/i;
+  /* models that cannot accept images at all */
+  const AR_NO_VISION     = /^(o1|o3|o4|sonar|codestral|text-)|embed|whisper|tts/i;
+
+  function arGroupFor(id){
+    for (const g of AR_GROUPS){ if (g.re.test(id)) return g.label; }
+    return '🌍 Other';
+  }
+  function arSupportsVision(id){ return !AR_NO_VISION.test(String(id || '')); }
+  function arPretty(id){
+    return String(id)
+      .replace(/^(openai|anthropic|google|meta|mistralai|deepseek-ai|xai|perplexity)\//i, '')
+      .replace(/[-_]/g, ' ');
+  }
+  function arSetModelStatus(msg, kind){
+    if (!modelStatus) return;
+    modelStatus.textContent = msg;
+    modelStatus.className = 'ar-model-status' + (kind ? ' ' + kind : '');
+  }
+
+  function arReadModelCache(){
+    try{
+      const c = JSON.parse(localStorage.getItem(AR_MODELS_CACHE_KEY) || 'null');
+      if (!c || !Array.isArray(c.ids) || !c.ids.length) return null;
+      if (!c.ts || (Date.now() - c.ts) > AR_MODELS_CACHE_TTL) return null;
+      return c.ids;
+    } catch(e){ return null; }
+  }
+  function arWriteModelCache(ids){
+    try{ localStorage.setItem(AR_MODELS_CACHE_KEY, JSON.stringify({ ts: Date.now(), ids: ids })); } catch(e){}
+  }
+
+  function arRenderModelSelect(ids){
+    if (!modelSelect) return;
+    const prev = modelSelect.value;
+    modelSelect.innerHTML = '';
+    const buckets = new Map();
+    ids.forEach(id => {
+      const g = arGroupFor(id);
+      if (!buckets.has(g)) buckets.set(g, []);
+      buckets.get(g).push(id);
+    });
+    AR_GROUPS.forEach(g => {
+      const list = buckets.get(g.label);
+      if (!list || !list.length) return;
+      const og = document.createElement('optgroup');
+      og.label = g.label + '  (' + list.length + ')';
+      list.sort().forEach(id => {
+        const o = document.createElement('option');
+        o.value = id;
+        o.textContent = arPretty(id);
+        og.appendChild(o);
+      });
+      modelSelect.appendChild(og);
+    });
+    if (!modelSelect.options.length){
+      const o = document.createElement('option');
+      o.value = ''; o.textContent = 'No models available';
+      modelSelect.appendChild(o);
+      return;
+    }
+    // keep the user's choice if it still exists, else pick a sane default
+    if (prev && ids.includes(prev)) modelSelect.value = prev;
+    else {
+      const nice = ids.find(id => /gpt-4o-mini|gpt-4o\b/.test(id)) || ids[0];
+      modelSelect.value = nice;
+    }
+  }
+
+  async function arLoadModels(force){
+    if (refreshBtn) refreshBtn.classList.add('spin');
+
+    if (!force){
+      const cached = arReadModelCache();
+      if (cached){
+        arModelIds = cached; arModelsLoaded = true;
+        arRenderModelSelect(cached);
+        arSetModelStatus('✓ ' + cached.length + ' models (cached) · tap ⟳ to refresh', 'ok');
+        if (refreshBtn) refreshBtn.classList.remove('spin');
+        return cached;
+      }
+    }
+
+    arSetModelStatus('Loading model catalog…');
+    let ids = [];
+    try{
+      const resp = await fetch(AR_MODELS_URL, {
+        method:'GET',
+        headers:{ 'Authorization':'Bearer ' + AR_API_KEY, 'Content-Type':'application/json' },
+        cache:'no-store'
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+      const list = Array.isArray(data?.data) ? data.data : (Array.isArray(data) ? data : []);
+      ids = list
+        .map(m => (typeof m === 'string' ? m : m && m.id))
+        .filter(id => typeof id === 'string' && id.trim() && !/embed|whisper|tts|rerank/i.test(id))
+        .map(id => id.trim());
+      ids = Array.from(new Set(ids)).sort();
+    } catch(err){
+      arModelIds = AR_FALLBACK_MODELS.slice(); arModelsLoaded = true;
+      arRenderModelSelect(arModelIds);
+      arSetModelStatus('⚠ Catalog unavailable (' + err.message + ') · safe defaults', 'err');
+      if (refreshBtn) refreshBtn.classList.remove('spin');
+      return arModelIds;
+    }
+
+    if (!ids.length){
+      arModelIds = AR_FALLBACK_MODELS.slice(); arModelsLoaded = true;
+      arSetModelStatus('⚠ Provider returned no models · safe defaults', 'err');
+    } else {
+      arModelIds = ids; arModelsLoaded = true;
+      arWriteModelCache(ids);
+      arSetModelStatus('✓ ' + ids.length + ' live models loaded', 'ok');
+    }
+    arRenderModelSelect(arModelIds);
+    if (refreshBtn) refreshBtn.classList.remove('spin');
+    return arModelIds;
+  }
+
+  refreshBtn && refreshBtn.addEventListener('click', ()=> arLoadModels(true));
+
   /* ---------- Open / Close ---------- */
   function openAllrounder(){
     overlay.classList.add('open');
@@ -4316,6 +4442,8 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
       gate.style.display       = 'none';
       chatArea.style.display   = 'flex';
       inputArea.style.display  = 'block';
+      // fetch the live model list the first time the panel is opened
+      if (!arModelsLoaded) arLoadModels(false);
       setTimeout(() => chatInput.focus(), 80);
     } else {
       gate.style.display       = 'flex';
@@ -4434,6 +4562,99 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
     return s;
   }
 
+  /* ---------- Request helpers ---------- */
+  function arBuildBody(model, useStream){
+    const body = {
+      model: model,
+      messages: [ { role: 'system', content: AR_SYS_PROMPT }, ...arMessages ],
+      stream: useStream
+    };
+    if (AR_STRICT_PARAMS.test(model)){
+      body.max_completion_tokens = 4096;   // o-series / gpt-5 reject max_tokens
+    } else {
+      body.max_tokens = 4096;
+      body.temperature = 0.7;
+    }
+    return body;
+  }
+
+  function arExtractDelta(j){
+    const c = j && j.choices && j.choices[0];
+    if (!c) return j && j.delta && j.delta.content || '';
+    return (c.delta && c.delta.content) || (c.message && c.message.content) || '';
+  }
+
+  /* One request against one model. Streams into bubbleEl, or returns plain text. */
+  async function arAttempt(model, bubbleEl, useStream){
+    const resp = await fetch(AR_BASE_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + AR_API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(arBuildBody(model, useStream))
+    });
+
+    if (!resp.ok){
+      let msg = 'HTTP ' + resp.status;
+      try {
+        const d = await resp.json();
+        msg = (d && d.error && d.error.message) || (d && d.message) || msg;
+      } catch(_){}
+      const e = new Error(msg);
+      e.status = resp.status;
+      throw e;
+    }
+
+    if (!useStream){
+      const d = await resp.json();
+      return (d?.choices?.[0]?.message?.content) || '';
+    }
+
+    // --- SSE: frames can be split across network reads, so buffer properly ---
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    let out = '';
+
+    const consume = (line) => {
+      const t = (line || '').trim();
+      if (!t || t === '[DONE]' || t === 'data: [DONE]') return;
+      if (t.indexOf('data:') !== 0) return;
+      const payload = t.slice(5).trim();
+      if (!payload) return;
+      let j;
+      try { j = JSON.parse(payload); } catch(_){ return; }
+      const delta = arExtractDelta(j);
+      if (!delta) return;
+      out += delta;
+      if (bubbleEl){ bubbleEl.innerHTML = arFormatContent(out); scrollArChat(); }
+    };
+
+    while(true){
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const parts = buf.split('\n');
+      buf = parts.pop() || '';        // hold the incomplete tail for the next read
+      for (const line of parts) consume(line);
+    }
+    consume(buf);                      // any final partial frame
+    return out;
+  }
+
+  function arNextModel(failed, tried){
+    const pool = (arModelIds && arModelIds.length) ? arModelIds : AR_FALLBACK_MODELS;
+    let i = pool.indexOf(failed);
+    i = (i < 0) ? 0 : i + 1;
+    while (i < pool.length){
+      const cand = pool[i];
+      if (!tried.includes(cand)) return cand;
+      i++;
+    }
+    return null;
+  }
+
   /* ---------- Send message ---------- */
   async function sendArMessage(){
     if (isStreaming) return;
@@ -4450,15 +4671,26 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
     chatInput.value = '';
     autoResizeArInput();
 
-    // Build user message content
-    let userContent;
+    // make sure we know which models actually exist before choosing one
+    let selectedModel = modelSelect.value;
+    if (!selectedModel || !arModelsLoaded){
+      await arLoadModels(false);
+      selectedModel = modelSelect.value;
+    }
+    if (!selectedModel) selectedModel = (arModelIds[0] || AR_FALLBACK_MODELS[0]);
+
+    // Build user message content — only attach the image to a vision-capable model
+    let userContent = text;
     if (arImgB64){
-      userContent = [
-        { type: 'text', text: text || 'Describe this image.' },
-        { type: 'image_url', image_url: { url: `data:${arImgMime};base64,${arImgB64}` } }
-      ];
-    } else {
-      userContent = text;
+      if (arSupportsVision(selectedModel)){
+        userContent = [
+          { type: 'text', text: text || 'Describe this image.' },
+          { type: 'image_url', image_url: { url: `data:${arImgMime};base64,${arImgB64}` } }
+        ];
+      } else {
+        userContent = (text ? text + '\n\n' : '') +
+          '_(An image was attached, but `' + selectedModel + '` cannot read images. Pick a vision model such as GPT-4o, Claude or Gemini to analyse it.)_';
+      }
     }
 
     // Add to history
@@ -4470,91 +4702,72 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
     // Clear attach
     clearArAttach();
 
-    // Show typing indicator
-    const { wrap: typingWrap, bubble: typingBubble } = appendArMsg('ai', '', true);
-    scrollArChat();
-
-    const selectedModel = modelSelect.value;
     const startTime = Date.now();
 
-    try {
-      const resp = await fetch(AR_BASE_URL, {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + AR_API_KEY,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: selectedModel,
-          messages: [
-            { role: 'system', content: AR_SYS_PROMPT },
-            ...arMessages
-          ],
-          stream: true,
-          max_tokens: 4096,
-          temperature: 0.7
-        })
-      });
+    const tried = [selectedModel];
+    let lastErr = null;
+    let done = false;
 
-      if (!resp.ok){
-        const errData = await resp.json().catch(()=>({ error: { message: `HTTP ${resp.status}` } }));
-        const msg = errData?.error?.message || `Error ${resp.status}`;
-        typingWrap.remove();
-        appendArMsg('ai', `⚠️ **Error:** ${msg}\n\n*Note: Some models require credits. Try switching to GPT-4o or another model.*`);
-        timingInfo.textContent = 'Error — try another model';
-        return;
+    for (let i = 0; i <= AR_MAX_FALLBACK_TRIES && !done; i++){
+      let model = tried[tried.length - 1];
+
+      // first attempt uses the chosen model; later attempts fail over automatically
+      if (i > 0){
+        const next = arNextModel(model, tried);
+        if (!next) break;
+        model = next;
+        appendArMsg('ai', '⚠️ `' + tried[tried.length - 1] + '` could not answer — *' +
+          (lastErr ? lastErr.message : 'unknown error') + '*\n↻ **Falling back to `' + model + '`…**');
       }
+      tried.push(model);
 
-      // Stream response
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let fullText = '';
-      let firstToken = false;
+      // typing indicator for this attempt
+      const ind = appendArMsg('ai', '', true);
+      let bubble = null;
 
-      // Replace typing indicator with real bubble
-      typingWrap.remove();
-      const { bubble: aiBubble, wrap: aiWrap } = appendArMsg('ai', '');
-      aiBubble.innerHTML = '';
+      try {
+        bubble = appendArMsg('ai', '');
+        ind.wrap.remove();
+        bubble.bubble.innerHTML = '';
 
-      while(true){
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
-        for (const line of lines){
-          if (!line.startsWith('data:')) continue;
-          const raw = line.slice(5).trim();
-          if (raw === '[DONE]') break;
-          try {
-            const json = JSON.parse(raw);
-            const delta = json?.choices?.[0]?.delta?.content || '';
-            if (delta){
-              if (!firstToken){
-                firstToken = true;
-                timingInfo.textContent = `TTFT: ${Date.now() - startTime}ms · ${selectedModel}`;
-              }
-              fullText += delta;
-              aiBubble.innerHTML = arFormatContent(fullText);
-              scrollArChat();
-            }
-          } catch(_){}
+        let out = '';
+        try {
+          out = await arAttempt(model, bubble.bubble, true);
+        } catch(streamErr){
+          // some gateways don't stream every model — retry once without streaming
+          try { out = await arAttempt(model, bubble.bubble, false); }
+          catch(plainErr){ throw plainErr; }
         }
+
+        if (!out || !out.trim()) throw new Error('the model returned an empty response');
+
+        arMessages.push({ role: 'assistant', content: out });
+        const elapsed = Date.now() - startTime;
+        timingInfo.textContent = elapsed + 'ms · ' + out.split(' ').length + ' words · ' + model;
+        arSetModelStatus('✓ ' + arModelIds.length + ' models · answering with ' + model, 'ok');
+        // remember the model that actually worked
+        if (modelSelect) modelSelect.value = model;
+        done = true;
+
+      } catch(err){
+        lastErr = err;
+        if (ind && ind.wrap) ind.wrap.remove();
+        if (bubble && bubble.wrap) bubble.wrap.remove();
       }
-
-      // Save AI response to history
-      arMessages.push({ role: 'assistant', content: fullText });
-      const elapsed = Date.now() - startTime;
-      timingInfo.textContent = `${elapsed}ms · ${fullText.split(' ').length} words · ${selectedModel}`;
-
-    } catch(err){
-      typingWrap && typingWrap.remove && typingWrap.remove();
-      appendArMsg('ai', `⚠️ **Network Error:** ${err.message}`);
-      timingInfo.textContent = 'Connection error';
-    } finally {
-      sendBtn.disabled = false;
-      isStreaming = false;
-      chatInput.focus();
     }
+
+    if (!done){
+      appendArMsg('ai', '⚠️ **Could not get a reply from any model.**\n\n' +
+        'Last error: `' + (lastErr ? lastErr.message : 'unknown') + '`\n\n' +
+        'Tried: `' + tried.join('`, `') + '`\n\n' +
+        '👉 Tap ⟳ next to the model box to reload the live model list, or choose a different model.');
+      timingInfo.textContent = 'Error — try another model';
+      arSetModelStatus('Last request failed — refresh the list or check your credits', 'err');
+    }
+
+    sendBtn.disabled = false;
+    isStreaming = false;
+    chatInput.focus();
   }
 
   sendBtn.addEventListener('click', sendArMessage);
