@@ -340,20 +340,37 @@
       </div>
     </div>
 
-    <form onsubmit="event.preventDefault(); alert('Thank you for reaching out! Your message has been noted. You can also email us directly at bharatvoicofficial1@gmail.com or call +91 63879 16656');">
+    <!-- Quick Action Bar -->
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:26px; padding:16px; background:rgba(253,246,233,0.04); border:1px solid var(--line); border-radius:12px;">
+      <a href="https://wa.me/916387916656?text=Hello%20Danish,%20I%20have%20an%20inquiry%20regarding%20Bharat%20Voice" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:#25D366; color:#06260e; font-weight:600; font-size:13px; padding:9px 18px; border-radius:24px; text-decoration:none; transition:filter .2s;">
+        <span>💬</span> Chat on WhatsApp (Danish)
+      </a>
+      <a href="tel:+916387916656" style="display:inline-flex; align-items:center; gap:8px; background:linear-gradient(90deg, var(--saffron), var(--marigold)); color:#221200; font-weight:600; font-size:13px; padding:9px 18px; border-radius:24px; text-decoration:none;">
+        <span>📞</span> Call +91 63879 16656
+      </a>
+      <a href="mailto:bharatvoicofficial1@gmail.com?subject=Bharat%20Voice%20AI%20Inquiry" style="display:inline-flex; align-items:center; gap:8px; background:rgba(253,246,233,0.08); border:1px solid var(--line); color:var(--ivory); font-weight:500; font-size:13px; padding:9px 18px; border-radius:24px; text-decoration:none;">
+        <span>🤖</span> Email AI Team
+      </a>
+      <a href="mailto:bharatvoiceoffficial1@gmail.com?subject=Bharat%20Voice%20Technical%20Inquiry" style="display:inline-flex; align-items:center; gap:8px; background:rgba(253,246,233,0.08); border:1px solid var(--line); color:var(--ivory); font-weight:500; font-size:13px; padding:9px 18px; border-radius:24px; text-decoration:none;">
+        <span>💻</span> Email Developer
+      </a>
+    </div>
+
+    <form id="contactPageForm" onsubmit="submitContactMessage(event, 'contactPageForm', 'contactPageStatus')">
       <div class="form-group">
         <label for="cName">Your Name</label>
-        <input type="text" id="cName" placeholder="Enter your name" required>
+        <input type="text" id="cName" name="name" placeholder="Enter your name" required>
       </div>
       <div class="form-group">
         <label for="cEmail">Your Email Address</label>
-        <input type="email" id="cEmail" placeholder="Enter your email" required>
+        <input type="email" id="cEmail" name="email" placeholder="Enter your email" required>
       </div>
       <div class="form-group">
         <label for="cMessage">Your Message or Inquiry</label>
-        <textarea id="cMessage" rows="4" placeholder="How can we assist you with Bharat Voice?" required></textarea>
+        <textarea id="cMessage" name="message" rows="4" placeholder="How can we assist you with Bharat Voice? (AI questions, feedback, partnerships...)" required></textarea>
       </div>
       <button type="submit" class="btn-submit">Send Message</button>
+      <div id="contactPageStatus" style="margin-top:10px;"></div>
     </form>
   </div>
 
@@ -459,6 +476,77 @@
 </footer>
 
 <script>
+  async function submitContactMessage(e, formId, statusId) {
+    e.preventDefault();
+    const form = document.getElementById(formId);
+    const statusEl = document.getElementById(statusId);
+    const name = form.elements['name']?.value?.trim() || '';
+    const email = form.elements['email']?.value?.trim() || '';
+    const message = form.elements['message']?.value?.trim() || '';
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (!name || !email || !message) {
+      statusEl.innerHTML = '<span style="color:#ff6b6b; font-size:13px;">⚠️ Please fill in all fields.</span>';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending message...';
+    statusEl.innerHTML = '<span style="color:var(--marigold); font-size:13px;">⏳ Sending your message directly to our team...</span>';
+
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/bharatvoicofficial1@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          message: message,
+          _subject: `New Bharat Voice Inquiry from ${name}`,
+          _cc: 'bharatvoiceoffficial1@gmail.com',
+          _template: 'table'
+        })
+      });
+
+      const data = await res.json();
+      if (data.success === 'true' || res.ok) {
+        statusEl.innerHTML = `
+          <div style="background:rgba(28,154,146,0.2); border:1px solid rgba(28,154,146,0.5); padding:14px 18px; border-radius:12px; margin-top:14px;">
+            <strong style="color:#7fdc9a; display:block; font-size:14px; margin-bottom:4px;">✅ Message Sent Successfully!</strong>
+            <span style="font-size:13px; color:var(--ivory);">Your inquiry has been emailed directly to <b>bharatvoicofficial1@gmail.com</b>. We will get back to you at <b>${email}</b> soon.</span>
+            <div style="margin-top:10px;">
+              <a href="https://wa.me/916387916656?text=${encodeURIComponent('Hi Danish, I sent an inquiry via Bharat Voice:\n' + message)}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; background:#25D366; color:#06260e; font-weight:600; font-size:12px; padding:7px 16px; border-radius:20px; text-decoration:none;">💬 Also Send to Danish on WhatsApp</a>
+            </div>
+          </div>`;
+        form.reset();
+      } else {
+        throw new Error(data.message || 'Delivery error');
+      }
+    } catch (err) {
+      const mailtoUrl = `mailto:bharatvoicofficial1@gmail.com?cc=bharatvoiceoffficial1@gmail.com&subject=${encodeURIComponent('Bharat Voice Inquiry from ' + name)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message)}`;
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=bharatvoicofficial1@gmail.com&su=${encodeURIComponent('Bharat Voice Inquiry from ' + name)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message)}`;
+      const waUrl = `https://wa.me/916387916656?text=${encodeURIComponent('Name: ' + name + ' (' + email + ')\n\n' + message)}`;
+      
+      statusEl.innerHTML = `
+        <div style="background:rgba(255,159,28,0.18); border:1px solid rgba(255,159,28,0.45); padding:14px 18px; border-radius:12px; margin-top:14px;">
+          <strong style="color:var(--marigold); display:block; font-size:14px; margin-bottom:4px;">📬 Instant 1-Click Send:</strong>
+          <span style="font-size:12.5px; color:var(--ivory-dim);">Choose below to send directly via Gmail, Email app, or WhatsApp:</span>
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="${gmailUrl}" target="_blank" style="background:linear-gradient(90deg, var(--saffron), var(--marigold)); color:#221200; font-weight:600; font-size:12.5px; padding:8px 16px; border-radius:20px; text-decoration:none;">📧 Open in Gmail</a>
+            <a href="${mailtoUrl}" style="background:rgba(253,246,233,0.1); border:1px solid var(--line); color:var(--ivory); font-weight:500; font-size:12.5px; padding:8px 16px; border-radius:20px; text-decoration:none;">✉️ Default Mail App</a>
+            <a href="${waUrl}" target="_blank" style="background:#25D366; color:#06260e; font-weight:600; font-size:12.5px; padding:8px 16px; border-radius:20px; text-decoration:none;">💬 WhatsApp Danish (+91 63879 16656)</a>
+          </div>
+        </div>`;
+      window.location.href = mailtoUrl;
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
+    }
+  }
+
   function openPosterModal(src, title){
     const modal = document.getElementById('posterModal');
     const img = document.getElementById('posterModalImg');
