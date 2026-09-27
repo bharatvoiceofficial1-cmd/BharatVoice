@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact Us &amp; About — Bharat Voice</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="alternate icon" type="image/png" href="assets/logo.png">
+<link rel="apple-touch-icon" href="assets/logo.png">
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251310303606994"
      crossorigin="anonymous"></script>
@@ -140,6 +143,82 @@
   }
   .btn-submit:hover{ filter:brightness(1.1); transform:translateY(-1px); }
 
+  /* Posters Section & Modal */
+  .posters-section{
+    margin-top:40px; margin-bottom:40px;
+    background:rgba(29,22,64,0.55); border:1px solid var(--line);
+    border-radius:14px; padding:32px;
+  }
+  .posters-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:20px; margin-top:20px;
+  }
+  .poster-card{
+    background:rgba(20,15,43,0.7); border:1px solid var(--line);
+    border-radius:14px; overflow:hidden; display:flex; flex-direction:column;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .poster-card:hover{
+    transform:translateY(-5px); box-shadow:0 12px 30px rgba(255,159,28,0.2);
+    border-color:rgba(255,201,60,0.5);
+  }
+  .poster-img-box{
+    position:relative; width:100%; aspect-ratio:3/4; overflow:hidden; background:#100b20;
+    cursor:pointer;
+  }
+  .poster-img-box img{
+    width:100%; height:100%; object-fit:cover; transition:transform .3s ease;
+  }
+  .poster-card:hover .poster-img-box img{
+    transform:scale(1.04);
+  }
+  .poster-zoom-hint{
+    position:absolute; bottom:8px; right:8px;
+    background:rgba(20,15,43,0.85); backdrop-filter:blur(6px);
+    color:var(--marigold); font-size:11px; font-weight:600;
+    padding:3px 8px; border-radius:10px; border:1px solid var(--line);
+    pointer-events:none;
+  }
+  .poster-info{
+    padding:16px; display:flex; flex-direction:column; flex:1;
+  }
+  .poster-info h4{
+    font-size:15px; color:var(--ivory); margin:0 0 6px; font-weight:600;
+  }
+  .poster-info p{
+    font-size:12px; color:var(--ivory-dim); margin:0 0 12px; line-height:1.55; flex:1;
+  }
+  .poster-btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:8px 14px; border-radius:20px; font-size:12px; font-weight:600;
+    color:#221200 !important; background:linear-gradient(90deg, var(--saffron), var(--marigold));
+    text-decoration:none !important; transition:filter .2s;
+  }
+  .poster-btn:hover{ filter:brightness(1.12); }
+  /* Poster Modal */
+  .poster-modal{
+    display:none; position:fixed; inset:0; z-index:100;
+    background:rgba(10,7,20,0.88); backdrop-filter:blur(10px);
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .poster-modal.open{ display:flex; }
+  .poster-modal-content{
+    position:relative; max-width:min(90vw, 540px); max-height:92vh;
+    display:flex; flex-direction:column; align-items:center;
+    background:rgba(29,22,64,0.95); border:1px solid var(--line);
+    border-radius:20px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  }
+  .poster-modal-content img{
+    max-width:100%; max-height:72vh; object-fit:contain; border-radius:12px;
+  }
+  .poster-modal-close{
+    position:absolute; top:12px; right:12px;
+    background:rgba(255,255,255,0.1); border:none; color:var(--ivory);
+    font-size:22px; width:36px; height:36px; border-radius:50%;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .poster-modal-close:hover{ background:rgba(255,159,28,0.3); }
+
   /* Footer */
   footer{
     border-top:1px solid var(--line); background:rgba(20,15,43,0.9);
@@ -158,7 +237,7 @@
 
 <nav class="navbar">
   <a href="index.html" class="brand">
-    <svg viewBox="0 0 24 24"><path d="M12 2c1 3-2 4-2 7a3 3 0 006 0c0-1-.4-2-1-2.5 1.6.6 3 2.4 3 5.2C18 15.5 15.3 18 12 18s-6-2.5-6-6.3c0-4.6 3.6-7 6-9.7z"/></svg>
+    <img src="assets/logo.png" alt="Bharat Voice Logo" style="width:28px; height:28px; border-radius:7px; object-fit:cover; box-shadow:0 0 10px rgba(255,159,28,0.35);">
     Bharat Voice
   </a>
   <div class="nav-links">
@@ -184,8 +263,9 @@
       <div class="contact-method">
         <span class="icon">💻</span>
         <div>
-          <strong>Technical &amp; Developer Inquiries</strong>
-          <span>Reach out for software bugs, voice models, or feature feedback.</span>
+          <strong>Developer Email</strong>
+          <a href="mailto:bharatvoiceoffficial1@gmail.com" style="color:var(--marigold); font-weight:600;">bharatvoiceoffficial1@gmail.com</a>
+          <span style="display:block; font-size:12px; color:var(--ivory-dim); margin-top:2px;">Reach out for software bugs, voice models, code integrations, or developer feedback.</span>
         </div>
       </div>
     </div>
@@ -195,10 +275,11 @@
       <h3>Danish</h3>
       <p>Backs and operates Bharat Voice as an accessible, student-first platform. Manages publisher partnerships, legal compliance, Google AdSense verification, and community operations.</p>
       <div class="contact-method">
-        <span class="icon">🏛️</span>
+        <span class="icon">📞</span>
         <div>
-          <strong>Platform &amp; Publisher Ownership</strong>
-          <span>Responsible for platform governance, licensing, and compliance.</span>
+          <strong>Owner Phone Number</strong>
+          <a href="tel:+916387916656" style="color:var(--marigold); font-weight:600; font-size:15px;">+91 63879 16656</a>
+          <span style="display:block; font-size:12px; color:var(--ivory-dim); margin-top:2px;">Available on Phone Call &amp; WhatsApp (<a href="https://wa.me/916387916656" target="_blank" style="color:var(--marigold); text-decoration:underline;">Chat on WhatsApp</a>)</span>
         </div>
       </div>
     </div>
@@ -206,17 +287,44 @@
 
   <div class="form-card">
     <h2>Direct Contact Information</h2>
-    <p>Feel free to reach us through any of the following channels for general support, privacy inquiries, or AdSense policy correspondence:</p>
+    <p>Feel free to reach us through any of the following channels for general support, AI inquiries, developer correspondence, or ownership matters:</p>
 
-    <div class="contact-method" style="border:none; padding:0; margin-bottom:16px;">
+    <div class="contact-method" style="border:none; padding:0; margin-bottom:18px;">
+      <span class="icon">🤖</span>
+      <div>
+        <strong>Contact for AI Purpose &amp; Voice Research</strong>
+        <a href="mailto:bharatvoicofficial1@gmail.com" style="color:var(--marigold); font-weight:600;">bharatvoicofficial1@gmail.com</a>
+        <span style="display:block; font-size:12.5px; color:var(--ivory-dim);">Dedicated official channel for voice AI models, prompts, educational AI integrations, and AI queries.</span>
+      </div>
+    </div>
+
+    <div class="contact-method" style="border:none; padding:0; margin-bottom:18px;">
+      <span class="icon">💻</span>
+      <div>
+        <strong>Developer Contact Email (Abhi Rai)</strong>
+        <a href="mailto:bharatvoiceoffficial1@gmail.com" style="color:var(--marigold); font-weight:600;">bharatvoiceoffficial1@gmail.com</a>
+        <span style="display:block; font-size:12.5px; color:var(--ivory-dim);">Direct inbox for developer collaboration, technical bug reports, and app performance.</span>
+      </div>
+    </div>
+
+    <div class="contact-method" style="border:none; padding:0; margin-bottom:18px;">
+      <span class="icon">📱</span>
+      <div>
+        <strong>Platform Owner Direct Line (Danish)</strong>
+        <a href="tel:+916387916656" style="color:var(--marigold); font-weight:600;">+91 63879 16656</a>
+        <span style="display:block; font-size:12.5px; color:var(--ivory-dim);">Call or WhatsApp for publisher verification, partnership, and platform governance.</span>
+      </div>
+    </div>
+
+    <div class="contact-method" style="border:none; padding:0; margin-bottom:18px;">
       <span class="icon">📧</span>
       <div>
-        <strong>Official Support Email</strong>
+        <strong>General Support Email</strong>
         <a href="mailto:support@bharatvoiceduai.website">support@bharatvoiceduai.website</a>
       </div>
     </div>
 
-    <div class="contact-method" style="border:none; padding:0; margin-bottom:16px;">
+    <div class="contact-method" style="border:none; padding:0; margin-bottom:18px;">
       <span class="icon">🌐</span>
       <div>
         <strong>Official Website Domain</strong>
@@ -228,11 +336,11 @@
       <span class="icon">⏱️</span>
       <div>
         <strong>Response Time</strong>
-        <span style="color:var(--ivory-dim);">We typically reply to student and publisher queries within 24 to 48 business hours.</span>
+        <span style="color:var(--ivory-dim);">We typically reply to student, educator, and publisher queries within 24 to 48 business hours.</span>
       </div>
     </div>
 
-    <form onsubmit="event.preventDefault(); alert('Thank you for reaching out! Your message has been noted. You can also email us directly at support@bharatvoiceduai.website');">
+    <form onsubmit="event.preventDefault(); alert('Thank you for reaching out! Your message has been noted. You can also email us directly at bharatvoicofficial1@gmail.com or call +91 63879 16656');">
       <div class="form-group">
         <label for="cName">Your Name</label>
         <input type="text" id="cName" placeholder="Enter your name" required>
@@ -248,6 +356,88 @@
       <button type="submit" class="btn-submit">Send Message</button>
     </form>
   </div>
+
+  <!-- ===================== OFFICIAL AI POSTERS ===================== -->
+  <div class="posters-section" id="posters">
+    <div class="page-tag">Official AI Visuals · पोस्टर प्रदर्शनी</div>
+    <h2 style="font-family:'Yatra One',cursive; font-size:24px; color:var(--marigold); margin:0 0 8px;">
+      Bharat Voice AI Posters · आधिकारिक पोस्टर
+    </h2>
+    <p style="font-size:13.5px; color:var(--ivory-dim); margin-bottom:20px; line-height:1.6;">
+      Download and explore our high-resolution AI-generated educational posters designed for Bharat Voice. Click any poster to view full-size.
+    </p>
+
+    <div class="posters-grid">
+      <!-- Poster 1 -->
+      <div class="poster-card">
+        <div class="poster-img-box" onclick="openPosterModal('assets/posters/poster1.jpg', 'Bharat Voice · Bilingual Voice AI Study Companion')">
+          <img src="assets/posters/poster1.jpg" alt="Bharat Voice Bilingual Voice AI Study Companion Poster" loading="lazy">
+          <span class="poster-zoom-hint">🔍 Tap to View</span>
+        </div>
+        <div class="poster-info">
+          <span class="badge">Poster 1 · Voice Tutor</span>
+          <h4>Bilingual Voice AI Companion</h4>
+          <p>Study, speak, and succeed with interactive voice tutoring in Hindi &amp; English.</p>
+          <a href="assets/posters/poster1.jpg" target="_blank" class="poster-btn">View Full Poster</a>
+        </div>
+      </div>
+
+      <!-- Poster 2 -->
+      <div class="poster-card">
+        <div class="poster-img-box" onclick="openPosterModal('assets/posters/poster2.jpg', 'Exam Success with Bharat Voice AI')">
+          <img src="assets/posters/poster2.jpg" alt="Exam Success with Bharat Voice AI Poster" loading="lazy">
+          <span class="poster-zoom-hint">🔍 Tap to View</span>
+        </div>
+        <div class="poster-info">
+          <span class="badge">Poster 2 · Exam Prep</span>
+          <h4>Board &amp; Competitive Exam Success</h4>
+          <p>Ace board exams with AI mock tests, sample papers, formulas, and revision sheets.</p>
+          <a href="assets/posters/poster2.jpg" target="_blank" class="poster-btn">View Full Poster</a>
+        </div>
+      </div>
+
+      <!-- Poster 3 -->
+      <div class="poster-card">
+        <div class="poster-img-box" onclick="openPosterModal('assets/posters/poster3.jpg', 'बोल कर सीखो · Instant Voice Doubt Solver')">
+          <img src="assets/posters/poster3.jpg" alt="Instant Voice Doubt Solver Bol Kar Seekho Poster" loading="lazy">
+          <span class="poster-zoom-hint">🔍 Tap to View</span>
+        </div>
+        <div class="poster-info">
+          <span class="badge">Poster 3 · Doubt Solver</span>
+          <h4>बोल कर सीखो · Voice Doubt Solver</h4>
+          <p>24/7 instant conceptual doubt resolution across Science, Math, and Arts.</p>
+          <a href="assets/posters/poster3.jpg" target="_blank" class="poster-btn">View Full Poster</a>
+        </div>
+      </div>
+
+      <!-- Poster 4 -->
+      <div class="poster-card">
+        <div class="poster-img-box" onclick="openPosterModal('assets/posters/poster4.jpg', 'हर विद्यार्थी का AI साथी · Empowering Every Student Across India')">
+          <img src="assets/posters/poster4.jpg" alt="Empowering Every Student Across India Poster" loading="lazy">
+          <span class="poster-zoom-hint">🔍 Tap to View</span>
+        </div>
+        <div class="poster-info">
+          <span class="badge">Poster 4 · Education For All</span>
+          <h4>हर विद्यार्थी का AI साथी</h4>
+          <p>Empowering rural and urban learners nationwide with accessible AI education.</p>
+          <a href="assets/posters/poster4.jpg" target="_blank" class="poster-btn">View Full Poster</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Poster Lightbox Modal -->
+<div class="poster-modal" id="posterModal" onclick="closePosterModal(event)">
+  <div class="poster-modal-content" onclick="event.stopPropagation()">
+    <button class="poster-modal-close" onclick="closePosterModal()">&times;</button>
+    <img id="posterModalImg" src="" alt="Bharat Voice Poster Preview">
+    <div style="margin-top:14px; text-align:center; width:100%;">
+      <div id="posterModalTitle" style="font-size:14px; font-weight:600; color:var(--marigold); margin-bottom:10px;"></div>
+      <a id="posterModalDownload" href="" target="_blank" class="poster-btn" download style="display:inline-flex;">Open Original High-Res</a>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -261,10 +451,39 @@
       <li><a href="privacy.html">Privacy</a></li>
       <li><a href="disclaimer.html">Disclaimer</a></li>
       <li><a href="contact.html">Contact</a></li>
+      <li><a href="mailto:bharatvoicofficial1@gmail.com">Contact (AI Purpose)</a></li>
       <li><a href="mailto:bharatvoiceoffficial1@gmail.com">Contact Developer</a></li>
+      <li><a href="tel:+916387916656">Owner: Danish (+91 63879 16656)</a></li>
     </ul>
   </div>
 </footer>
+
+<script>
+  function openPosterModal(src, title){
+    const modal = document.getElementById('posterModal');
+    const img = document.getElementById('posterModalImg');
+    const titleEl = document.getElementById('posterModalTitle');
+    const dlBtn = document.getElementById('posterModalDownload');
+    if(modal && img){
+      img.src = src;
+      if(titleEl) titleEl.textContent = title || 'Bharat Voice AI Poster';
+      if(dlBtn) dlBtn.href = src;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+  function closePosterModal(e){
+    if(e && e.target && e.target.closest && e.target.closest('.poster-modal-content') && !e.target.classList.contains('poster-modal-close')) return;
+    const modal = document.getElementById('posterModal');
+    if(modal){
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closePosterModal();
+  });
+</script>
 
 </body>
 </html>

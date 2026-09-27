@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none">
+  <defs>
+    <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9F1C"/>
+      <stop offset="50%" stop-color="#FFC93C"/>
+      <stop offset="100%" stop-color="#1C9A92"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circular chip for crisp contrast on light/dark tabs -->
+  <rect width="32" height="32" rx="7" fill="#140F2B"/>
+  <!-- Soundwave Arcs -->
+  <path d="M 6 20 A 10 10 0 0 0 26 20" stroke="url(#favGrad)" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M 9 22.5 A 7 7 0 0 0 23 22.5" stroke="url(#favGrad)" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
+  <!-- Spark Star -->
+  <path d="M 16 3 Q 16 8 21 8 Q 16 8 16 13 Q 16 8 11 8 Q 16 8 16 3 Z" fill="url(#favGrad)"/>
+  <!-- Flame Core -->
+  <path d="M 16 9 C 18.5 13 20.5 16 19.5 20 C 19 22 16 23 16 23 C 16 23 13 22 12.5 20 C 11.5 16 13.5 13 16 9 Z" fill="#FF9F1C"/>
+  <circle cx="16" cy="18" r="1.5" fill="#FFF8E1"/>
+</svg>
