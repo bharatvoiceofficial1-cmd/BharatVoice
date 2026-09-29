@@ -4294,7 +4294,8 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
 const AR_MODEL   = 'gpt-4o-mini';
 // Key is stored in backend - requests routed through BV API gateway
 const AR_ENDPOINTS = [
-  { url:'https://api.bharatvoiceduai.website/api/allrounder', key:'', needsKey:false }
+  { url:'https://api.bharatvoiceduai.website/api/allrounder', key:'', needsKey:false },
+  { url:'https://api.bharatvoiceduai.website/api/chat',       key:'', needsKey:false }
 ];
 const AR_SYS = `You are Bharat Voice Allrounder — a powerful AI assistant exclusively for Maha Shakti members.
 
@@ -4598,7 +4599,7 @@ async function send(){
             temperature:0.7
           })
         });
-        if (r.ok || r.status === 400){ resp = r; break; }
+        if (r.ok){ resp = r; break; }
         lastErr = 'HTTP ' + r.status;
       } catch(e){ lastErr = e.message; }
     }
