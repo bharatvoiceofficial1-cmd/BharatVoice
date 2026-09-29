@@ -4581,29 +4581,23 @@ async function send(){
   const t0=Date.now();
 
   try {
-    // Try endpoints in order (Experiential Labs first, then BV backend fallback)
+    // Always use the working BV backend /api/chat (proven working)
+    const AR_CHAT_URL = 'https://api.bharatvoiceduai.website/api/chat';
     let resp = null;
-    let lastErr = '';
-    for (const ep of AR_ENDPOINTS){
-      try {
-        const headers = {'Content-Type':'application/json'};
-        if (ep.needsKey) headers['Authorization'] = 'Bearer ' + ep.key;
-        const r = await fetch(ep.url, {
-          method:'POST',
-          headers,
-          body:JSON.stringify({
-            model:AR_MODEL,
-            messages:[{role:'system',content:AR_SYS},...arMessages],
-            stream:true,
-            max_tokens:4096,
-            temperature:0.7
-          })
-        });
-        if (r.ok){ resp = r; break; }
-        lastErr = 'HTTP ' + r.status;
-      } catch(e){ lastErr = e.message; }
-    }
-    if (!resp){ throw new Error('All endpoints failed: ' + lastErr); }
+    try {
+      resp = await fetch(AR_CHAT_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          model:AR_MODEL,
+          messages:[{role:'system',content:AR_SYS},...arMessages],
+          stream:true,
+          max_tokens:4096,
+          temperature:0.7
+        })
+      });
+    } catch(e){ throw new Error('Connection failed: '+e.message); }
+    if (!resp || !resp.ok){ throw new Error('Server error: HTTP '+(resp?resp.status:'no response')); }
 
     tw.remove();
 
@@ -4617,30 +4611,41 @@ async function send(){
 
     const {wrap:aw,bub:ab}=addBubble('ai','');
     ab.innerHTML='';
-    const reader=resp.body.getReader();
-    const decoder=new TextDecoder();
     let full='', gotFirst=false;
 
-    while(true){
-      const {done,value}=await reader.read();
-      if(done) break;
-      const lines=decoder.decode(value,{stream:true}).split('\n');
-      for(const line of lines){
-        if(!line.startsWith('data:')) continue;
-        const raw=line.slice(5).trim();
-        if(raw==='[DONE]') break;
-        try{
-          const delta=JSON.parse(raw)?.choices?.[0]?.delta?.content||'';
-          if(delta){
-            if(!gotFirst){ gotFirst=true; timingInfo.textContent='TTFT: '+(Date.now()-t0)+'ms'; }
-            full+=delta;
-            ab.innerHTML=fmt(full);
-            scrollDown();
-          }
-        }catch(_){}
+    const contentType = resp.headers.get('content-type')||'';
+
+    if(contentType.includes('text/event-stream') || contentType.includes('text/plain')){
+      // Streaming SSE
+      const reader=resp.body.getReader();
+      const decoder=new TextDecoder();
+      while(true){
+        const {done,value}=await reader.read();
+        if(done) break;
+        const lines=decoder.decode(value,{stream:true}).split('\n');
+        for(const line of lines){
+          if(!line.startsWith('data:')) continue;
+          const raw=line.slice(5).trim();
+          if(raw==='[DONE]') break;
+          try{
+            const delta=JSON.parse(raw)?.choices?.[0]?.delta?.content||'';
+            if(delta){
+              if(!gotFirst){ gotFirst=true; timingInfo.textContent='TTFT: '+(Date.now()-t0)+'ms'; }
+              full+=delta;
+              ab.innerHTML=fmt(full);
+              scrollDown();
+            }
+          }catch(_){}
+        }
       }
+    } else {
+      // Non-streaming JSON fallback
+      const json=await resp.json().catch(()=>({}));
+      full=json?.choices?.[0]?.message?.content||json?.choices?.[0]?.delta?.content||'';
+      if(full){ ab.innerHTML=fmt(full); scrollDown(); }
     }
 
+    if(!full){ full='(No response — try again)'; ab.innerHTML=fmt(full); }
     arMessages.push({role:'assistant',content:full});
     timingInfo.textContent=(Date.now()-t0)+'ms · '+full.split(' ').length+' words · '+AR_MODEL;
 
