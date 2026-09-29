@@ -4174,6 +4174,65 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
 </script>
 
 <!-- ===== BHARAT VOICE ALLROUNDER OVERLAY ===== -->
+<style>
+/* ---- Allrounder overlay ---- */
+#allrounderOverlay{position:fixed;inset:0;z-index:950;background:rgba(8,5,18,.92);backdrop-filter:blur(10px);display:none;flex-direction:column;animation:arFadeIn .25s ease both}
+#allrounderOverlay.open{display:flex}
+@keyframes arFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.ar-topbar{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.ar-logo{font:700 15px 'Poppins',sans-serif;color:#fff;flex:1}.ar-logo span{color:var(--marigold);font-weight:400;font-size:12px;margin-left:6px}
+.ar-model-badge{background:rgba(255,201,60,.12);border:1px solid rgba(255,201,60,.35);color:var(--marigold);font-size:11px;font-weight:600;border-radius:20px;padding:4px 12px;white-space:nowrap}
+.ar-close-btn{background:none;border:none;color:rgba(255,255,255,.5);font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;transition:color .15s}.ar-close-btn:hover{color:#fff}
+.ar-infobar{display:flex;justify-content:space-between;align-items:center;padding:6px 18px;font-size:10.5px;color:rgba(255,255,255,.35);background:rgba(255,255,255,.025);flex-shrink:0}
+.ar-provider-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:5px}
+.ar-timing{font-size:10px;color:rgba(255,255,255,.3)}
+/* Gate */
+.ar-gate{display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:40px 24px;gap:12px}
+.ar-gate-icon{font-size:48px}.ar-gate h2{color:var(--marigold);font-size:20px;margin:0}.ar-gate p{color:rgba(255,255,255,.65);font-size:13px;max-width:380px;line-height:1.6}
+.ar-upgrade-btn{background:linear-gradient(135deg,var(--saffron),var(--marigold));color:#1a0a00;font-weight:700;border:none;border-radius:24px;padding:12px 28px;font-size:14px;cursor:pointer;margin-top:8px}
+.ar-gate-footer{font-size:11px;color:rgba(255,255,255,.3);margin-top:4px}
+/* Chat */
+.ar-chat{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.ar-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;gap:10px;opacity:.5;padding:40px}
+.ar-empty-icon{font-size:42px}
+.ar-empty p{color:rgba(255,255,255,.6);font-size:13px;line-height:1.6}
+.ar-msg{display:flex;gap:10px;align-items:flex-start}.ar-msg.user{flex-direction:row-reverse}
+.ar-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:rgba(255,255,255,.08)}
+.ar-bubble{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 14px;font-size:13px;color:rgba(255,255,255,.87);line-height:1.65;max-width:88%;word-break:break-word}
+.ar-msg.user .ar-bubble{background:rgba(255,159,28,.14);border-color:rgba(255,159,28,.2)}
+.ar-bubble pre{background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 12px;overflow-x:auto;font-size:12px;margin:8px 0}
+.ar-bubble code{background:rgba(255,255,255,.1);border-radius:4px;padding:1px 5px;font-size:12px}
+.ar-bubble pre code{background:none;padding:0}
+.ar-typing{display:flex;gap:5px;align-items:center;padding:10px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px}
+.ar-typing span{width:7px;height:7px;border-radius:50%;background:var(--marigold);animation:arDot 1.2s ease infinite}.ar-typing span:nth-child(2){animation-delay:.2s}.ar-typing span:nth-child(3){animation-delay:.4s}
+@keyframes arDot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+/* File preview card in chat */
+.ar-file-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.7);margin-top:6px;display:flex;align-items:center;gap:10px}
+.ar-file-card .ar-fc-icon{font-size:20px;flex-shrink:0}
+.ar-file-card .ar-fc-info{flex:1;min-width:0}.ar-file-card .ar-fc-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ar-file-card .ar-fc-size{color:rgba(255,255,255,.35);font-size:11px}
+/* Generated file bubble */
+.ar-gen-file{background:rgba(28,154,146,.12);border:1px solid rgba(28,154,146,.3);border-radius:12px;padding:12px 14px;margin-top:8px;font-size:12.5px}
+.ar-gen-file-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ar-gen-file-name{color:var(--jade);font-weight:700;flex:1}
+.ar-gen-file-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ar-gen-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);border-radius:8px;padding:5px 10px;font-size:11.5px;cursor:pointer;transition:background .15s}.ar-gen-btn:hover{background:rgba(255,255,255,.14)}
+.ar-gen-btn.primary{background:rgba(28,154,146,.25);border-color:rgba(28,154,146,.5);color:var(--jade)}
+/* Attach preview */
+.ar-attach-bar{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(255,201,60,.07);border-radius:10px;margin-bottom:6px;font-size:12px;color:rgba(255,255,255,.75)}
+.ar-attach-bar button{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:15px;line-height:1}
+/* Input */
+.ar-input-area{padding:12px 18px 16px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.ar-attach-preview-wrap{margin-bottom:6px}
+.ar-input-row{display:flex;gap:8px;align-items:flex-end}
+.ar-input-row textarea{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;color:#fff;font-size:13.5px;padding:10px 14px;resize:none;min-height:44px;max-height:160px;line-height:1.5;outline:none;font-family:inherit;transition:border-color .15s}.ar-input-row textarea:focus{border-color:rgba(255,201,60,.4)}
+.ar-action-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.65);width:40px;height:40px;border-radius:12px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}.ar-action-btn:hover{background:rgba(255,255,255,.12)}
+.ar-send-btn{background:linear-gradient(135deg,var(--saffron),var(--marigold));border:none;color:#1a0a00;width:42px;height:42px;border-radius:14px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;transition:opacity .15s}.ar-send-btn:disabled{opacity:.4;cursor:not-allowed}
+.ar-bottom-bar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:11px}
+.ar-clear-btn{background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:11px;padding:2px 0;transition:color .15s}.ar-clear-btn:hover{color:rgba(255,255,255,.6)}
+.ar-char-hint{color:rgba(255,255,255,.2);font-size:10.5px}
+#arFileInput,#arImgInput2{display:none}
+</style>
+
 <div id="allrounderOverlay">
   <div class="ar-topbar">
     <div class="ar-logo">🌟 Bharat Voice <span>Allrounder · Maha Shakti</span></div>
@@ -4181,256 +4240,413 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
     <button class="ar-close-btn" id="arCloseBtn" title="Close">✕</button>
   </div>
   <div class="ar-infobar">
-    <div><span class="ar-provider-dot"></span>Powered by Experiential Labs · GPT-4o mini</div>
+    <div><span class="ar-provider-dot"></span>Bharat Voice Cloud · GPT-4o mini · File create &amp; edit</div>
     <div class="ar-timing" id="arTimingInfo">Ready</div>
   </div>
 
-  <!-- GATE: non-Maha Shakti -->
-  <div class="ar-gate" id="arGate" style="display:none;">
+  <!-- GATE -->
+  <div class="ar-gate" id="arGate">
     <div class="ar-gate-icon">🔱</div>
     <h2>Maha Shakti Exclusive</h2>
-    <p>Bharat Voice Allrounder is an unlimited AI chatbot powered by GPT-4o mini, exclusively for <strong>Maha Shakti</strong> members.</p>
+    <p>Bharat Voice Allrounder is a full AI assistant — chat, create &amp; edit files, build projects. Exclusive to <strong>Maha Shakti</strong> plan.</p>
     <button class="ar-upgrade-btn" id="arUpgradeBtn">🔱 Upgrade to Maha Shakti</button>
-    <div class="ar-gate-footer">Annual plan — ₹549/year · Unlimited access</div>
+    <div class="ar-gate-footer">Annual plan · ₹549/year · Unlimited access</div>
   </div>
 
-  <!-- CHAT AREA -->
-  <div class="ar-chat" id="arChat">
+  <!-- CHAT -->
+  <div class="ar-chat" id="arChat" style="display:none">
     <div class="ar-empty" id="arEmpty">
       <div class="ar-empty-icon">🌟</div>
-      <p>Bharat Voice Allrounder is ready.<br>Ask anything — code, writing, math, science, translation, or general knowledge.</p>
+      <p>Bharat Voice Allrounder is ready.<br>Chat, write code, create files &amp; projects.<br><small style="opacity:.6">📎 Attach a file · 🖼️ Attach image · 💬 Ask anything</small></p>
     </div>
   </div>
 
-  <!-- INPUT AREA -->
-  <div class="ar-input-area" id="arInputArea">
+  <!-- INPUT -->
+  <div class="ar-input-area" id="arInputArea" style="display:none">
+    <input type="file" id="arFileInput" accept="*/*">
+    <input type="file" id="arImgInput2" accept="image/*">
+    <div class="ar-attach-preview-wrap" id="arAttachWrap" style="display:none">
+      <div class="ar-attach-bar">
+        <span id="arAttachIcon">📎</span>
+        <span id="arAttachLabel" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <button id="arAttachRemove" title="Remove">✕</button>
+      </div>
+    </div>
     <div class="ar-input-row">
-      <textarea id="arChatInput" rows="1" placeholder="Ask anything…" autocomplete="off"></textarea>
+      <button class="ar-action-btn" id="arFileBtn" title="Attach file or read text file">📎</button>
+      <button class="ar-action-btn" id="arImgBtn2" title="Attach image">🖼️</button>
+      <textarea id="arChatInput" rows="1" placeholder="Ask anything, create a file, write code…" autocomplete="off"></textarea>
       <button class="ar-send-btn" id="arSendBtn" title="Send">➤</button>
     </div>
     <div class="ar-bottom-bar">
-      <button class="ar-clear-btn" id="arClearBtn">Clear chat</button>
+      <button class="ar-clear-btn" id="arClearBtn">🗑 Clear chat</button>
       <span class="ar-char-hint" id="arCharHint"></span>
     </div>
   </div>
 </div>
 
-<!-- ===== ALLROUNDER JAVASCRIPT ===== -->
+<!-- ===== ALLROUNDER JS ===== -->
 <script>
 (function(){
-  'use strict';
+'use strict';
 
-  const AR_API_KEY  = 'xpl_bbe6742a38c4f56721cb28160f3409e13666ff';
-  const AR_BASE_URL = 'https://api.experientiallabs.ai/v1/chat/completions';
-  const AR_MODEL    = 'gpt-4o-mini';
-  const AR_SYS      = 'You are Bharat Voice Allrounder — a powerful, versatile AI assistant available exclusively to Maha Shakti members. Help with anything: coding, writing, math, science, analysis, translation, legal concepts, business, and general knowledge. Be thorough and clear. Use markdown formatting and code blocks where appropriate.';
+/* ---- Config ---- */
+const AR_MODEL   = 'gpt-4o-mini';
+// Use Bharat Voice backend (always works, no key needed from client)
+const AR_API_URL = 'https://api.bharatvoiceduai.website/api/chat';
+const AR_SYS = `You are Bharat Voice Allrounder — a powerful AI assistant exclusively for Maha Shakti members.
 
-  const overlay    = document.getElementById('allrounderOverlay');
-  const openBtn    = document.getElementById('allrounderBtn');
-  const closeBtn   = document.getElementById('arCloseBtn');
-  const gate       = document.getElementById('arGate');
-  const chatArea   = document.getElementById('arChat');
-  const inputArea  = document.getElementById('arInputArea');
-  const emptyState = document.getElementById('arEmpty');
-  const chatInput  = document.getElementById('arChatInput');
-  const sendBtn    = document.getElementById('arSendBtn');
-  const clearBtn   = document.getElementById('arClearBtn');
-  const charHint   = document.getElementById('arCharHint');
-  const timingInfo = document.getElementById('arTimingInfo');
-  const upgradeBtn = document.getElementById('arUpgradeBtn');
+You can do ANYTHING:
+- Answer questions on any topic (science, math, history, coding, law, business, etc.)
+- Write, review, and debug code in any language
+- CREATE FILES: When the user asks to create a file, script, or project, output the COMPLETE file content inside a special block like this:
+  ===FILE: filename.ext===
+  <complete file content here>
+  ===END FILE===
+  You can output multiple files for a project.
+- EDIT FILES: When the user attaches a file, read its content and make the requested edits, then output the full edited file in the ===FILE=== block.
+- Write essays, emails, reports, stories, translations
+- Explain concepts step by step
 
-  let arMessages = [];
-  let isStreaming = false;
+Always be thorough. Format code with proper code blocks. For file creation, ALWAYS use the ===FILE: name=== block so the user can download it.`;
 
-  function isMahaShakti(){
-    try {
-      const plan   = localStorage.getItem('bharatVoice.plan') || 'free';
-      const expiry = Number(localStorage.getItem('bharatVoice.planExpiry') || 0);
-      return plan === 'mahashakti' && (!expiry || Date.now() < expiry);
-    } catch(e){ return false; }
+/* ---- Elements ---- */
+const overlay    = document.getElementById('allrounderOverlay');
+const openBtn    = document.getElementById('allrounderBtn');
+const closeBtn   = document.getElementById('arCloseBtn');
+const gate       = document.getElementById('arGate');
+const chatArea   = document.getElementById('arChat');
+const inputArea  = document.getElementById('arInputArea');
+const emptyState = document.getElementById('arEmpty');
+const chatInput  = document.getElementById('arChatInput');
+const sendBtn    = document.getElementById('arSendBtn');
+const clearBtn   = document.getElementById('arClearBtn');
+const charHint   = document.getElementById('arCharHint');
+const timingInfo = document.getElementById('arTimingInfo');
+const upgradeBtn = document.getElementById('arUpgradeBtn');
+const fileBtn    = document.getElementById('arFileBtn');
+const imgBtn2    = document.getElementById('arImgBtn2');
+const fileInput  = document.getElementById('arFileInput');
+const imgInput2  = document.getElementById('arImgInput2');
+const attachWrap = document.getElementById('arAttachWrap');
+const attachIcon = document.getElementById('arAttachIcon');
+const attachLabel= document.getElementById('arAttachLabel');
+const attachRm   = document.getElementById('arAttachRemove');
+
+let arMessages  = [];
+let isStreaming = false;
+let attachedFile= null; // { name, content, type, isImage, b64, mime }
+
+/* ---- Plan check ---- */
+function isMahaShakti(){
+  try {
+    const plan   = localStorage.getItem('bharatVoice.plan') || 'free';
+    const expiry = Number(localStorage.getItem('bharatVoice.planExpiry') || 0);
+    return plan === 'mahashakti' && (!expiry || Date.now() < expiry);
+  } catch(e){ return false; }
+}
+
+/* ---- Open / Close ---- */
+function openAR(){
+  overlay.classList.add('open');
+  document.body.classList.add('no-scroll');
+  if (isMahaShakti()){
+    gate.style.display      = 'none';
+    chatArea.style.display  = 'flex';
+    inputArea.style.display = 'block';
+    setTimeout(()=>chatInput.focus(), 80);
+  } else {
+    gate.style.display      = 'flex';
+    chatArea.style.display  = 'none';
+    inputArea.style.display = 'none';
   }
+}
+function closeAR(){
+  overlay.classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+openBtn   && openBtn.addEventListener('click', openAR);
+closeBtn  && closeBtn.addEventListener('click', closeAR);
+upgradeBtn&& upgradeBtn.addEventListener('click',()=>{ closeAR(); const b=document.getElementById('planBadge'); if(b) b.click(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'&&overlay.classList.contains('open')) closeAR(); });
 
-  function openAllrounder(){
-    overlay.classList.add('open');
-    document.body.classList.add('no-scroll');
-    if (isMahaShakti()){
-      gate.style.display      = 'none';
-      chatArea.style.display  = 'flex';
-      inputArea.style.display = 'block';
-      setTimeout(() => chatInput.focus(), 80);
+/* ---- Show Allrounder button when app is visible ---- */
+function watchApp(){
+  const app = document.getElementById('appScreen');
+  if (!app){ setTimeout(watchApp,400); return; }
+  function sync(){ openBtn&&openBtn.classList.toggle('visible',app.classList.contains('visible')); }
+  new MutationObserver(sync).observe(app,{attributes:true,attributeFilter:['class']});
+  sync();
+}
+setTimeout(watchApp, 500);
+
+/* ---- Textarea resize ---- */
+chatInput.addEventListener('input',()=>{
+  chatInput.style.height='auto';
+  chatInput.style.height=Math.min(chatInput.scrollHeight,160)+'px';
+  charHint.textContent=chatInput.value.length>0?chatInput.value.length+' chars':'';
+});
+chatInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}
+});
+
+/* ---- Chat helpers ---- */
+function scrollDown(){ chatArea.scrollTop=chatArea.scrollHeight; }
+
+function addBubble(role, html, isTyping){
+  if(emptyState) emptyState.style.display='none';
+  const wrap=document.createElement('div');
+  wrap.className='ar-msg '+(role==='user'?'user':'ai');
+  const av=document.createElement('div');
+  av.className='ar-avatar';
+  av.textContent=role==='user'?'👤':'🤖';
+  const bub=document.createElement('div');
+  if(isTyping){
+    bub.className='ar-typing';
+    bub.innerHTML='<span></span><span></span><span></span>';
+  } else {
+    bub.className='ar-bubble';
+    bub.innerHTML=html||'';
+  }
+  wrap.appendChild(av); wrap.appendChild(bub);
+  chatArea.appendChild(wrap);
+  scrollDown();
+  return {wrap,bub};
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function fmt(text){
+  // Extract ===FILE=== blocks before HTML escaping
+  const fileBlocks=[];
+  let t=text.replace(/===FILE:\s*([^\n=]+)===\n([\s\S]*?)===END FILE===/g,(m,name,content)=>{
+    fileBlocks.push({name:name.trim(),content});
+    return '\x00FILE_BLOCK_'+( fileBlocks.length-1)+'\x00';
+  });
+  let s=escHtml(t);
+  // Code blocks
+  s=s.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,lang,code)=>`<pre><code>${code.trim()}</code></pre>`);
+  s=s.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  s=s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  s=s.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  s=s.replace(/^### (.+)$/gm,'<strong style="display:block;margin-top:10px;font-size:13px;">$1</strong>');
+  s=s.replace(/^## (.+)$/gm,'<strong style="display:block;margin-top:12px;font-size:14px;color:var(--marigold)">$1</strong>');
+  s=s.replace(/^# (.+)$/gm,'<strong style="display:block;margin-top:14px;font-size:15px;color:var(--saffron)">$1</strong>');
+  s=s.replace(/\n/g,'<br>');
+  // Re-insert file blocks as download cards
+  s=s.replace(/\x00FILE_BLOCK_(\d+)\x00/g,(_,i)=>{
+    const fb=fileBlocks[i];
+    return buildFileCard(fb.name, fb.content);
+  });
+  return s;
+}
+
+function buildFileCard(name, content){
+  const ext = name.split('.').pop().toLowerCase();
+  const icon = ext==='html'?'🌐':ext==='css'?'🎨':ext==='js'?'⚡':ext==='py'?'🐍':ext==='json'?'📋':ext==='md'?'📝':ext==='txt'?'📄':'📁';
+  const safe = escHtml(name);
+  const lines = content.split('\n').length;
+  // Encode content for download
+  const blob_attr = encodeURIComponent(content);
+  const id = 'arfc_' + Math.random().toString(36).slice(2);
+  return `<div class="ar-gen-file" id="${id}">
+    <div class="ar-gen-file-header">
+      <span style="font-size:18px">${icon}</span>
+      <span class="ar-gen-file-name">${safe}</span>
+      <span style="color:rgba(255,255,255,.3);font-size:11px">${lines} lines</span>
+    </div>
+    <pre style="max-height:180px;overflow:auto;font-size:11.5px"><code>${escHtml(content.slice(0,1200)+(content.length>1200?'\n…':''))}</code></pre>
+    <div class="ar-gen-file-actions">
+      <button class="ar-gen-btn primary" onclick="arDownload('${id}','${safe}')">⬇ Download ${safe}</button>
+      <button class="ar-gen-btn" onclick="arCopy('${id}')">📋 Copy code</button>
+      <button class="ar-gen-btn" onclick="arOpenNewTab('${id}')">🔗 Open in new tab</button>
+    </div>
+  </div>
+  <script>
+  (function(){
+    const el=document.getElementById('${id}');
+    if(el){ el._content=decodeURIComponent('${blob_attr.replace(/'/g,"\\'")}'); }
+  })();
+  <\/script>`;
+}
+
+window.arDownload=function(id,name){
+  const el=document.getElementById(id);
+  if(!el||!el._content) return;
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(el._content);
+  a.download=name; a.click();
+};
+window.arCopy=function(id){
+  const el=document.getElementById(id);
+  if(!el||!el._content) return;
+  navigator.clipboard.writeText(el._content).then(()=>{
+    const btns=el.querySelectorAll('.ar-gen-btn');
+    btns.forEach(b=>{ if(b.textContent.includes('Copy')){ b.textContent='✅ Copied!'; setTimeout(()=>b.textContent='📋 Copy code',1500); }});
+  });
+};
+window.arOpenNewTab=function(id){
+  const el=document.getElementById(id);
+  if(!el||!el._content) return;
+  const w=window.open('','_blank');
+  const ext=el.querySelector('.ar-gen-file-name').textContent.split('.').pop().toLowerCase();
+  if(ext==='html'){ w.document.write(el._content); w.document.close(); }
+  else { w.document.write('<pre style="white-space:pre-wrap;font-family:monospace;background:#111;color:#eee;padding:20px;min-height:100vh">'+escHtml(el._content)+'</pre>'); w.document.close(); }
+};
+
+/* ---- File attach ---- */
+function showAttach(icon, label){
+  attachIcon.textContent=icon;
+  attachLabel.textContent=label;
+  attachWrap.style.display='block';
+}
+function clearAttach(){
+  attachedFile=null;
+  attachWrap.style.display='none';
+  fileInput.value=''; imgInput2.value='';
+}
+
+fileBtn.addEventListener('click',()=>fileInput.click());
+imgBtn2.addEventListener('click',()=>imgInput2.click());
+attachRm.addEventListener('click',clearAttach);
+
+fileInput.addEventListener('change',()=>{
+  const f=fileInput.files[0]; if(!f) return;
+  const reader=new FileReader();
+  if(f.type.startsWith('image/')){
+    reader.onload=ev=>{
+      const b64=ev.target.result.split(',')[1];
+      attachedFile={name:f.name,isImage:true,b64,mime:f.type};
+      showAttach('🖼️',f.name+' (image)');
+    };
+    reader.readAsDataURL(f);
+  } else {
+    reader.onload=ev=>{
+      attachedFile={name:f.name,isImage:false,content:ev.target.result,mime:f.type};
+      showAttach('📎',f.name+' ('+Math.round(f.size/1024)+'KB)');
+    };
+    reader.readAsText(f,'utf-8');
+  }
+});
+
+imgInput2.addEventListener('change',()=>{
+  const f=imgInput2.files[0]; if(!f) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const b64=ev.target.result.split(',')[1];
+    attachedFile={name:f.name,isImage:true,b64,mime:f.type};
+    showAttach('🖼️',f.name);
+  };
+  reader.readAsDataURL(f);
+});
+
+/* ---- Send ---- */
+async function send(){
+  if(isStreaming) return;
+  if(!isMahaShakti()){ openAR(); return; }
+  const text=chatInput.value.trim();
+  if(!text&&!attachedFile) return;
+
+  isStreaming=true; sendBtn.disabled=true;
+  chatInput.value=''; chatInput.style.height='auto'; charHint.textContent='';
+
+  // Build user message content
+  let userContent;
+  let displayText=text;
+  if(attachedFile){
+    if(attachedFile.isImage){
+      userContent=[
+        {type:'text',text:text||'Describe and analyse this image.'},
+        {type:'image_url',image_url:{url:`data:${attachedFile.mime};base64,${attachedFile.b64}`}}
+      ];
+      displayText=(text||'Describe this image')+` [📎 ${attachedFile.name}]`;
     } else {
-      gate.style.display      = 'flex';
-      chatArea.style.display  = 'none';
-      inputArea.style.display = 'none';
+      const fileCtx=`\n\n[Attached file: ${attachedFile.name}]\n\`\`\`\n${attachedFile.content.slice(0,8000)}\n\`\`\`\n${attachedFile.content.length>8000?'(truncated)':''}`;
+      userContent=(text||'Please read this file and help me.')+fileCtx;
+      displayText=(text||'Attached file')+` [📎 ${attachedFile.name}]`;
     }
+  } else {
+    userContent=text;
   }
 
-  function closeAllrounder(){
-    overlay.classList.remove('open');
-    document.body.classList.remove('no-scroll');
-  }
+  arMessages.push({role:'user',content:userContent});
+  addBubble('user',fmt(displayText));
+  clearAttach();
 
-  openBtn  && openBtn.addEventListener('click',  openAllrounder);
-  closeBtn && closeBtn.addEventListener('click', closeAllrounder);
-  upgradeBtn && upgradeBtn.addEventListener('click', () => {
-    closeAllrounder();
-    const planBadge = document.getElementById('planBadge');
-    if (planBadge) planBadge.click();
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && overlay.classList.contains('open')) closeAllrounder();
-  });
+  const {wrap:tw}=addBubble('ai','',true);
+  scrollDown();
+  const t0=Date.now();
 
-  /* Show button when appScreen is visible */
-  function showArBtn(){
-    const appScreen = document.getElementById('appScreen');
-    if (!appScreen){ setTimeout(showArBtn, 400); return; }
-    function sync(){ openBtn && openBtn.classList.toggle('visible', appScreen.classList.contains('visible')); }
-    new MutationObserver(sync).observe(appScreen, { attributes: true, attributeFilter: ['class'] });
-    sync();
-  }
-  setTimeout(showArBtn, 500);
+  try {
+    const resp=await fetch(AR_API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:AR_MODEL,
+        messages:[{role:'system',content:AR_SYS},...arMessages],
+        stream:true,
+        max_tokens:4096,
+        temperature:0.7
+      })
+    });
 
-  /* Auto-resize textarea */
-  chatInput.addEventListener('input', () => {
-    chatInput.style.height = 'auto';
-    chatInput.style.height = Math.min(chatInput.scrollHeight, 160) + 'px';
-    charHint.textContent = chatInput.value.length > 0 ? chatInput.value.length + ' chars' : '';
-  });
-  chatInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
-  });
+    tw.remove();
 
-  function scrollDown(){ chatArea.scrollTop = chatArea.scrollHeight; }
-
-  function addBubble(role, html, isTyping){
-    if (emptyState) emptyState.style.display = 'none';
-    const wrap = document.createElement('div');
-    wrap.className = 'ar-msg ' + (role === 'user' ? 'user' : 'ai');
-    const av = document.createElement('div');
-    av.className = 'ar-avatar';
-    av.textContent = role === 'user' ? '👤' : '🤖';
-    const bub = document.createElement('div');
-    if (isTyping){
-      bub.className = 'ar-typing';
-      bub.innerHTML = '<span></span><span></span><span></span>';
-    } else {
-      bub.className = 'ar-bubble';
-      bub.innerHTML = html || '';
+    if(!resp.ok){
+      const err=await resp.json().catch(()=>({}));
+      const msg=err?.error?.message||'HTTP '+resp.status;
+      addBubble('ai',fmt('⚠️ **Error:** '+msg));
+      timingInfo.textContent='Error';
+      return;
     }
-    wrap.appendChild(av);
-    wrap.appendChild(bub);
-    chatArea.appendChild(wrap);
-    scrollDown();
-    return { wrap, bub };
-  }
 
-  function fmt(text){
-    let s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    s = s.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => `<pre><code>${code.trim()}</code></pre>`);
-    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    s = s.replace(/^### (.+)$/gm, '<strong style="display:block;margin-top:10px;font-size:13px;">$1</strong>');
-    s = s.replace(/^## (.+)$/gm,  '<strong style="display:block;margin-top:12px;font-size:14px;color:var(--marigold)">$1</strong>');
-    s = s.replace(/^# (.+)$/gm,   '<strong style="display:block;margin-top:14px;font-size:15px;color:var(--saffron)">$1</strong>');
-    s = s.replace(/\n/g, '<br>');
-    return s;
-  }
+    const {wrap:aw,bub:ab}=addBubble('ai','');
+    ab.innerHTML='';
+    const reader=resp.body.getReader();
+    const decoder=new TextDecoder();
+    let full='', gotFirst=false;
 
-  async function send(){
-    if (isStreaming) return;
-    if (!isMahaShakti()){ openAllrounder(); return; }
-    const text = chatInput.value.trim();
-    if (!text) return;
-
-    isStreaming = true;
-    sendBtn.disabled = true;
-    chatInput.value = '';
-    chatInput.style.height = 'auto';
-    charHint.textContent = '';
-
-    arMessages.push({ role: 'user', content: text });
-    addBubble('user', fmt(text));
-
-    const { wrap: tw } = addBubble('ai', '', true);
-    scrollDown();
-    const t0 = Date.now();
-
-    try {
-      const resp = await fetch(AR_BASE_URL, {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + AR_API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: AR_MODEL,
-          messages: [{ role: 'system', content: AR_SYS }, ...arMessages],
-          stream: true,
-          max_tokens: 4096,
-          temperature: 0.7
-        })
-      });
-
-      tw.remove();
-
-      if (!resp.ok){
-        const err = await resp.json().catch(() => ({}));
-        const msg = err?.error?.message || 'HTTP ' + resp.status;
-        addBubble('ai', fmt('⚠️ **Error:** ' + msg));
-        timingInfo.textContent = 'Error';
-        return;
+    while(true){
+      const {done,value}=await reader.read();
+      if(done) break;
+      const lines=decoder.decode(value,{stream:true}).split('\n');
+      for(const line of lines){
+        if(!line.startsWith('data:')) continue;
+        const raw=line.slice(5).trim();
+        if(raw==='[DONE]') break;
+        try{
+          const delta=JSON.parse(raw)?.choices?.[0]?.delta?.content||'';
+          if(delta){
+            if(!gotFirst){ gotFirst=true; timingInfo.textContent='TTFT: '+(Date.now()-t0)+'ms'; }
+            full+=delta;
+            ab.innerHTML=fmt(full);
+            scrollDown();
+          }
+        }catch(_){}
       }
-
-      const { wrap: aw, bub: ab } = addBubble('ai', '');
-      ab.innerHTML = '';
-      const reader  = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let full = '', gotFirst = false;
-
-      while(true){
-        const { done, value } = await reader.read();
-        if (done) break;
-        const lines = decoder.decode(value, { stream: true }).split('\n');
-        for (const line of lines){
-          if (!line.startsWith('data:')) continue;
-          const raw = line.slice(5).trim();
-          if (raw === '[DONE]') break;
-          try {
-            const delta = JSON.parse(raw)?.choices?.[0]?.delta?.content || '';
-            if (delta){
-              if (!gotFirst){ gotFirst = true; timingInfo.textContent = 'TTFT: ' + (Date.now()-t0) + 'ms'; }
-              full += delta;
-              ab.innerHTML = fmt(full);
-              scrollDown();
-            }
-          } catch(_){}
-        }
-      }
-
-      arMessages.push({ role: 'assistant', content: full });
-      timingInfo.textContent = (Date.now()-t0) + 'ms · ' + full.split(' ').length + ' words · gpt-4o-mini';
-
-    } catch(err){
-      tw && tw.remove && tw.remove();
-      addBubble('ai', fmt('⚠️ **Network error:** ' + err.message));
-      timingInfo.textContent = 'Connection error';
-    } finally {
-      isStreaming = false;
-      sendBtn.disabled = false;
-      chatInput.focus();
     }
+
+    arMessages.push({role:'assistant',content:full});
+    timingInfo.textContent=(Date.now()-t0)+'ms · '+full.split(' ').length+' words · '+AR_MODEL;
+
+  } catch(err){
+    tw&&tw.remove&&tw.remove();
+    addBubble('ai',fmt('⚠️ **Error:** '+err.message));
+    timingInfo.textContent='Connection error';
+  } finally {
+    isStreaming=false; sendBtn.disabled=false; chatInput.focus();
   }
+}
 
-  sendBtn.addEventListener('click', send);
-
-  clearBtn.addEventListener('click', () => {
-    arMessages = [];
-    chatArea.querySelectorAll('.ar-msg').forEach(el => el.remove());
-    if (emptyState) emptyState.style.display = 'block';
-    timingInfo.textContent = 'Ready';
-  });
+sendBtn.addEventListener('click',send);
+clearBtn.addEventListener('click',()=>{
+  arMessages=[];
+  chatArea.querySelectorAll('.ar-msg').forEach(el=>el.remove());
+  if(emptyState) emptyState.style.display='flex';
+  timingInfo.textContent='Ready';
+});
 
 })();
 </script>
-
 </body>
 </html>
