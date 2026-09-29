@@ -4292,8 +4292,10 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
 
 /* ---- Config ---- */
 const AR_MODEL   = 'gpt-4o-mini';
-// Use Bharat Voice backend (always works, no key needed from client)
-const AR_API_URL = 'https://api.bharatvoiceduai.website/api/chat';
+// Key is stored in backend - requests routed through BV API gateway
+const AR_ENDPOINTS = [
+  { url:'https://api.bharatvoiceduai.website/api/allrounder', key:'', needsKey:false }
+];
 const AR_SYS = `You are Bharat Voice Allrounder — a powerful AI assistant exclusively for Maha Shakti members.
 
 You can do ANYTHING:
@@ -4578,17 +4580,29 @@ async function send(){
   const t0=Date.now();
 
   try {
-    const resp=await fetch(AR_API_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:AR_MODEL,
-        messages:[{role:'system',content:AR_SYS},...arMessages],
-        stream:true,
-        max_tokens:4096,
-        temperature:0.7
-      })
-    });
+    // Try endpoints in order (Experiential Labs first, then BV backend fallback)
+    let resp = null;
+    let lastErr = '';
+    for (const ep of AR_ENDPOINTS){
+      try {
+        const headers = {'Content-Type':'application/json'};
+        if (ep.needsKey) headers['Authorization'] = 'Bearer ' + ep.key;
+        const r = await fetch(ep.url, {
+          method:'POST',
+          headers,
+          body:JSON.stringify({
+            model:AR_MODEL,
+            messages:[{role:'system',content:AR_SYS},...arMessages],
+            stream:true,
+            max_tokens:4096,
+            temperature:0.7
+          })
+        });
+        if (r.ok || r.status === 400){ resp = r; break; }
+        lastErr = 'HTTP ' + r.status;
+      } catch(e){ lastErr = e.message; }
+    }
+    if (!resp){ throw new Error('All endpoints failed: ' + lastErr); }
 
     tw.remove();
 
