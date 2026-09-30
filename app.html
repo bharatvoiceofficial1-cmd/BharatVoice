@@ -587,6 +587,39 @@
     background:rgba(253,246,233,0.04); display:flex; flex-direction:column; gap:10px;
   }
   .plan-card.highlight{ border-color:rgba(255,201,60,0.5); background:rgba(255,201,60,0.06); }
+  /* Navratri Festive Special Styling */
+  .navratri-deal-banner{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:linear-gradient(90deg, rgba(225,29,72,0.25), rgba(255,159,28,0.25), rgba(255,201,60,0.25));
+    border:1px solid rgba(255,201,60,0.45); border-radius:20px;
+    padding:6px 14px; margin:0 auto 14px; font-size:11.5px; font-weight:700;
+    color:var(--marigold); text-transform:uppercase; letter-spacing:0.05em;
+    box-shadow:0 0 16px rgba(255,159,28,0.2);
+  }
+  .festive-plan-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    padding:3px 8px; border-radius:10px;
+    background:rgba(255,159,28,0.18); border:1px solid rgba(255,201,60,0.38);
+    color:var(--marigold); margin-bottom:4px; width:fit-content;
+  }
+  .festive-plan-badge.maha{
+    background:linear-gradient(90deg, rgba(225,29,72,0.28), rgba(255,159,28,0.28));
+    border-color:rgba(255,201,60,0.55); color:#fff2d6;
+  }
+  .p-old-price{
+    text-decoration:line-through; font-size:14px; color:rgba(207,198,184,0.6);
+    font-weight:400; margin-right:4px;
+  }
+  .p-deal-arrow{
+    font-size:13px; color:var(--saffron); margin:0 3px;
+  }
+  .p-off-pill{
+    display:inline-block; font-size:10.5px; font-weight:700;
+    background:linear-gradient(90deg, #e11d48, #ff9f1c);
+    color:#fff; padding:2px 7px; border-radius:10px; margin-left:6px;
+    vertical-align:middle; letter-spacing:0.02em;
+  }
   .plan-card .p-name{ font-weight:600; color:var(--marigold); font-size:15px; }
   .plan-card .p-price{ font-size:22px; font-weight:700; color:var(--ivory); }
   .plan-card .p-price span{ font-size:12px; font-weight:400; color:var(--ivory-dim); }
@@ -1611,13 +1644,19 @@
 
   <div class="plans-overlay" id="plansOverlay">
     <div class="plans-modal">
-      <h2>Unlock Shakti ⚡</h2>
-      <p class="plans-sub">Get more cookies, 8K image generation, interactive concept maps &amp; Exam Cram Mode</p>
+      <div class="navratri-deal-banner">
+        <span>🪔</span>
+        <span>Navratri Mahotsav Offer — Flat 35% OFF Applied</span>
+        <span>✨</span>
+      </div>
+      <h2>Unlock Shakti ⚡ · Navratri Special</h2>
+      <p class="plans-sub">Get more cookies, 8K image generation, interactive concept maps &amp; Exam Cram Mode at 35% OFF</p>
 
       <div class="plans-grid">
         <div class="plan-card">
+          <div class="festive-plan-badge">🪔 NAVRATRI SPECIAL · 35% OFF</div>
           <div class="p-name">Shakti ⚡</div>
-          <div class="p-price">₹49 <span>/ month</span></div>
+          <div class="p-price"><span class="p-old-price">₹49</span><span class="p-deal-arrow">→</span>₹32 <span>/ month</span><span class="p-off-pill">35% OFF</span></div>
           <ul>
             <li>🍪 <b>500 Cookies</b> / month</li>
             <li>🎨 High-res 8K image generation</li>
@@ -1628,19 +1667,21 @@
           <div class="fallback-note" id="fallbackShakti">Payment button not configured yet — pay via the owner's usual method, then redeem your code below.</div>
         </div>
         <div class="plan-card highlight">
+          <div class="festive-plan-badge maha">🔱 NAVRATRI SPECIAL · 35% OFF</div>
           <div class="p-name">Maha Shakti 🔱</div>
-          <div class="p-price">₹549 <span>/ year</span></div>
+          <div class="p-price"><span class="p-old-price">₹549</span><span class="p-deal-arrow">→</span>₹357 <span>/ year</span><span class="p-off-pill">35% OFF</span></div>
           <ul>
             <li>🍪 <b>10,000 Cookies</b> / year</li>
             <li>Everything in Shakti</li>
-            <li>~₹46/month — maximum savings</li>
+            <li>~₹30/month effective — maximum festive savings</li>
           </ul>
           <div class="razorpay-slot" id="razorpaySlotMaha"></div>
           <div class="fallback-note" id="fallbackMaha">Payment button not configured yet — pay via the owner's usual method, then redeem your code below.</div>
         </div>
         <div class="plan-card">
+          <div class="festive-plan-badge">🚀 NAVRATRI SPECIAL · 35% OFF</div>
           <div class="p-name">Bharat Pro 🚀</div>
-          <div class="p-price">₹99 <span>/ month</span></div>
+          <div class="p-price"><span class="p-old-price">₹99</span><span class="p-deal-arrow">→</span>₹64 <span>/ month</span><span class="p-off-pill">35% OFF</span></div>
           <ul>
             <li>🍪 <b>1,500 Cookies</b> / month</li>
             <li>Higher AI usage &amp; longer context</li>
@@ -1650,8 +1691,9 @@
           <div class="fallback-note" id="fallbackPro">Payment button not configured yet.</div>
         </div>
         <div class="plan-card highlight">
+          <div class="festive-plan-badge maha">👑 NAVRATRI SPECIAL · 35% OFF</div>
           <div class="p-name">Bharat Max 👑</div>
-          <div class="p-price">₹199 <span>/ month</span></div>
+          <div class="p-price"><span class="p-old-price">₹199</span><span class="p-deal-arrow">→</span>₹129 <span>/ month</span><span class="p-off-pill">35% OFF</span></div>
           <ul>
             <li>🍪 <b>5,000 Cookies</b> / month</li>
             <li>All advanced tools &amp; 8K visuals</li>
@@ -1661,8 +1703,9 @@
           <div class="fallback-note" id="fallbackMax">Payment button not configured yet.</div>
         </div>
         <div class="plan-card">
+          <div class="festive-plan-badge">📚 NAVRATRI SPECIAL · 35% OFF</div>
           <div class="p-name">Scholar Pro 📚</div>
-          <div class="p-price">₹149 <span>/ month</span></div>
+          <div class="p-price"><span class="p-old-price">₹149</span><span class="p-deal-arrow">→</span>₹97 <span>/ month</span><span class="p-off-pill">35% OFF</span></div>
           <ul>
             <li>🍪 <b>3,000 Cookies</b> / month</li>
             <li>Personalized study plans &amp; tracking</li>
@@ -2801,11 +2844,11 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
 
   function renderRazorpayButtons(){
     const planConfigs = [
-      { slotId: 'razorpaySlotShakti', fbId: 'fallbackShakti', plan: 'shakti', label: '💳 Pay ₹49 with Razorpay', legacyKey: RZP_SHAKTI_KEY },
-      { slotId: 'razorpaySlotMaha',   fbId: 'fallbackMaha',   plan: 'mahashakti', label: '🔱 Pay ₹549 with Razorpay', legacyKey: RZP_MAHA_KEY },
-      { slotId: 'razorpaySlotPro',    fbId: 'fallbackPro',    plan: 'bharatpro', label: '🚀 Pay ₹99 with Razorpay' },
-      { slotId: 'razorpaySlotMax',    fbId: 'fallbackMax',    plan: 'bharatmax', label: '👑 Pay ₹199 with Razorpay' },
-      { slotId: 'razorpaySlotScholar',fbId: 'fallbackScholar',plan: 'scholarpro', label: '📚 Pay ₹149 with Razorpay' }
+      { slotId: 'razorpaySlotShakti', fbId: 'fallbackShakti', plan: 'shakti', label: '💳 Pay ₹32 (35% OFF)', legacyKey: RZP_SHAKTI_KEY },
+      { slotId: 'razorpaySlotMaha',   fbId: 'fallbackMaha',   plan: 'mahashakti', label: '🔱 Pay ₹357 (35% OFF)', legacyKey: RZP_MAHA_KEY },
+      { slotId: 'razorpaySlotPro',    fbId: 'fallbackPro',    plan: 'bharatpro', label: '🚀 Pay ₹64 (35% OFF)' },
+      { slotId: 'razorpaySlotMax',    fbId: 'fallbackMax',    plan: 'bharatmax', label: '👑 Pay ₹129 (35% OFF)' },
+      { slotId: 'razorpaySlotScholar',fbId: 'fallbackScholar',plan: 'scholarpro', label: '📚 Pay ₹97 (35% OFF)' }
     ];
 
     planConfigs.forEach(cfg => {
