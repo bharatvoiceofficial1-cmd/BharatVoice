@@ -18,6 +18,7 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   :root{
     --night: #140f2b;
@@ -1416,6 +1417,37 @@
     opacity: 1;
     pointer-events: auto;
   }
+  
+  /* Action bar inside bubbles */
+  .bubble-action-btn {
+    background: rgba(255, 201, 60, 0.08);
+    border: 1px solid rgba(255, 201, 60, 0.28);
+    color: var(--marigold);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all .15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .bubble-action-btn:hover {
+    background: rgba(255, 201, 60, 0.2);
+    border-color: var(--marigold);
+    transform: translateY(-1px);
+  }
+  .bubble-action-btn.live-btn {
+    background: linear-gradient(90deg, rgba(28, 154, 146, 0.25), rgba(255, 159, 28, 0.25));
+    border-color: var(--peacock-light);
+    color: #8afff7;
+  }
+  .bubble-action-btn.live-btn:hover {
+    filter: brightness(1.15);
+  }
+
   .history-drawer {
     position: fixed;
     top: 0;
@@ -4351,6 +4383,31 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
       flashcardsBlocks.forEach(raw => renderFlashcardDeck(b, raw));
       examQuizBlocks.forEach(raw => renderExamQuiz(b, raw));
       renderMermaidInElement(b);
+
+      // Add instant "📄 PDF Export" and "🌐 Live Website Preview" action bar
+      const actionBar = document.createElement('div');
+      actionBar.className = 'bubble-action-bar';
+      actionBar.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,201,60,0.15);';
+      
+      // PDF Button
+      const pdfBtn = document.createElement('button');
+      pdfBtn.type = 'button';
+      pdfBtn.className = 'bubble-action-btn';
+      pdfBtn.innerHTML = '📄 Download as PDF';
+      pdfBtn.onclick = () => exportBubbleAsPdf(b);
+      actionBar.appendChild(pdfBtn);
+
+      // Check if bubble contains HTML code for Live Preview
+      const hasHtmlBlock = (text && /\`\`\`html[\s\S]*?\`\`\`/i.test(text)) || /<!DOCTYPE html>/i.test(text);
+      if (hasHtmlBlock) {
+        const liveBtn = document.createElement('button');
+        liveBtn.type = 'button';
+        liveBtn.className = 'bubble-action-btn live-btn';
+        liveBtn.innerHTML = '🌐 Open Live Website Preview';
+        liveBtn.onclick = () => openLiveHtmlModalFromBubble(text);
+        actionBar.appendChild(liveBtn);
+      }
+      b.appendChild(actionBar);
     } else {
       if (text && text.trim()){
         const body = document.createElement('span');
@@ -4361,6 +4418,101 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
 
     transcript.appendChild(b);
     b.scrollIntoView({ behavior:'smooth', block:'end' });
+  }
+
+  
+  function exportBubbleAsPdf(bubbleEl){
+    const clone = bubbleEl.cloneNode(true);
+    clone.querySelectorAll('.bubble-action-bar, .who').forEach(el => el.remove());
+    
+    const printDiv = document.createElement('div');
+    printDiv.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;padding:36px;background:#fff;color:#111;font-family:Poppins,sans-serif;line-height:1.7;';
+    printDiv.innerHTML = `
+      <div style="border-bottom:2px solid #ff9f1c;padding-bottom:12px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <h1 style="margin:0;font-size:22px;color:#140f2b;">Bharat Voice · Learning Companion</h1>
+          <p style="margin:4px 0 0;color:#666;font-size:12px;">AI Study Material &amp; Solution · Generated on ${new Date().toLocaleString()}</p>
+        </div>
+        <div style="font-size:24px;">🪔</div>
+      </div>
+      <div style="color:#222;font-size:14px;">${clone.innerHTML}</div>
+      <div style="margin-top:36px;padding-top:12px;border-top:1px solid #ddd;font-size:11px;color:#888;text-align:center;">
+        Bharat Voice AI — Bilingual Voice Study Companion · bharatvoiceduai.website
+      </div>
+    `;
+    document.body.appendChild(printDiv);
+
+    if (window.html2pdf){
+      const opt = {
+        margin: 10,
+        filename: 'BharatVoice_Document_' + Date.now() + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      window.html2pdf().from(printDiv).set(opt).save().then(() => printDiv.remove()).catch(() => {
+        printDiv.remove();
+        window.print();
+      });
+    } else {
+      const w = window.open('', '_blank');
+      w.document.write('<html><head><title>Bharat Voice PDF</title><style>body{font-family:sans-serif;padding:30px;line-height:1.6;color:#111;}@media print{button{display:none;}}</style></head><body><button onclick="window.print()" style="padding:8px 16px;background:#ff9f1c;border:none;font-weight:bold;cursor:pointer;margin-bottom:20px;border-radius:6px;">🖨️ Print / Save as PDF</button>' + printDiv.innerHTML + '</body></html>');
+      w.document.close();
+      printDiv.remove();
+    }
+  }
+
+  function openLiveHtmlModalFromBubble(rawText){
+    let htmlCode = '';
+    const match = rawText.match(/\`\`\`html\n?([\s\S]*?)\`\`\`/i);
+    if (match){
+      htmlCode = match[1].trim();
+    } else if (rawText.includes('<!DOCTYPE html>')){
+      const idx = rawText.indexOf('<!DOCTYPE html>');
+      htmlCode = rawText.slice(idx);
+    } else {
+      htmlCode = rawText;
+    }
+    
+    // Open in interactive modal or new tab
+    let modal = document.getElementById('liveHtmlModal');
+    if (!modal){
+      modal = document.createElement('div');
+      modal.id = 'liveHtmlModal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(8,5,18,0.92);backdrop-filter:blur(8px);z-index:9999;display:flex;flex-direction:column;';
+      modal.innerHTML = `
+        <div style="background:linear-gradient(90deg,#140f2b,#1d1640);padding:12px 20px;border-bottom:1px solid rgba(255,201,60,0.3);display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:20px;">🌐</span>
+            <strong style="color:var(--marigold);font-size:15px;">Bharat Voice Live Website Preview</strong>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button type="button" class="bubble-action-btn" id="liveModalRefresh" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,201,60,0.3);color:var(--ivory);padding:5px 12px;border-radius:8px;cursor:pointer;">🔄 Refresh</button>
+            <button type="button" class="bubble-action-btn" id="liveModalNewTab" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,201,60,0.3);color:var(--ivory);padding:5px 12px;border-radius:8px;cursor:pointer;">⛶ Open New Tab</button>
+            <button type="button" class="bubble-action-btn" id="liveModalClose" style="background:rgba(225,29,72,0.2);border:1px solid rgba(225,29,72,0.4);color:#ff8a8a;padding:5px 12px;border-radius:8px;cursor:pointer;">✕ Close</button>
+          </div>
+        </div>
+        <iframe id="liveHtmlIframe" sandbox="allow-scripts allow-modals" style="flex:1;width:100%;border:none;background:#fff;"></iframe>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('liveModalClose').onclick = () => modal.style.display = 'none';
+      document.getElementById('liveModalRefresh').onclick = () => {
+        const ifr = document.getElementById('liveHtmlIframe');
+        if (ifr && modal._currentHtml) ifr.srcdoc = modal._currentHtml;
+      };
+      document.getElementById('liveModalNewTab').onclick = () => {
+        if (modal._currentHtml){
+          const w = window.open('', '_blank');
+          w.document.write(modal._currentHtml);
+          w.document.close();
+        }
+      };
+    }
+    
+    modal._currentHtml = htmlCode;
+    modal.style.display = 'flex';
+    const ifr = document.getElementById('liveHtmlIframe');
+    ifr.srcdoc = htmlCode;
   }
 
   // ---------- Call the LLM ----------
@@ -4387,7 +4539,7 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
           model: model,
           messages: [buildSystemMessage(!!opts.speakReply), ...conversation],
           temperature: 0.7,
-          max_tokens: 4096
+          max_tokens: 8192
         })
       });
 
@@ -5034,23 +5186,26 @@ const AR_ENDPOINTS = [
 ];
 const AR_SYS = `You are Bharat Voice Allrounder — an elite, multi-domain AI agent and reasoning partner with full software engineering, scientific, mathematical, creative, analytical, and problem-solving capabilities, built exclusively for Maha Shakti members.
 
-CAPABILITIES (YOU CAN PERFORM EVERY POSSIBLE TASK):
-1. SOFTWARE ENGINEERING & FULL-STACK DEVELOPMENT:
-   - Design, architect, write, review, optimize, and debug code across ANY programming language (Python, JavaScript/TypeScript, HTML/CSS, C/C++, Rust, Java, Go, PHP, Swift, Kotlin, Bash, SQL, etc.).
-   - Create complete, production-grade applications, scripts, CLI tools, web apps, REST/GraphQL APIs, database schemas, and algorithms.
-   - When asked to create files, scripts, or full multi-file projects, ALWAYS output the COMPLETE, UNTRUNCATED file content inside explicit file blocks:
-     ===FILE: path/filename.ext===
-     <complete code/content here>
+CAPABILITIES (YOU CAN PERFORM EVERY POSSIBLE TASK AT HIGHEST AGENTIC LEVEL):
+1. LIVE INTERACTIVE WEBSITES & WEB APPLICATIONS:
+   - When asked to build a website, landing page, portfolio, game, simulator, or web app, create a COMPLETE, self-contained single-page application with all HTML, CSS, and JavaScript.
+   - Always output inside an explicit file block:
+     ===FILE: index.html===
+     <!DOCTYPE html>
+     ...
      ===END FILE===
-     You can generate multiple files for an entire project. Ensure all imports, syntax, and configurations are 100% correct and ready to run.
-   - When editing files attached by the user, read the content thoroughly, preserve working logic, apply requested changes or bug fixes, and output the entire updated file in the ===FILE=== block.
+   - The user will instantly see an interactive LIVE PREVIEW rendered directly inside the chat with full functionality, responsiveness, and beauty!
+   - You can also output multi-file projects (index.html, styles.css, app.js).
 
-2. ADVANCED REASONING, MATHEMATICS & SCIENCE:
-   - Solve complex mathematical, logical, and engineering problems step-by-step with rigorous proofs, derivations, and checks.
-   - Format all mathematical equations using clean LaTeX syntax: $...$ for inline math and $$...$$ for standalone display formulas.
-   - Analyze scientific phenomena, chemical reactions, physical dynamics, and biological processes with academic depth.
+2. READY-TO-SEE & PRINTABLE PDF DOCUMENTS:
+   - When asked to create a PDF, report, syllabus, sample paper, revision sheet, certificate, or book summary, format it cleanly with structured sections, tables, bold key terms, and academic aesthetics.
+   - The user has a 1-click "📄 View & Download PDF" button that instantly compiles your output into a styled, professional PDF file!
 
-3. WRITING, RESEARCH, STRATEGY & PROFESSIONAL WORK:
+3. SOFTWARE ENGINEERING & FULL-STACK DEVELOPMENT:
+   - Write, refactor, and debug code across ANY language (Python, JavaScript, TypeScript, C/C++, Rust, Java, Go, PHP, Swift, Bash, SQL).
+   - Deliver complete, untruncated code with setup instructions.
+
+4. WRITING, RESEARCH, STRATEGY & PROFESSIONAL WORK:
    - Draft high-impact essays, research syntheses, technical documentation, business plans, financial models, marketing copy, and formal correspondence.
    - Perform structured data analysis, summarize long documents, extract structured JSON, and translate naturally between languages (Hindi, English, Hinglish, and world languages).
 
@@ -5213,20 +5368,42 @@ function fmt(text){
 
 function buildFileCard(name, content){
   const ext = name.split('.').pop().toLowerCase();
-  const icon = ext==='html'?'🌐':ext==='css'?'🎨':ext==='js'?'⚡':ext==='py'?'🐍':ext==='json'?'📋':ext==='md'?'📝':ext==='txt'?'📄':'📁';
+  const isHtml = ext === 'html' || ext === 'htm';
+  const isPdf = ext === 'pdf';
+  const icon = isHtml ? '🌐' : isPdf ? '📄' : ext==='css'?'🎨':ext==='js'?'⚡':ext==='py'?'🐍':ext==='json'?'📋':ext==='md'?'📝':ext==='txt'?'📄':'📁';
   const safe = escHtml(name);
   const lines = content.split('\n').length;
-  // Encode content for download
   const blob_attr = encodeURIComponent(content);
   const id = 'arfc_' + Math.random().toString(36).slice(2);
+  
+  let livePreviewHtml = '';
+  if (isHtml) {
+    livePreviewHtml = `
+      <div class="ar-live-preview-box" id="${id}_previewBox" style="display:none; margin:10px 0; border:1px solid rgba(255,201,60,0.35); border-radius:12px; overflow:hidden; background:#fff;">
+        <div style="background:#1d1640; padding:6px 12px; display:flex; align-items:center; justify-content:space-between; font-size:11px; color:#ffc93c;">
+          <span>🌐 Live Interactive Sandbox Preview</span>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="ar-gen-btn" onclick="arRefreshPreview('${id}')" title="Refresh">🔄 Refresh</button>
+            <button type="button" class="ar-gen-btn" onclick="arOpenNewTab('${id}')" title="Full tab">⛶ Fullscreen</button>
+            <button type="button" class="ar-gen-btn" onclick="arTogglePreview('${id}')" title="Close">✕</button>
+          </div>
+        </div>
+        <iframe id="${id}_iframe" sandbox="allow-scripts allow-modals" style="width:100%; height:320px; border:none; display:block; background:#fff;"></iframe>
+      </div>
+    `;
+  }
+
   return `<div class="ar-gen-file" id="${id}">
     <div class="ar-gen-file-header">
       <span style="font-size:18px">${icon}</span>
       <span class="ar-gen-file-name">${safe}</span>
       <span style="color:rgba(255,255,255,.3);font-size:11px">${lines} lines</span>
     </div>
-    <pre style="max-height:180px;overflow:auto;font-size:11.5px"><code>${escHtml(content.slice(0,1200)+(content.length>1200?'\n…':''))}</code></pre>
+    ${livePreviewHtml}
+    <pre style="max-height:180px;overflow:auto;font-size:11.5px" id="${id}_code"><code>${escHtml(content.slice(0,1200)+(content.length>1200?'\n…':''))}</code></pre>
     <div class="ar-gen-file-actions">
+      ${isHtml ? `<button class="ar-gen-btn primary" onclick="arTogglePreview('${id}')">👁️ Live Preview Website</button>` : ''}
+      ${isPdf || isHtml || ext==='md' || ext==='txt' ? `<button class="ar-gen-btn" onclick="arGeneratePdf('${id}', '${safe}')">📄 Download PDF</button>` : ''}
       <button class="ar-gen-btn primary" onclick="arDownload('${id}','${safe}')">⬇ Download ${safe}</button>
       <button class="ar-gen-btn" onclick="arCopy('${id}')">📋 Copy code</button>
       <button class="ar-gen-btn" onclick="arOpenNewTab('${id}')">🔗 Open in new tab</button>
@@ -5235,7 +5412,7 @@ function buildFileCard(name, content){
   <script>
   (function(){
     const el=document.getElementById('${id}');
-    if(el){ el._content=decodeURIComponent('${blob_attr.replace(/'/g,"\\'")}'); }
+    if(el){ el._content=decodeURIComponent('${blob_attr.replace(/'/g,"\\'") }'); }
   })();
   <\/script>`;
 }
@@ -5255,6 +5432,65 @@ window.arCopy=function(id){
     btns.forEach(b=>{ if(b.textContent.includes('Copy')){ b.textContent='✅ Copied!'; setTimeout(()=>b.textContent='📋 Copy code',1500); }});
   });
 };
+
+window.arTogglePreview = function(id){
+  const el = document.getElementById(id);
+  const box = document.getElementById(id + '_previewBox');
+  const iframe = document.getElementById(id + '_iframe');
+  if (!el || !box || !iframe) return;
+  if (box.style.display === 'none'){
+    box.style.display = 'block';
+    iframe.srcdoc = el._content || '';
+  } else {
+    box.style.display = 'none';
+  }
+};
+
+window.arRefreshPreview = function(id){
+  const el = document.getElementById(id);
+  const iframe = document.getElementById(id + '_iframe');
+  if (el && iframe){ iframe.srcdoc = el._content || ''; }
+};
+
+window.arGeneratePdf = function(id, filename){
+  const el = document.getElementById(id);
+  if (!el || !el._content) return;
+  const content = el._content;
+  const pdfName = (filename.replace(/\.[^.]+$/, '') || 'document') + '.pdf';
+  
+  // Create printable container
+  const printDiv = document.createElement('div');
+  printDiv.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;padding:32px;background:#fff;color:#111;font-family:sans-serif;line-height:1.6;';
+  
+  if (filename.endsWith('.html') || filename.endsWith('.htm')){
+    printDiv.innerHTML = content;
+  } else {
+    printDiv.innerHTML = '<div style="margin-bottom:20px;border-bottom:2px solid #ff9f1c;padding-bottom:10px;"><h1 style="margin:0;color:#140f2b;">Bharat Voice · Document Export</h1><p style="margin:4px 0;color:#666;font-size:12px;">' + filename + ' · Generated on ' + new Date().toLocaleString() + '</p></div><pre style="white-space:pre-wrap;font-family:inherit;font-size:13px;">' + content.replace(/</g,'&lt;') + '</pre>';
+  }
+  document.body.appendChild(printDiv);
+  
+  if (window.html2pdf){
+    const opt = {
+      margin: 10,
+      filename: pdfName,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    window.html2pdf().from(printDiv).set(opt).save().then(()=>{
+      printDiv.remove();
+    }).catch(()=>{
+      printDiv.remove();
+      window.print();
+    });
+  } else {
+    const w = window.open('', '_blank');
+    w.document.write('<html><head><title>' + pdfName + '</title><style>body{font-family:sans-serif;padding:30px;line-height:1.6;color:#111;}@media print{button{display:none;}}</style></head><body><button onclick="window.print()" style="padding:8px 16px;background:#ff9f1c;border:none;font-weight:bold;cursor:pointer;margin-bottom:20px;border-radius:6px;">🖨️ Print / Save as PDF</button>' + printDiv.innerHTML + '</body></html>');
+    w.document.close();
+    printDiv.remove();
+  }
+};
+
 window.arOpenNewTab=function(id){
   const el=document.getElementById(id);
   if(!el||!el._content) return;
@@ -5359,7 +5595,7 @@ async function send(){
           model:AR_MODEL,
           messages:[{role:'system',content:AR_SYS},...arMessages],
           stream:true,
-          max_tokens:8192,
+          max_tokens:16384,
           temperature:0.6,
           top_p:0.95
         })
