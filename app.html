@@ -1336,6 +1336,326 @@
   .ar-model-wrap{ width:100%; }
   .ar-msg{ max-width:100%; }
 }
+
+  /* ================= CHAT HISTORY FEATURE ================= */
+  .history-btn {
+    position: fixed;
+    top: 18px;
+    right: 68px;
+    z-index: 20;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(253, 246, 233, 0.06);
+    border: 1px solid rgba(255, 201, 60, 0.3);
+    color: var(--marigold);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform .22s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .history-btn:hover {
+    background: rgba(255, 201, 60, 0.16);
+    border-color: var(--marigold);
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(255, 159, 28, 0.35);
+  }
+  .history-badge-num {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: linear-gradient(135deg, #e11d48, #ff9f1c);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 17px;
+    height: 17px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 1.5px solid var(--night);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  }
+  .history-quick-btn, .new-chat-quick-btn {
+    border: 1px solid rgba(255, 201, 60, 0.3);
+    background: rgba(253, 246, 233, 0.06);
+    color: var(--ivory);
+    padding: 6px 13px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .history-quick-btn:hover, .new-chat-quick-btn:hover {
+    background: rgba(255, 201, 60, 0.16);
+    border-color: var(--marigold);
+    color: var(--marigold);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 159, 28, 0.2);
+  }
+  .history-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 7, 20, 0.65);
+    backdrop-filter: blur(5px);
+    z-index: 28;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  .history-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .history-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(390px, 92vw);
+    background: linear-gradient(165deg, rgba(29, 22, 64, 0.98), rgba(20, 15, 43, 0.99));
+    border-left: 1px solid rgba(255, 201, 60, 0.28);
+    z-index: 29;
+    transform: translateX(100%);
+    transition: transform .32s cubic-bezier(.2,.8,.3,1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.65);
+  }
+  .history-drawer.open {
+    transform: translateX(0);
+  }
+  .history-drawer-header {
+    padding: 20px 20px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 201, 60, 0.15);
+    background: rgba(20, 15, 43, 0.75);
+  }
+  .history-hdr-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .history-new-btn {
+    background: linear-gradient(90deg, var(--saffron), var(--marigold));
+    border: none;
+    color: #221200;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 6px 13px;
+    border-radius: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: filter .15s, transform .15s;
+  }
+  .history-new-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+  .history-close-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 201, 60, 0.2);
+    color: var(--ivory-dim);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: all .15s;
+  }
+  .history-close-btn:hover {
+    background: rgba(255, 201, 60, 0.15);
+    color: var(--ivory);
+  }
+  .history-search-row {
+    padding: 12px 18px 8px;
+    background: rgba(20, 15, 43, 0.4);
+  }
+  .history-search-row input {
+    width: 100%;
+    background: rgba(253, 246, 233, 0.06);
+    border: 1px solid rgba(255, 201, 60, 0.22);
+    border-radius: 12px;
+    padding: 8px 14px;
+    color: var(--ivory);
+    font-family: inherit;
+    font-size: 12.5px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .history-search-row input:focus {
+    border-color: var(--marigold);
+  }
+  .history-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .history-list::-webkit-scrollbar { width: 5px; }
+  .history-list::-webkit-scrollbar-thumb { background: rgba(255, 201, 60, 0.25); border-radius: 3px; }
+  .history-item {
+    background: rgba(253, 246, 233, 0.04);
+    border: 1px solid rgba(255, 201, 60, 0.18);
+    border-radius: 14px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all .2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .history-item:hover {
+    background: rgba(255, 201, 60, 0.09);
+    border-color: rgba(255, 201, 60, 0.45);
+    transform: translateX(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+  .history-item.active {
+    border-color: var(--saffron);
+    background: linear-gradient(145deg, rgba(255, 159, 28, 0.14), rgba(28, 154, 146, 0.12));
+    box-shadow: 0 0 16px rgba(255, 159, 28, 0.22);
+  }
+  .history-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .history-item-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ivory);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+  .history-item.active .history-item-title {
+    color: var(--marigold);
+  }
+  .history-item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--ivory-dim);
+    opacity: 0.8;
+  }
+  .history-item-preview {
+    font-size: 11.5px;
+    color: var(--ivory-dim);
+    opacity: 0.7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+  }
+  .history-item-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .history-act-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 201, 60, 0.15);
+    border-radius: 8px;
+    padding: 3px 8px;
+    color: var(--ivory-dim);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .history-act-btn:hover {
+    background: rgba(255, 201, 60, 0.15);
+    color: var(--marigold);
+    border-color: rgba(255, 201, 60, 0.35);
+  }
+  .history-act-btn.del:hover {
+    background: rgba(225, 29, 72, 0.2);
+    color: #ff8a8a;
+    border-color: rgba(225, 29, 72, 0.4);
+  }
+  .history-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ivory-dim);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .history-empty .empty-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  .history-drawer-footer {
+    padding: 12px 18px;
+    border-top: 1px solid rgba(255, 201, 60, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(20, 15, 43, 0.75);
+    font-size: 11.5px;
+  }
+  .history-clear-all-btn {
+    background: none;
+    border: 1px solid rgba(225, 29, 72, 0.3);
+    color: #ff8a8a;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .history-clear-all-btn:hover {
+    background: rgba(225, 29, 72, 0.15);
+    border-color: rgba(225, 29, 72, 0.5);
+  }
+  .history-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(20, 15, 43, 0.95);
+    border: 1px solid var(--marigold);
+    color: var(--ivory);
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    z-index: 100;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .25s ease;
+  }
+  .history-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
 </style>
 </head>
 <body class="no-scroll">
@@ -1394,6 +1714,10 @@
 <!-- ================= APP SCREEN ================= -->
 <div id="appScreen">
 
+  <button class="history-btn" id="historyBtn" title="Chat History (📜)">
+    <span class="history-btn-icon">📜</span>
+    <span class="history-badge-num" id="historyBadgeNum" style="display:none">0</span>
+  </button>
   <button class="gear-btn" id="gearBtn" title="Settings">⚙</button>
 <div class="user-chip" id="userChip">
     <span class="avatar-fallback" id="userAvatarFallback">G</span>
@@ -1412,6 +1736,30 @@
   </button>
 
   <div class="overlay" id="overlay"></div>
+  <!-- Chat History Overlay & Drawer -->
+  <div class="history-overlay" id="historyOverlay"></div>
+  <div class="history-drawer" id="historyDrawer">
+    <div class="history-drawer-header">
+      <div class="hd-title-wrap">
+        <span class="hd-icon" style="font-size:20px;">📜</span>
+        <h3 style="margin:0;font-size:16px;color:var(--marigold);font-weight:700;">Chat History</h3>
+      </div>
+      <div class="history-hdr-actions">
+        <button type="button" class="history-new-btn" id="historyDrawerNewBtn" title="Start a fresh chat">+ New Chat</button>
+        <button type="button" class="history-close-btn" id="historyCloseBtn" title="Close history">✕</button>
+      </div>
+    </div>
+    <div class="history-search-row">
+      <input type="text" id="historySearchInput" placeholder="🔍 Search conversations…">
+    </div>
+    <div class="history-list" id="historyList">
+      <!-- Populated dynamically -->
+    </div>
+    <div class="history-drawer-footer">
+      <button type="button" class="history-clear-all-btn" id="historyClearAllBtn">🗑️ Clear All</button>
+      <span class="hd-total-count" id="historyTotalCount" style="color:var(--ivory-dim);font-size:11px;">0 chats</span>
+    </div>
+  </div>
   <div class="panel" id="panel">
     <h3>Connection Setup</h3>
     <p>Bharat Voice needs an API key to think and reply. Your key stays in this browser tab only — it is never saved to disk or sent anywhere except the provider you choose below.</p>
@@ -1776,6 +2124,8 @@
 
     <div class="mode-switcher" id="modeSwitcher">
       <button type="button" class="mode-btn active" data-mode="allrounder">🎓 All-Rounder <small>Education</small></button>
+      <button type="button" class="history-quick-btn" id="historyQuickBtn" title="Open chat history">📜 History</button>
+      <button type="button" class="new-chat-quick-btn" id="newChatQuickBtn" title="Start a fresh chat">➕ New Chat</button>
     </div>
     <div class="tool-launcher">
       <div class="tool-title"><b>Tools</b> · create, study, analyse &amp; organise</div>
@@ -3502,7 +3852,7 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
       const res = await fetch(apiUrl, {
         method: 'POST',
         headers: apiKey ? { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey } : { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: visionModel, messages: requestMessages, temperature: 0.7, max_tokens: 1600 })
+        body: JSON.stringify({ model: visionModel, messages: requestMessages, temperature: 0.7, max_tokens: 3200 })
       });
       if (!res.ok){
         const errBody = await res.text();
@@ -3514,7 +3864,9 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
         : "(No response received)";
 
       conversation.push({ role: 'user', content: captionText + " [photo attached]" });
+      recordChatTurn('user', captionText, imageDataUrl);
       conversation.push({ role: 'assistant', content: reply });
+      recordChatTurn('ai', reply);
 
       addBubble('ai', reply);
       if (opts.speakReply){
@@ -4020,6 +4372,7 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
 
     if (!consumeCookies(cost, actionDesc)) return;
     conversation.push({ role: 'user', content: userText });
+    recordChatTurn('user', userText);
     statusText.textContent = "Thinking…";
     statusText.classList.add('active');
 
@@ -4034,7 +4387,7 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
           model: model,
           messages: [buildSystemMessage(!!opts.speakReply), ...conversation],
           temperature: 0.7,
-          max_tokens: 1600
+          max_tokens: 4096
         })
       });
 
@@ -4214,6 +4567,345 @@ Your owner is Danish Chaubey, also known as Pratham. Your founder and co-owner i
   loadStudentData(); renderPerformance(); setMode('allrounder'); updateCookieUI(); refreshPlanUI();
 })();
 
+
+
+  // ==========================================
+  // CHAT HISTORY & PERSISTENCE SYSTEM
+  // ==========================================
+  const CHAT_SESSIONS_KEY = 'bharatVoice.chatSessions';
+  const ACTIVE_SESSION_KEY = 'bharatVoice.activeSessionId';
+
+  function getStoredSessions(){
+    try {
+      const data = localStorage.getItem(CHAT_SESSIONS_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch(e){
+      console.warn('Could not read chat history:', e);
+      return [];
+    }
+  }
+
+  function saveStoredSessions(sessions){
+    try {
+      localStorage.setItem(CHAT_SESSIONS_KEY, JSON.stringify(sessions));
+      updateHistoryUI();
+    } catch(e){
+      console.warn('Could not save chat history:', e);
+    }
+  }
+
+  let activeChatSessionId = localStorage.getItem(ACTIVE_SESSION_KEY) || null;
+
+  function showHistoryToast(msg){
+    let t = document.getElementById('historyToast');
+    if (!t){
+      t = document.createElement('div');
+      t.id = 'historyToast';
+      t.className = 'history-toast';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  function getActiveChatSession(){
+    const sessions = getStoredSessions();
+    return sessions.find(s => s.id === activeChatSessionId) || null;
+  }
+
+  function ensureActiveChatSession(initialTitle){
+    let session = getActiveChatSession();
+    if (!session){
+      activeChatSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+      localStorage.setItem(ACTIVE_SESSION_KEY, activeChatSessionId);
+      session = {
+        id: activeChatSessionId,
+        title: initialTitle || 'New Conversation',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        conversation: [],
+        rawBubbles: []
+      };
+      const sessions = getStoredSessions();
+      sessions.unshift(session);
+      saveStoredSessions(sessions);
+    }
+    return session;
+  }
+
+  function recordChatTurn(who, text, imageDataUrl){
+    if (!text && !imageDataUrl) return;
+    const isFirst = !getActiveChatSession() || getActiveChatSession().rawBubbles.length === 0;
+    let initialTitle = undefined;
+    if (who === 'user' && isFirst){
+      let clean = (text || 'Photo Question').replace(/[\r\n]+/g, ' ').trim();
+      if (clean.length > 40) clean = clean.slice(0, 37) + '…';
+      initialTitle = clean;
+    }
+
+    const session = ensureActiveChatSession(initialTitle);
+    if (initialTitle && (session.title === 'New Conversation' || !session.title)){
+      session.title = initialTitle;
+    }
+
+    session.updatedAt = Date.now();
+    session.rawBubbles.push({
+      who,
+      text,
+      imageDataUrl: imageDataUrl || null,
+      timestamp: Date.now()
+    });
+    session.conversation = conversation.slice();
+
+    const sessions = getStoredSessions();
+    const idx = sessions.findIndex(s => s.id === session.id);
+    if (idx !== -1){
+      sessions[idx] = session;
+      // Bring active session to top
+      if (idx > 0){
+        sessions.splice(idx, 1);
+        sessions.unshift(session);
+      }
+    } else {
+      sessions.unshift(session);
+    }
+    saveStoredSessions(sessions);
+  }
+
+  function startNewChatSession(notify){
+    const curr = getActiveChatSession();
+    if (curr && curr.rawBubbles.length === 0){
+      if (notify) showHistoryToast('Already on a new blank chat');
+      closeHistoryDrawer();
+      return;
+    }
+
+    activeChatSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+    localStorage.setItem(ACTIVE_SESSION_KEY, activeChatSessionId);
+    conversation = [];
+
+    // Reset transcript
+    transcript.innerHTML = '';
+    const hint = document.createElement('div');
+    hint.className = 'empty-hint';
+    hint.id = 'emptyHint';
+    hint.innerHTML = 'A Groq API key is already built in — no setup needed. Optionally add your <b>learning profile</b> (role, grade, subject) in settings. Tap the glowing orb to speak, or type below — <b>Bharat Voice</b> can teach a concept, solve a problem step by step, mentor your code, build a lesson plan/worksheet/quiz, or <b>generate an image</b>. For an <b>NCERT concept map or exact-chapter detail</b>, paste the chapter text via the 📄 <b>Add chapter source</b> chip (or attach page photos with 📷) so answers track the real book instead of a general guess.';
+    transcript.appendChild(hint);
+
+    statusText.textContent = "New chat started · Tap the diya to speak";
+    statusText.classList.remove('active');
+
+    closeHistoryDrawer();
+    updateHistoryUI();
+    if (notify) showHistoryToast('✨ New chat session started');
+  }
+
+  function loadChatSession(sessionId){
+    const sessions = getStoredSessions();
+    const session = sessions.find(s => s.id === sessionId);
+    if (!session) return;
+
+    activeChatSessionId = session.id;
+    localStorage.setItem(ACTIVE_SESSION_KEY, activeChatSessionId);
+
+    conversation = Array.isArray(session.conversation) ? session.conversation.slice() : [];
+
+    transcript.innerHTML = '';
+    if (session.rawBubbles && session.rawBubbles.length > 0){
+      session.rawBubbles.forEach(b => {
+        addBubble(b.who, b.text, { imageDataUrl: b.imageDataUrl });
+      });
+      statusText.textContent = 'Loaded: "' + session.title + '"';
+      statusText.classList.remove('active');
+    } else {
+      const hint = document.createElement('div');
+      hint.className = 'empty-hint';
+      hint.id = 'emptyHint';
+      hint.innerHTML = 'This conversation is blank. Tap the diya or type to start!';
+      transcript.appendChild(hint);
+      statusText.textContent = "Tap the diya to speak";
+    }
+
+    closeHistoryDrawer();
+    updateHistoryUI();
+    showHistoryToast('📂 Loaded: "' + session.title + '"');
+  }
+
+  function deleteChatSession(sessionId, e){
+    if (e) e.stopPropagation();
+    let sessions = getStoredSessions();
+    sessions = sessions.filter(s => s.id !== sessionId);
+    saveStoredSessions(sessions);
+
+    if (activeChatSessionId === sessionId){
+      startNewChatSession(false);
+    } else {
+      updateHistoryUI();
+    }
+    showHistoryToast('🗑️ Chat deleted');
+  }
+
+  function exportChatSession(sessionId, e){
+    if (e) e.stopPropagation();
+    const sessions = getStoredSessions();
+    const session = sessions.find(s => s.id === sessionId);
+    if (!session) return;
+
+    let textContent = "=== BHARAT VOICE CHAT EXPORT ===\n";
+    textContent += "Title: " + session.title + "\n";
+    textContent += "Date: " + new Date(session.createdAt).toLocaleString() + "\n";
+    textContent += "Messages: " + (session.rawBubbles ? session.rawBubbles.length : 0) + "\n";
+    textContent += "================================\n\n";
+
+    (session.rawBubbles || []).forEach(b => {
+      const sender = b.who === 'user' ? 'YOU' : 'BHARAT VOICE';
+      textContent += "[" + sender + "]:\n" + b.text + "\n\n";
+    });
+
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (session.title.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 30) || 'chat') + '.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    showHistoryToast('⬇ Chat downloaded');
+  }
+
+  function clearAllChatHistory(){
+    if (!confirm('Are you sure you want to clear ALL chat history? This cannot be undone.')){
+      return;
+    }
+    localStorage.removeItem(CHAT_SESSIONS_KEY);
+    startNewChatSession(false);
+    showHistoryToast('All history cleared');
+  }
+
+  function formatTimeAgo(ts){
+    const now = Date.now();
+    const diff = Math.max(0, now - ts);
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return mins + 'm ago';
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return hours + 'h ago';
+    const days = Math.floor(hours / 24);
+    if (days === 1) return 'Yesterday';
+    if (days < 7) return days + 'd ago';
+    return new Date(ts).toLocaleDateString(undefined, { month:'short', day:'numeric' });
+  }
+
+  function updateHistoryUI(){
+    const sessions = getStoredSessions();
+    const badge = document.getElementById('historyBadgeNum');
+    if (badge){
+      if (sessions.length > 0){
+        badge.textContent = sessions.length > 99 ? '99+' : sessions.length;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    const totalCount = document.getElementById('historyTotalCount');
+    if (totalCount){
+      totalCount.textContent = sessions.length + (sessions.length === 1 ? ' chat' : ' chats');
+    }
+
+    const list = document.getElementById('historyList');
+    if (!list) return;
+
+    const searchTerm = (document.getElementById('historySearchInput')?.value || '').toLowerCase().trim();
+    const filtered = sessions.filter(s => {
+      if (!searchTerm) return true;
+      if (s.title && s.title.toLowerCase().includes(searchTerm)) return true;
+      if (s.rawBubbles && s.rawBubbles.some(b => b.text && b.text.toLowerCase().includes(searchTerm))) return true;
+      return false;
+    });
+
+    if (filtered.length === 0){
+      list.innerHTML = '<div class="history-empty"><div class="empty-icon">📜</div><p>' +
+        (searchTerm ? 'No conversations matching "' + escapeHtml(searchTerm) + '"' : 'No chat history yet.<br>Start a conversation and it will appear here automatically!') +
+        '</p></div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    filtered.forEach(session => {
+      const item = document.createElement('div');
+      item.className = 'history-item' + (session.id === activeChatSessionId ? ' active' : '');
+      item.onclick = () => loadChatSession(session.id);
+
+      const msgCount = session.rawBubbles ? session.rawBubbles.length : 0;
+      const lastMsg = session.rawBubbles && session.rawBubbles.length > 0
+        ? session.rawBubbles[session.rawBubbles.length - 1].text.slice(0, 80)
+        : 'Empty conversation';
+
+      item.innerHTML = `
+        <div class="history-item-top">
+          <span class="history-item-title">${escapeHtml(session.title || 'Conversation')}</span>
+        </div>
+        <div class="history-item-meta">
+          <span>💬 ${msgCount} ${msgCount === 1 ? 'msg' : 'msgs'}</span>
+          <span>${formatTimeAgo(session.updatedAt || session.createdAt)}</span>
+        </div>
+        <div class="history-item-preview">${escapeHtml(lastMsg)}</div>
+        <div class="history-item-actions">
+          <button type="button" class="history-act-btn" title="Download text" onclick="exportChatSession('${session.id}', event)">⬇ Export</button>
+          <button type="button" class="history-act-btn del" title="Delete conversation" onclick="deleteChatSession('${session.id}', event)">🗑</button>
+        </div>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  function openHistoryDrawer(){
+    const drawer = document.getElementById('historyDrawer');
+    const overlay = document.getElementById('historyOverlay');
+    if (drawer) drawer.classList.add('open');
+    if (overlay) overlay.classList.add('open');
+    updateHistoryUI();
+  }
+
+  function closeHistoryDrawer(){
+    const drawer = document.getElementById('historyDrawer');
+    const overlay = document.getElementById('historyOverlay');
+    if (drawer) drawer.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+  }
+
+  // Bind History Elements
+  document.getElementById('historyBtn')?.addEventListener('click', openHistoryDrawer);
+  document.getElementById('historyQuickBtn')?.addEventListener('click', openHistoryDrawer);
+  document.getElementById('historyCloseBtn')?.addEventListener('click', closeHistoryDrawer);
+  document.getElementById('historyOverlay')?.addEventListener('click', closeHistoryDrawer);
+  document.getElementById('historyDrawerNewBtn')?.addEventListener('click', () => startNewChatSession(true));
+  document.getElementById('newChatQuickBtn')?.addEventListener('click', () => startNewChatSession(true));
+  document.getElementById('historyClearAllBtn')?.addEventListener('click', clearAllChatHistory);
+  document.getElementById('historySearchInput')?.addEventListener('input', updateHistoryUI);
+  window.deleteChatSession = deleteChatSession;
+  window.exportChatSession = exportChatSession;
+
+  // Restore latest chat session on startup if available
+  (function initSessionRestore(){
+    const sessions = getStoredSessions();
+    if (sessions.length > 0){
+      const active = sessions.find(s => s.id === activeChatSessionId) || sessions[0];
+      if (active && active.rawBubbles && active.rawBubbles.length > 0){
+        activeChatSessionId = active.id;
+        localStorage.setItem(ACTIVE_SESSION_KEY, active.id);
+        conversation = Array.isArray(active.conversation) ? active.conversation.slice() : [];
+        transcript.innerHTML = '';
+        active.rawBubbles.forEach(b => {
+          addBubble(b.who, b.text, { imageDataUrl: b.imageDataUrl });
+        });
+      }
+    }
+    updateHistoryUI();
+  })();
+
 </script>
 
 <!-- ===== BHARAT VOICE ALLROUNDER OVERLAY ===== -->
@@ -4340,21 +5032,41 @@ const AR_ENDPOINTS = [
   { url:'https://api.bharatvoiceduai.website/api/allrounder', key:'', needsKey:false },
   { url:'https://api.bharatvoiceduai.website/api/chat',       key:'', needsKey:false }
 ];
-const AR_SYS = `You are Bharat Voice Allrounder — a powerful AI assistant exclusively for Maha Shakti members.
+const AR_SYS = `You are Bharat Voice Allrounder — an elite, multi-domain AI agent and reasoning partner with full software engineering, scientific, mathematical, creative, analytical, and problem-solving capabilities, built exclusively for Maha Shakti members.
 
-You can do ANYTHING:
-- Answer questions on any topic (science, math, history, coding, law, business, etc.)
-- Write, review, and debug code in any language
-- CREATE FILES: When the user asks to create a file, script, or project, output the COMPLETE file content inside a special block like this:
-  ===FILE: filename.ext===
-  <complete file content here>
-  ===END FILE===
-  You can output multiple files for a project.
-- EDIT FILES: When the user attaches a file, read its content and make the requested edits, then output the full edited file in the ===FILE=== block.
-- Write essays, emails, reports, stories, translations
-- Explain concepts step by step
+CAPABILITIES (YOU CAN PERFORM EVERY POSSIBLE TASK):
+1. SOFTWARE ENGINEERING & FULL-STACK DEVELOPMENT:
+   - Design, architect, write, review, optimize, and debug code across ANY programming language (Python, JavaScript/TypeScript, HTML/CSS, C/C++, Rust, Java, Go, PHP, Swift, Kotlin, Bash, SQL, etc.).
+   - Create complete, production-grade applications, scripts, CLI tools, web apps, REST/GraphQL APIs, database schemas, and algorithms.
+   - When asked to create files, scripts, or full multi-file projects, ALWAYS output the COMPLETE, UNTRUNCATED file content inside explicit file blocks:
+     ===FILE: path/filename.ext===
+     <complete code/content here>
+     ===END FILE===
+     You can generate multiple files for an entire project. Ensure all imports, syntax, and configurations are 100% correct and ready to run.
+   - When editing files attached by the user, read the content thoroughly, preserve working logic, apply requested changes or bug fixes, and output the entire updated file in the ===FILE=== block.
 
-Always be thorough. Format code with proper code blocks. For file creation, ALWAYS use the ===FILE: name=== block so the user can download it.`;
+2. ADVANCED REASONING, MATHEMATICS & SCIENCE:
+   - Solve complex mathematical, logical, and engineering problems step-by-step with rigorous proofs, derivations, and checks.
+   - Format all mathematical equations using clean LaTeX syntax: $...$ for inline math and $$...$$ for standalone display formulas.
+   - Analyze scientific phenomena, chemical reactions, physical dynamics, and biological processes with academic depth.
+
+3. WRITING, RESEARCH, STRATEGY & PROFESSIONAL WORK:
+   - Draft high-impact essays, research syntheses, technical documentation, business plans, financial models, marketing copy, and formal correspondence.
+   - Perform structured data analysis, summarize long documents, extract structured JSON, and translate naturally between languages (Hindi, English, Hinglish, and world languages).
+
+4. INTERACTIVE DIAGRAMMING & ARCHITECTURE:
+   - When requested or when visualizing workflows/hierarchies, produce clean, error-free \`\`\`mermaid diagrams (flowcharts, state diagrams, class diagrams, sequence diagrams, mindmaps).
+
+OPERATIONAL LIMITATIONS & BOUNDARIES (STRICT SAFETY & INTEGRITY):
+- SAFETY & SECURITY: Strictly refuse generation of malicious software (viruses, keyloggers, ransomware, exploits, DDoS tools), unauthorized penetration tools, or instructions to cause physical harm or illegal acts. Provide constructive ethical alternatives where appropriate.
+- REAL-WORLD BOUNDARY: Acknowledge that you cannot execute direct destructive system operations outside this browser environment. You provide the exact code, scripts, files, and guidance for the user to run.
+- VERIFIABILITY & HONESTY: Do not fabricate facts, statistics, citations, or benchmark numbers. When facts are subject to change or uncertain, state your confidence level and recommend verification.
+- ACADEMIC INTEGRITY: Provide thorough explanations, scaffolding, and working examples so the learner understands the underlying principles.
+
+RESPONSE STYLE:
+- Be exceptionally sharp, structured, comprehensive, and proactive.
+- Anticipate edge cases, provide setup instructions, and explain key design decisions.
+- Do not cut corners with placeholders like "// TODO: implement the rest" unless explicitly asked; deliver full, working solutions.`;
 
 /* ---- Elements ---- */
 const overlay    = document.getElementById('allrounderOverlay');
@@ -4379,7 +5091,12 @@ const attachIcon = document.getElementById('arAttachIcon');
 const attachLabel= document.getElementById('arAttachLabel');
 const attachRm   = document.getElementById('arAttachRemove');
 
-let arMessages  = [];
+let arMessages = (function(){
+  try {
+    const s = localStorage.getItem('bharatVoice.arHistory');
+    return s ? JSON.parse(s) : [];
+  } catch(e){ return []; }
+})();
 let isStreaming = false;
 let attachedFile= null; // { name, content, type, isImage, b64, mime }
 
@@ -4401,6 +5118,13 @@ function openAR(){
     chatArea.style.display  = 'flex';
     inputArea.style.display = 'block';
     setTimeout(()=>chatInput.focus(), 80);
+    if (chatArea.querySelectorAll('.ar-msg').length === 0 && arMessages.length > 0){
+      if(emptyState) emptyState.style.display='none';
+      arMessages.forEach(m => {
+        addBubble(m.role==='user'?'user':'ai', fmt(typeof m.content === 'string' ? m.content : (m.content[0]?.text || '')));
+      });
+      scrollDown();
+    }
   } else {
     gate.style.display      = 'flex';
     chatArea.style.display  = 'none';
@@ -4635,8 +5359,9 @@ async function send(){
           model:AR_MODEL,
           messages:[{role:'system',content:AR_SYS},...arMessages],
           stream:true,
-          max_tokens:4096,
-          temperature:0.7
+          max_tokens:8192,
+          temperature:0.6,
+          top_p:0.95
         })
       });
     } catch(e){ throw new Error('Connection failed: '+e.message); }
@@ -4690,6 +5415,7 @@ async function send(){
 
     if(!full){ full='(No response — try again)'; ab.innerHTML=fmt(full); }
     arMessages.push({role:'assistant',content:full});
+    try { localStorage.setItem('bharatVoice.arHistory', JSON.stringify(arMessages)); } catch(e){}
     timingInfo.textContent=(Date.now()-t0)+'ms · '+full.split(' ').length+' words · '+AR_MODEL;
 
   } catch(err){
@@ -4704,6 +5430,7 @@ async function send(){
 sendBtn.addEventListener('click',send);
 clearBtn.addEventListener('click',()=>{
   arMessages=[];
+  try { localStorage.removeItem('bharatVoice.arHistory'); } catch(e){}
   chatArea.querySelectorAll('.ar-msg').forEach(el=>el.remove());
   if(emptyState) emptyState.style.display='flex';
   timingInfo.textContent='Ready';
