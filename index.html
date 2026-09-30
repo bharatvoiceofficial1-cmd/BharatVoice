@@ -537,28 +537,6 @@
     opacity: 0.9;
   }
 
-  /* Floating Festive Particles */
-  .festive-particles-container {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    overflow: hidden;
-  }
-  .festive-spark {
-    position: absolute;
-    border-radius: 50%;
-    background: radial-gradient(circle, #fff7d6 10%, #ffc93c 60%, transparent 100%);
-    box-shadow: 0 0 10px 2px rgba(255, 201, 60, 0.65);
-    pointer-events: none;
-    animation: floatSparkUp linear infinite;
-  }
-  @keyframes floatSparkUp {
-    0% { transform: translateY(105vh) translateX(0) scale(0.6); opacity: 0; }
-    15% { opacity: 0.85; }
-    85% { opacity: 0.7; }
-    100% { transform: translateY(-10vh) translateX(var(--spark-drift, 25px)) scale(1.1); opacity: 0; }
-  }
 
   /* Navbar Navratri Badge */
   .nav-festive-badge {
@@ -703,130 +681,6 @@
     opacity: 0.85;
     margin-top: 16px;
     line-height: 1.5;
-  }
-
-  /* Video Promo Showcase Card */
-  .hero-video-col {
-    width: 100%;
-    position: relative;
-    z-index: 2;
-  }
-  .video-promo-card {
-    background: linear-gradient(155deg, rgba(32, 24, 70, 0.88), rgba(20, 15, 43, 0.94));
-    border: 1px solid rgba(255, 201, 60, 0.38);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 35px rgba(255, 159, 28, 0.18);
-    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
-    backdrop-filter: blur(14px);
-  }
-  .video-promo-card:hover {
-    border-color: rgba(255, 201, 60, 0.65);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 45px rgba(255, 159, 28, 0.28);
-  }
-  .video-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    background: rgba(20, 15, 43, 0.7);
-    border-bottom: 1px solid rgba(255, 201, 60, 0.2);
-  }
-  .video-header-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .video-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--festive-marigold);
-    letter-spacing: 0.02em;
-  }
-  .video-festive-tag {
-    font-size: 10.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, rgba(225, 29, 72, 0.3), rgba(255, 159, 28, 0.3));
-    border: 1px solid rgba(255, 201, 60, 0.4);
-    color: #ffd6a5;
-    padding: 3px 9px;
-    border-radius: 12px;
-  }
-  .video-media-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #090614;
-    overflow: hidden;
-  }
-  .hero-promo-player {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    background: #090614;
-  }
-  .video-unmute-btn {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
-    z-index: 5;
-    background: rgba(20, 15, 43, 0.85);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 201, 60, 0.4);
-    color: var(--marigold);
-    font-family: 'Poppins', sans-serif;
-    font-size: 11.5px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background .2s ease, transform .15s ease;
-  }
-  .video-unmute-btn:hover {
-    background: rgba(255, 159, 28, 0.25);
-    transform: scale(1.04);
-  }
-  .video-card-footer {
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    background: rgba(20, 15, 43, 0.7);
-    border-top: 1px solid rgba(255, 201, 60, 0.15);
-  }
-  .video-card-caption {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .video-card-caption strong {
-    font-size: 12.5px;
-    color: var(--ivory);
-  }
-  .video-card-caption span {
-    font-size: 11px;
-    color: var(--ivory-dim);
-    line-height: 1.4;
-  }
-  .video-card-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: linear-gradient(90deg, var(--festive-saffron), var(--festive-marigold));
-    color: #221200 !important;
-    font-size: 11.5px;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 16px;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: filter .15s ease;
-  }
-  .video-card-action:hover {
-    filter: brightness(1.1);
   }
 
   /* ============ NAVRATRI FESTIVE PRICING SECTION ============ */
@@ -1044,10 +898,322 @@
     }
   }
 
+
+  /* ============ SMOOTH BACKGROUND ANIMATION (GPU only, no JS) ============ */
+  @keyframes bgGradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      135deg,
+      rgba(255,159,28,0.07) 0%,
+      rgba(122,31,43,0.09) 25%,
+      rgba(15,110,110,0.08) 50%,
+      rgba(255,159,28,0.05) 75%,
+      rgba(36,26,77,0.0)   100%
+    );
+    background-size: 300% 300%;
+    animation: bgGradientShift 18s ease infinite;
+  }
+
+  /* ============ POSTER SHOWCASE CARD (replaces video) ============ */
+  .hero-poster-col {
+    width: 100%;
+    position: relative;
+    z-index: 2;
+  }
+  .poster-showcase-card {
+    background: linear-gradient(155deg, rgba(32,24,70,0.88), rgba(20,15,43,0.94));
+    border: 1px solid rgba(255,201,60,0.38);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 35px rgba(255,159,28,0.15);
+    transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+    will-change: transform;
+  }
+  .poster-showcase-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,201,60,0.65);
+    box-shadow: 0 28px 60px rgba(0,0,0,0.6), 0 0 45px rgba(255,159,28,0.25);
+  }
+  .poster-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: rgba(20,15,43,0.7);
+    border-bottom: 1px solid rgba(255,201,60,0.2);
+  }
+  .poster-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .poster-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--festive-marigold);
+    letter-spacing: 0.02em;
+  }
+  .poster-festive-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, rgba(225,29,72,0.3), rgba(255,159,28,0.3));
+    border: 1px solid rgba(255,201,60,0.4);
+    color: #ffd6a5;
+    padding: 3px 9px;
+    border-radius: 12px;
+  }
+  .poster-img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: #090614;
+  }
+  .hero-poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .4s ease;
+  }
+  .poster-showcase-card:hover .hero-poster-img {
+    transform: scale(1.03);
+  }
+  .poster-glow-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(255,159,28,0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .poster-card-footer {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(20,15,43,0.7);
+    border-top: 1px solid rgba(255,201,60,0.15);
+  }
+  .poster-card-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .poster-card-caption strong {
+    font-size: 12.5px;
+    color: var(--ivory);
+  }
+  .poster-card-caption span {
+    font-size: 11px;
+    color: var(--ivory-dim);
+    line-height: 1.4;
+  }
+  .poster-card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(90deg, var(--festive-saffron), var(--festive-marigold));
+    color: #221200 !important;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 7px 15px;
+    border-radius: 16px;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: filter .15s ease, transform .15s ease;
+  }
+  .poster-card-action:hover {
+    filter: brightness(1.1);
+    transform: scale(1.03);
+  }
+  @media (max-width: 820px) {
+    .hero-two-col-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .hero-poster-col { display: none; }
+  }
+
+  /* ============ FESTIVE ACCENTS — LOWER SECTIONS ============ */
+
+  /* Section heading festive left border glow */
+  .festive-section-head {
+    position: relative;
+    padding-left: 18px;
+    border-left: 3px solid var(--festive-saffron);
+    margin-bottom: 10px;
+  }
+  .festive-section-head::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(to bottom, var(--festive-kumkum), var(--festive-saffron), var(--festive-marigold));
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(255,159,28,0.5);
+  }
+
+  /* Diya separator between sections */
+  .festive-diya-sep {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 600px;
+    margin: 0 auto 44px;
+    opacity: 0.6;
+  }
+  .festive-diya-sep::before,
+  .festive-diya-sep::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,201,60,0.45), transparent);
+  }
+  .festive-diya-sep span {
+    font-size: 16px;
+    animation: diyaFlicker 2.4s ease-in-out infinite;
+  }
+
+  /* About section plaques festive glow */
+  .plaque {
+    transition: box-shadow .3s ease, border-color .3s ease;
+  }
+  .plaque:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 20px rgba(255,159,28,0.15) !important;
+    border-color: rgba(255,201,60,0.45) !important;
+  }
+
+  /* Feature cells festive hover */
+  .feature-cell {
+    transition: box-shadow .3s ease, border-color .3s ease, transform .25s ease;
+  }
+  .feature-cell:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.3), 0 0 18px rgba(255,159,28,0.12) !important;
+    border-color: rgba(255,201,60,0.4) !important;
+  }
+
+  /* FAQ festive accent */
+  .faq-item {
+    transition: border-color .25s ease, box-shadow .25s ease;
+  }
+  .faq-item:hover {
+    border-color: rgba(255,201,60,0.35) !important;
+    box-shadow: 0 4px 16px rgba(255,159,28,0.1) !important;
+  }
+
+  /* Poster/card festive ring glow */
+  .poster-card {
+    transition: box-shadow .3s ease, transform .25s ease;
+  }
+  .poster-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.4), 0 0 22px rgba(255,159,28,0.2) !important;
+  }
+
+  /* Security section festive icon */
+  .security-item .icon, .sec-icon {
+    transition: filter .3s ease;
+  }
+  .security-item:hover .icon, .security-item:hover .sec-icon {
+    filter: drop-shadow(0 0 6px rgba(255,201,60,0.6));
+  }
+
+  /* Contact form festive accents already present; add glow to submit */
+  .submit-btn {
+    transition: filter .2s ease, transform .15s ease, box-shadow .2s ease !important;
+  }
+  .submit-btn:hover {
+    box-shadow: 0 8px 24px rgba(255,159,28,0.35) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  /* Footer festive bottom accent line */
+  footer {
+    position: relative;
+  }
+  footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,201,60,0.4), rgba(225,29,72,0.3), rgba(255,201,60,0.4), transparent);
+  }
+
+  /* Eyebrow tag festive dot for lower sections */
+  .section-eyebrow-festive {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--festive-marigold);
+    margin-bottom: 10px;
+    opacity: 0.9;
+  }
+  .section-eyebrow-festive .diya-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--festive-saffron);
+    box-shadow: 0 0 8px rgba(255,159,28,0.7);
+    animation: diyaFlicker 2.4s ease-in-out infinite;
+  }
+
+  /* Access panel festive border */
+  .access-panel {
+    border-color: rgba(255,201,60,0.25) !important;
+    transition: border-color .3s ease !important;
+  }
+  .access-panel:hover {
+    border-color: rgba(255,201,60,0.45) !important;
+  }
+
+  /* Layer 3 (Launch App) festive glow on CTA */
+  #layer3 .btn, #layer3 a.btn {
+    transition: box-shadow .2s ease, transform .15s ease, filter .2s ease !important;
+  }
+  #layer3 .btn:hover, #layer3 a.btn:hover {
+    box-shadow: 0 8px 28px rgba(255,159,28,0.4) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  /* Mandala: ensure will-change for GPU compositing */
+  .festive-mandala-bg {
+    will-change: transform;
+  }
+
+  /* ============ HERO RESPONSIVE FIX ============ */
+  @media (max-width: 820px) {
+    .hero-two-col-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .festive-cta-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .festive-cta-row .btn {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+
 </style>
 </head>
 <body>
-<div class="festive-particles-container" id="festiveParticles" aria-hidden="true"></div>
+
 
 <header class="rail">
   <a href="#layer1" class="rail-mark">
@@ -1112,7 +1278,6 @@
             <span class="btn-diya">🪔</span>
             <span>Get 35% OFF · Explore Plans</span>
           </a>
-          <a href="#layer2" class="btn btn-primary" id="toLayer2Btn">Explore Features &amp; Access</a>
           <a href="app.html" class="btn btn-ghost">Open App ⚡</a>
         </div>
         <div class="festive-guarantee-note">
@@ -1120,43 +1285,32 @@
         </div>
       </div>
 
-      <!-- Right Column: Official Promotional Video Showcase -->
-      <div class="hero-video-col">
-        <div class="video-promo-card">
-          <div class="video-card-header">
-            <div class="video-header-left">
-              <span class="video-diya">🪔</span>
-              <span class="video-title">Bharat Voice AI · Official Promo</span>
+      <!-- Right Column: Festive Poster Showcase -->
+      <div class="hero-poster-col">
+        <div class="poster-showcase-card">
+          <div class="poster-card-header">
+            <div class="poster-header-left">
+              <span class="diya-flame">🪔</span>
+              <span class="poster-title">Bharat Voice AI · Navratri 2026</span>
             </div>
-            <div class="video-festive-tag">Festive 35% OFF</div>
+            <div class="poster-festive-tag">Festive 35% OFF</div>
           </div>
-
-          <div class="video-media-wrapper">
-            <video
-              id="heroPromoVideo"
-              class="hero-promo-player"
-              playsinline
-              controls
-              muted
-              autoplay
-              loop
-              preload="metadata"
-              poster="assets/posters/poster1.jpg">
-              <source src="assets/video/bharat_voice_promo.mp4" type="video/mp4">
-              <source src="assets/video/bharat_voice_1min.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-            <button type="button" class="video-unmute-btn" id="videoUnmuteBtn" onclick="toggleHeroVideoSound()" aria-label="Toggle Sound">
-              <span id="videoSoundIcon">🔇 Tap for Sound</span>
-            </button>
+          <div class="poster-img-wrapper">
+            <img
+              src="assets/posters/poster1.jpg"
+              alt="Bharat Voice AI - Navratri Special Offer"
+              class="hero-poster-img"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="poster-glow-overlay"></div>
           </div>
-
-          <div class="video-card-footer">
-            <div class="video-card-caption">
+          <div class="poster-card-footer">
+            <div class="poster-card-caption">
               <strong>बोल कर सीखो · Voice Doubt Solver</strong>
-              <span>Interactive bilingual AI tutor for board exams &amp; doubts.</span>
+              <span>Interactive bilingual AI tutor · Navratri 35% OFF</span>
             </div>
-            <a href="#pricing" class="video-card-action">Unlock 35% OFF</a>
+            <a href="#pricing" class="poster-card-action">Unlock 35% OFF</a>
           </div>
         </div>
       </div>
@@ -1169,6 +1323,7 @@
   <div class="layer-inner enter-motion">
     <div class="about-grid">
       <div class="why-block">
+        <div class="section-eyebrow-festive"><span class="diya-dot"></span>🪔 हमारे बारे में · About Us</div>
         <h2 class="dev">क्यों बनाया — Why it was made</h2>
         <p>Most study apps are built for students who already read fast, type fast, and think in English. Bharat Voice was built the other way round: for a student in a small town who is more comfortable talking than typing, and who moves between Hindi and English mid-sentence without thinking about it.</p>
         <p>The goal isn't another chatbot. It's a tutor that will explain a concept a third time without getting impatient, generate a fresh practice paper at 11pm before an exam, and remember how you're actually performing across subjects — not just answer one question and forget you exist.</p>
@@ -1197,10 +1352,15 @@
   </div>
 </section>
 
+
+<!-- festive separator -->
+<div class="festive-diya-sep" aria-hidden="true"><span>🪔</span></div>
+
 <!-- ===================== LAYER 2 — HOW IT WORKS + ACCESS ===================== -->
 <section class="layer" id="layer2">
   <div class="layer-inner enter-motion">
     <div class="layer2-head">
+      <div class="section-eyebrow-festive"><span class="diya-dot"></span>🪔 Navratri 2026 · AI Features</div>
       <div class="eyebrow-tag"><span class="dot"></span>How it works</div>
       <h2>One voice, every subject</h2>
       <p>Tap the diya (the glowing orb) and talk, or type if you're somewhere quiet. Bharat Voice replies in the same language you used, and turns the conversation into whatever you actually need next.</p>
@@ -1399,6 +1559,10 @@
 </section>
 
 <!-- ===================== CURRICULUM & SUBJECTS ===================== -->
+
+<!-- festive separator -->
+<div class="festive-diya-sep" aria-hidden="true"><span>🌸</span></div>
+
 <section class="layer" id="subjects">
   <div class="layer-inner enter-motion">
     <div class="layer2-head">
@@ -1865,13 +2029,6 @@
     }
   }
 
-  const toLayer2Btn = document.getElementById('toLayer2Btn');
-  if (toLayer2Btn) {
-    toLayer2Btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      goTo(2, e.currentTarget);
-    });
-  }
 
   document.getElementById('guestBtn').addEventListener('click', (e) => {
     const name = document.getElementById('guestName').value.trim();
@@ -2008,38 +2165,7 @@
     if (n <= current) goTo(n);
   }));
 
-  // Video Sound Toggle Function
-  function toggleHeroVideoSound() {
-    const video = document.getElementById('heroPromoVideo');
-    const soundText = document.getElementById('videoSoundIcon');
-    if (!video) return;
-    if (video.muted) {
-      video.muted = false;
-      if (soundText) soundText.textContent = '🔊 Sound On';
-    } else {
-      video.muted = true;
-      if (soundText) soundText.textContent = '🔇 Tap for Sound';
-    }
-  }
-  window.toggleHeroVideoSound = toggleHeroVideoSound;
 
-  // Initialize subtle festive particles
-  (function initFestiveParticles(){
-    const container = document.getElementById('festiveParticles');
-    if (!container || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    for (let i = 0; i < 14; i++) {
-      const spark = document.createElement('div');
-      spark.className = 'festive-spark';
-      const size = Math.random() * 4 + 3;
-      spark.style.width = size + 'px';
-      spark.style.height = size + 'px';
-      spark.style.left = (Math.random() * 100) + 'vw';
-      spark.style.animationDuration = (Math.random() * 12 + 10) + 's';
-      spark.style.animationDelay = (Math.random() * 8) + 's';
-      spark.style.setProperty('--spark-drift', (Math.random() * 60 - 30) + 'px');
-      container.appendChild(spark);
-    }
-  })();
 
 </script>
 
