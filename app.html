@@ -2229,6 +2229,7 @@
       </div>
     </div>
     <div class="status-text" id="statusText">Tap the diya to speak</div>
+    <button id="neuralVoiceToggle" title="Toggle Neural TTS voice" onclick="(function(){const on=localStorage.getItem('neuralVoice')!=='off';localStorage.setItem('neuralVoice',on?'off':'on');const btn=document.getElementById('neuralVoiceToggle');btn.classList.toggle('nv-on',!on);btn.innerHTML=!on?'🎙️ Neural Voice ON':'🔈 Neural Voice OFF';})();" style="margin:4px auto 0;display:block;background:rgba(255,201,60,0.08);border:1px solid rgba(255,201,60,0.25);color:#ffc93c;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;transition:all .3s">🔈 Neural Voice OFF</button>
 
     <!-- Guest-Only AdSense: Top Banner -->
     <div class="guest-ad-wrapper" id="guestAdTop" style="display:none;">
@@ -2850,6 +2851,15 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
   const saveProfileBtn = document.getElementById('saveProfileBtn');
   const profileStatus = document.getElementById('profileStatus');
   const quickActions = document.getElementById('quickActions');
+
+  // Initialize Neural Voice toggle state
+  (function(){
+    const nvBtn = document.getElementById('neuralVoiceToggle');
+    if (!nvBtn) return;
+    const isOn = localStorage.getItem('neuralVoice') !== 'off';
+    nvBtn.classList.toggle('nv-on', isOn);
+    nvBtn.innerHTML = isOn ? '🎙️ Neural Voice ON' : '🔈 Neural Voice OFF';
+  })();
 
   // Pre-fill the settings panel with the built-in key so it's visible/editable.
   apiKeyInput.value = apiKey;
@@ -4499,6 +4509,21 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
       pdfBtn.onclick = () => exportBubbleAsPdf(b);
       actionBar.appendChild(pdfBtn);
 
+      // 🔊 Speak button — plays AI reply via neural TTS
+      const speakBtn = document.createElement('button');
+      speakBtn.type = 'button';
+      speakBtn.className = 'bubble-action-btn';
+      speakBtn.innerHTML = '🔊 Speak';
+      speakBtn.title = 'Read this reply aloud';
+      speakBtn.onclick = () => {
+        if (speakBtn.dataset.playing === '1') { stopSpeaking(); speakBtn.dataset.playing = '0'; speakBtn.innerHTML = '🔊 Speak'; return; }
+        speakBtn.dataset.playing = '1';
+        speakBtn.innerHTML = '⏹ Stop';
+        speak(text).finally(() => { speakBtn.dataset.playing = '0'; speakBtn.innerHTML = '🔊 Speak'; });
+      };
+      actionBar.appendChild(speakBtn);
+
+
       // Check if bubble contains HTML code for Live Preview
       const hasHtmlBlock = (text && /\`\`\`html[\s\S]*?\`\`\`/i.test(text)) || /<!DOCTYPE html>/i.test(text);
       if (hasHtmlBlock) {
@@ -4740,24 +4765,58 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
     return s.trim();
   }
 
-  // ---------- Speech synthesis ----------
-  function speak(text){
-    if (!('speechSynthesis' in window)) {
-      statusText.textContent = "Tap the diya to speak again";
-      statusText.classList.remove('active');
-      return;
-    }
+  // ---------- Neural TTS (edge-tts backend) + browser fallback ----------
+  let _currentAudio = null;
+
+  function stopSpeaking() {
+    if (_currentAudio) { try { _currentAudio.pause(); _currentAudio.src = ''; } catch(e){} _currentAudio = null; }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    orbBtn.classList.remove('speaking');
+    statusText.textContent = "Tap the diya to speak";
+    statusText.classList.remove('active');
+  }
+
+  async function speak(text) {
+    stopSpeaking();
     const cleanSpoken = cleanTextForSpeech(text);
-    const utter = new SpeechSynthesisUtterance(cleanSpoken);
-    utter.rate = 1;
-    utter.pitch = 1.02;
+    if (!cleanSpoken) return;
+
+    // If user disabled neural voice, use browser fallback directly
+    if (localStorage.getItem('neuralVoice') === 'off') { _fallbackSpeak(cleanSpoken); return; }
+
     orbBtn.classList.add('speaking');
     statusText.textContent = "Speaking…";
-    utter.onend = () => {
-      orbBtn.classList.remove('speaking');
-      statusText.textContent = "Tap the diya to speak";
-      statusText.classList.remove('active');
-    };
+    statusText.classList.add('active');
+
+    // Build TTS URL from stored apiUrl (strip trailing /api/chat if present)
+    const base = (localStorage.getItem('apiUrl') || 'https://api.bharatvoiceduai.website').replace(/\/api\/chat$/, '');
+
+    try {
+      const res = await fetch(base + '/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: cleanSpoken })
+      });
+      if (!res.ok) throw new Error('TTS HTTP ' + res.status);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      _currentAudio = audio;
+      audio.onended = () => { URL.revokeObjectURL(url); stopSpeaking(); };
+      audio.onerror = () => { URL.revokeObjectURL(url); _fallbackSpeak(cleanSpoken); };
+      audio.play();
+    } catch(err) {
+      console.warn('Neural TTS failed, using browser fallback:', err);
+      _fallbackSpeak(cleanSpoken);
+    }
+  }
+
+  function _fallbackSpeak(cleanSpoken) {
+    if (!('speechSynthesis' in window)) { stopSpeaking(); return; }
+    const utter = new SpeechSynthesisUtterance(cleanSpoken);
+    utter.rate = 1; utter.pitch = 1.02;
+    utter.lang = 'en-IN';
+    utter.onend = () => stopSpeaking();
     window.speechSynthesis.speak(utter);
   }
 
