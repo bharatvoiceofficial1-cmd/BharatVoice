@@ -1611,6 +1611,17 @@
     <div class="telemetry-line" id="tLine4"><span>[AUDIO_MESH]</span> Sub-50ms acoustic recognition listening active.</div>
     <div class="telemetry-line" id="tLine5" style="color:#7fdc9a; font-weight:700;"><span>[CONNECTED]</span> "Hey! I'm here to help with your daily tasks and routine!"</div>
   </div>
+
+  <div style="display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap; position:relative; z-index:30;">
+    <a href="app.html" class="btn-enter-launch" style="text-decoration:none; padding:10px 22px; font-size:13px;">
+      <span>⚡ OPEN MAIN APP (app.html)</span>
+      <span>→</span>
+    </a>
+    <button type="button" class="btn-ghost-terminal" onclick="dismissModalToVoice()" style="cursor:pointer; padding:10px 20px; font-size:13px;">
+      <span>🎙️ TALK IN VOICE HUB</span>
+      <span>↓</span>
+    </button>
+  </div>
 </div>
 
 <!-- ================= LAYER 00 // INITIALIZATION GATE (FIRST LAYER) ================= -->
@@ -1635,14 +1646,14 @@
           </p>
 
           <div class="gate-action-cluster">
-            <button class="btn-enter-launch" onclick="triggerEnterSequence()">
-              <span>⚡ ENTER SYSTEM &amp; TALK</span>
-              <span style="font-size:18px;">🎙️</span>
-            </button>
-            <a href="#voiceLayer" class="btn-ghost-terminal">
-              <span>EXPLORE VOICE HUB</span>
-              <span>↓</span>
+            <a href="app.html" class="btn-enter-launch" style="text-decoration:none;">
+              <span>⚡ OPEN MAIN APP (STUDY CONSOLE)</span>
+              <span style="font-size:18px;">→</span>
             </a>
+            <button class="btn-ghost-terminal" onclick="triggerEnterSequence()" style="cursor:pointer;">
+              <span>🎙️ TALK WITH AI (VOICE AGENT)</span>
+              <span>↓</span>
+            </button>
           </div>
 
           <div class="gate-stats-bar">
@@ -2129,17 +2140,32 @@
 <!-- ================= SYSTEM FOOTER ================= -->
 <footer class="system-footer">
   <div class="footer-row">
-    <div>
-      <strong style="color:#fff; font-family:var(--tech-font);">BHARAT VOICE AI</strong> · Quantum Bilingual Study &amp; Personal Assistant
-      <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">© 2026 Bharat Voice Platform · Google AdSense Verified</div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <a href="#layer0" class="footer-logo-frame" style="display:flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:14px; background:rgba(0,245,212,0.08); border:1px solid var(--border-tech); box-shadow:0 0 20px rgba(0,245,212,0.25); overflow:hidden; flex-shrink:0;">
+        <img src="assets/logo.png" alt="Bharat Voice Logo" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 0 6px rgba(0,245,212,0.5));">
+      </a>
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <strong style="color:#fff; font-family:var(--tech-font); font-size:16px; letter-spacing:0.02em;">BHARAT VOICE AI</strong>
+          <span style="font-family:var(--mono-font); font-size:10px; color:var(--cyan-core); background:rgba(0,245,212,0.1); border:1px solid rgba(0,245,212,0.3); border-radius:12px; padding:2px 8px;">QUANTUM OS v2.4</span>
+        </div>
+        <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">Next-Gen Bilingual Academic Reasoning &amp; Personal Copilot Console</div>
+        <div style="font-size:10.5px; color:rgba(148,163,184,0.6); margin-top:2px;">© 2026 Bharat Voice · Google AdSense Verified &amp; Encrypted</div>
+      </div>
     </div>
-    <ul class="footer-nav">
-      <li><a href="terms.html">TERMS</a></li>
-      <li><a href="privacy.html">PRIVACY</a></li>
-      <li><a href="disclaimer.html">DISCLAIMER</a></li>
-      <li><a href="contact.html">CONTACT</a></li>
-      <li><a href="app.html">STUDY CONSOLE</a></li>
-    </ul>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px;">
+      <a href="app.html" class="btn-primary-app" style="padding:10px 20px; font-size:13px; text-decoration:none;">
+        <span>⚡ OPEN MAIN APP (STUDY CONSOLE)</span>
+        <span>→</span>
+      </a>
+      <ul class="footer-nav">
+        <li><a href="terms.html">TERMS</a></li>
+        <li><a href="privacy.html">PRIVACY</a></li>
+        <li><a href="disclaimer.html">DISCLAIMER</a></li>
+        <li><a href="contact.html">CONTACT</a></li>
+        <li><a href="app.html" style="color:var(--cyan-core); font-weight:700;">STUDY CONSOLE</a></li>
+      </ul>
+    </div>
   </div>
 </footer>
 
@@ -2338,14 +2364,19 @@
       speakTeenVoice("Hey there! Welcome to Bharat Voice. I'm your personal AI buddy. We can organize your tasks, plan your study routine, or just hang out and chat. I'm listening right now—what's on your agenda today?");
     }, 400);
 
-    // Transition smoothly to Layer 01 Voice Hub
+    // Transition smoothly to Layer 01 Voice Hub if user doesn't pick an option
     setTimeout(() => {
-      modal.classList.remove('active');
-      const target = document.getElementById('voiceLayer');
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 1800);
+      dismissModalToVoice();
+    }, 2800);
+  }
+
+  function dismissModalToVoice() {
+    const modal = document.getElementById('techPortalModal');
+    if (modal) modal.classList.remove('active');
+    const target = document.getElementById('voiceLayer');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   // Active Layer Observer for Dock Highlighting

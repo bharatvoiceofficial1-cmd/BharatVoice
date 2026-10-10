@@ -2092,6 +2092,7 @@
     <header style="width:100%; margin-bottom:14px;">
       <div style="display:flex; align-items:center; justify-content:space-between; width:100%; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); flex-wrap:wrap; gap:10px;">
         <a href="index.html" style="display:inline-flex; align-items:center; gap:8px; color:var(--cyan-core); text-decoration:none; font-family:var(--mono-font); font-size:12px; font-weight:700; background:rgba(0,245,212,0.08); border:1px solid var(--border-tech); padding:6px 14px; border-radius:20px; transition:all 0.2s;">
+          <img src="assets/logo.png" alt="Bharat Voice Logo" style="width:22px; height:22px; object-fit:contain; border-radius:4px;">
           ← SYSTEM GATEWAY
         </a>
         <div style="display:flex; align-items:center; gap:8px;">
@@ -2256,15 +2257,24 @@
       <div class="guest-ad-upgrade-note">Remove ads — <a id="guestAdUpgradeBottom">sign in with Google</a></div>
     </div>
 
-    <footer>
-      Bharat Voice · AI Education Assistant ·
-      <a href="terms.html" target="_blank" style="color:var(--marigold); text-decoration:none; margin:0 6px;">Terms &amp; Conditions</a> ·
-      <a href="privacy.html" target="_blank" style="color:var(--marigold); text-decoration:none; margin:0 6px;">Privacy Policy</a> ·
-      <a href="disclaimer.html" target="_blank" style="color:var(--marigold); text-decoration:none; margin:0 6px;">Disclaimer</a> ·
-      <a href="contact.html" target="_blank" style="color:var(--marigold); text-decoration:none; margin:0 6px;">Contact</a> ·
-      <a href="mailto:bharatvoicofficial1@gmail.com" target="_blank" style="color:var(--marigold); text-decoration:none; margin:0 6px;">Contact (AI Purpose)</a> ·
-      <a href="mailto:bharatvoiceoffficial1@gmail.com" target="_blank" style="color:var(--marigold); text-decoration:none; margin:0 6px;">Official Email</a> ·
-      <a href="tel:+916387916656" target="_blank" style="color:var(--marigold); text-decoration:none; margin:0 6px;">Helpline: +91 63879 16656</a>
+    <footer style="margin-top:auto; padding-top:24px; padding-bottom:12px; font-size:12px; color:rgba(150,200,220,0.5); text-align:center; width:100%; display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div style="display:flex; align-items:center; gap:12px; justify-content:center;">
+        <a href="index.html" title="Back to System Gateway" style="display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; background:rgba(0,245,212,0.08); border:1px solid rgba(0,245,212,0.25); box-shadow:0 0 16px rgba(0,245,212,0.2); overflow:hidden;">
+          <img src="assets/logo.png" alt="Bharat Voice Logo" style="width:100%; height:100%; object-fit:contain;">
+        </a>
+        <div style="text-align:left;">
+          <div style="font-family:var(--tech-font); font-weight:700; color:#fff; font-size:14px; letter-spacing:0.02em;">BHARAT VOICE · STUDY CONSOLE</div>
+          <div style="font-size:11px; color:var(--cyan-core); font-family:var(--mono-font);">QUANTUM DUAL ENGINE // ONLINE</div>
+        </div>
+      </div>
+      <div>
+        <a href="index.html" style="color:var(--cyan-core); text-decoration:none; margin:0 6px;">← System Gateway</a> ·
+        <a href="terms.html" target="_blank" style="color:rgba(150,200,220,0.7); text-decoration:none; margin:0 6px;">Terms</a> ·
+        <a href="privacy.html" target="_blank" style="color:rgba(150,200,220,0.7); text-decoration:none; margin:0 6px;">Privacy</a> ·
+        <a href="disclaimer.html" target="_blank" style="color:rgba(150,200,220,0.7); text-decoration:none; margin:0 6px;">Disclaimer</a> ·
+        <a href="contact.html" target="_blank" style="color:rgba(150,200,220,0.7); text-decoration:none; margin:0 6px;">Contact</a> ·
+        <a href="tel:+916387916656" target="_blank" style="color:rgba(150,200,220,0.7); text-decoration:none; margin:0 6px;">Helpline: +91 63879 16656</a>
+      </div>
     </footer>
   </div>
 
@@ -3473,7 +3483,6 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
   });
 
   refreshPlanUI();
-  const orbBtn = document.getElementById('orbBtn');
   // Voice-to-voice interaction has been upgraded and moved to the Homepage Layer 00/01.
   // Main app console is optimized for high-speed text, code and academic tools.
 
@@ -4816,9 +4825,11 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
   function stopSpeaking() {
     if (_currentAudio) { try { _currentAudio.pause(); _currentAudio.src = ''; } catch(e){} _currentAudio = null; }
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    orbBtn.classList.remove('speaking');
-    statusText.textContent = "Ready";
-    statusText.classList.remove('active');
+    if (orbBtn) orbBtn.classList.remove('speaking');
+    if (statusText) {
+      statusText.textContent = "Ready";
+      statusText.classList.remove('active');
+    }
   }
 
   async function speak(text) {
@@ -4829,9 +4840,11 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
     // If user disabled neural voice, use browser fallback directly
     if (localStorage.getItem('neuralVoice') === 'off') { _fallbackSpeak(cleanSpoken); return; }
 
-    orbBtn.classList.add('speaking');
-    statusText.textContent = "Speaking…";
-    statusText.classList.add('active');
+    if (orbBtn) orbBtn.classList.add('speaking');
+    if (statusText) {
+      statusText.textContent = "Speaking…";
+      statusText.classList.add('active');
+    }
 
     // Build TTS URL from stored apiUrl (strip trailing /api/chat if present)
     const base = (localStorage.getItem('apiUrl') || 'https://api.bharatvoiceduai.website').replace(/\/api\/chat$/, '');
