@@ -4556,197 +4556,106 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
     }
   }
 
-  // ---------- Intelligent Fallback Knowledge Generator ----------
+  // ---------- Smart Context-Aware Reply Generator ----------
   function generateSmartEducationalReply(userText) {
     const q = (userText || '').toLowerCase().trim();
-    if (/quadratic|solve|equation|\^2|formula|2x\^2|algebra/i.test(q)) {
-      return `### 📐 Mathematical Solution Breakdown\n\n` +
-        `**Problem Analysis:** Solving equation: \`2x² + 5x - 3 = 0\`\n\n` +
-        `Using standard quadratic formula: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$\n` +
-        `- Coefficients: $a = 2$, $b = 5$, $c = -3$\n` +
-        `- Discriminant ($D$): $b^2 - 4ac = (5)^2 - 4(2)(-3) = 25 + 24 = 49$\n` +
-        `- $\\sqrt{D} = \\sqrt{49} = 7$\n\n` +
-        `**Roots Calculation:**\n` +
-        `1. $x_1 = \\frac{-5 + 7}{4} = \\mathbf{0.5}$ (or $1/2$)\n` +
-        `2. $x_2 = \\frac{-5 - 7}{4} = \\mathbf{-3}$\n\n` +
-        `Verified: $(2x - 1)(x + 3) = 2x^2 + 5x - 3 = 0$. Solutions are verified!`;
+
+    // ── 1. GREETINGS & CASUAL TALK ──
+    if (/^(hi+|hello+|hey+|helo|yo|sup|what'?s up|namaste|hola|howdy)[\s!?]*$/.test(q)) {
+      return `Hey! 👋 I'm **Bharat Voice** — your AI study buddy and assistant. What would you like help with today? Ask me anything — math, science, coding, history, or just chat!`;
     }
-    if (/concept\s*map|mind\s*map|flowchart|diagram/i.test(q)) {
-      const topicName = userText.replace(/create a clear|interactive concept map with a mermaid diagram and structured breakdown for:|explain/gi, '').trim() || 'Core Domain';
-      return `### 🗺️ Interactive Concept Architecture\n\n` +
-        `Here is the knowledge graph and conceptual breakdown for **"${topicName}"**:\n\n` +
-        `\`\`\`mermaid\n` +
-        `graph TD\n` +
-        `    A["📌 ${topicName}"] --> B["🔬 Theoretical Foundations"]\n` +
-        `    A --> C["⚙️ Operational Mechanics"]\n` +
-        `    A --> D["🚀 Practical Applications"]\n` +
-        `    B --> B1["Definitions & Axioms"]\n` +
-        `    B --> B2["Governing Formulas & Laws"]\n` +
-        `    C --> C1["Step-by-Step Pipeline"]\n` +
-        `    C --> C2["Error Traps & Constraints"]\n` +
-        `    D --> D1["Real-World Problem Solving"]\n` +
-        `    D --> D2["Exam Verification Checklist"]\n` +
-        `\`\`\`\n\n` +
-        `#### 📋 Structural Takeaways:\n` +
-        `1. **Base Axioms:** Master the foundational principles before tackling complex variations.\n` +
-        `2. **Pipeline:** Understand how parameters interact in equations and physical relationships.\n` +
-        `3. **Verification:** Always substitute edge cases back into formulas to verify correctness.`;
+    if (/how are you|how r u|kaise ho|kya haal|aap kaise/.test(q)) {
+      return `I'm doing great, thanks for asking! 😊 Ready to help you with studies, coding, or anything else. What's on your mind?`;
     }
-    if (/sample\s*paper|question\s*paper|test\s*paper|exam\s*paper/i.test(q)) {
-      const topicName = userText.replace(/create a complete sample question paper with sections, marks, difficulty balance, and answer key for:/gi, '').trim() || 'Academic Assessment';
-      return `### 📝 Comprehensive Examination Paper\n\n` +
-        `**Subject / Topic:** ${topicName}\n` +
-        `**Maximum Marks:** 50 | **Duration:** 90 Minutes\n\n` +
-        `---\n\n` +
-        `#### SECTION A: Objective & Conceptual (1 Mark Each)\n` +
-        `1. **Q1:** State the fundamental definition and SI unit of the primary quantity involved.\n` +
-        `2. **Q2 (MCQ):** Which condition must be satisfied for equilibrium?\n` +
-        `   - (A) Net force is zero\n` +
-        `   - (B) Velocity is accelerating\n` +
-        `   - (C) Internal friction is maximal\n` +
-        `   - (D) Potential energy is infinite\n` +
-        `   *Answer: (A)*\n\n` +
-        `#### SECTION B: Short Answer & Mathematical Reasoning (3 Marks Each)\n` +
-        `3. **Q3:** Explain the core principle with a labeled diagram. Derive the governing relation.\n` +
-        `4. **Q4 (Worked Problem):** Given parameters $x = 12$ units and $y = 5$ units, calculate resultant magnitude $R = \\sqrt{x^2 + y^2}$.\n` +
-        `   *Solution: $R = \\sqrt{144 + 25} = \\sqrt{169} = \\mathbf{13\\text{ units}}$.*\n\n` +
-        `#### SECTION C: Long Answer & Derivations (5 Marks Each)\n` +
-        `5. **Q5:** Discuss real-world practical applications. Outline common mistakes students make during derivations and provide tips for error-free execution.\n\n` +
-        `*(Full Answer Key and Step-by-Step Marking Scheme Included)*`;
+    if (/^(good morning|good night|good evening|good afternoon)[\s!?]*$/.test(q)) {
+      const t = new Date().getHours();
+      const part = t < 12 ? 'morning' : t < 17 ? 'afternoon' : t < 21 ? 'evening' : 'night';
+      return `Good ${part}! 🌟 Hope you're having a wonderful time. What can I help you with today?`;
     }
-    if (/revision\s*sheet|revision\s*notes|cram/i.test(q)) {
-      const topicName = userText.replace(/create a revision sheet for this topic with key definitions, formulas, examples, common mistakes, and 5 quick practice questions:/gi, '').trim() || 'Core Revision';
-      return `### 📚 Rapid Revision Matrix & Formula Sheet\n\n` +
-        `**Topic:** ${topicName}\n\n` +
-        `#### 1. Essential Formulas & Laws\n` +
-        `- Primary Relation: $F = m \\cdot a$ (Force equals mass times acceleration)\n` +
-        `- Energy Conservation: $E_{total} = K.E. + P.E. = \\text{constant}$\n` +
-        `- Quadratic Root Formula: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$\n\n` +
-        `#### 2. High-Yield Definitions\n` +
-        `- **Conservation Principle:** A closed system retains constant total energy and momentum unless an external unbalanced force acts upon it.\n` +
-        `- **Equilibrium State:** A condition where opposing forces or influences cancel each other out.\n\n` +
-        `#### 3. Five Quick Practice Questions\n` +
-        `1. Write the dimensions of the governing constants.\n` +
-        `2. What happens if external parameters double?\n` +
-        `3. State the difference between scalar and vector properties in this context.\n` +
-        `4. Identify the most common sign convention trap.\n` +
-        `5. State one daily life example illustrating this concept.`;
+    if (/^(ok|okay|cool|nice|great|wow|thanks|thank you|thx|ty|got it|understood|sure|alright)[\s!?]*$/.test(q)) {
+      return `Glad that helped! 😊 Anything else you'd like to explore or ask?`;
     }
-    if (/quiz|10\s*mixed|multiple\s*choice|mcq/i.test(q)) {
-      const topicName = userText.replace(/create 10 mixed-difficulty questions with answer key on:/gi, '').trim() || 'Comprehensive Knowledge';
-      return `### 🧾 Interactive Academic Quiz (10 Questions)\n\n` +
-        `**Topic:** ${topicName}\n\n` +
-        `1. **Q1:** What is the fundamental unit of measurement?\n` +
-        `   - [A] Meter  [B] Second  [C] Kilogram  [D] Depends on dimension\n` +
-        `   *Key: [A]*\n\n` +
-        `2. **Q2:** If mass is doubled while acceleration remains constant, how does force change?\n` +
-        `   - [A] Halved  [B] Doubled  [C] Quadrupled  [D] Unchanged\n` +
-        `   *Key: [B] ($F = ma$)*\n\n` +
-        `3. **Q3:** Which principle governs energy transfer in closed thermodynamics?\n` +
-        `   *Key: First Law of Thermodynamics (Energy Conservation)*\n\n` +
-        `4. **Q4 (Reasoning):** Assertion: Inertia depends solely on mass. Reason: Heavier objects resist acceleration more.\n` +
-        `   *Key: Both Assertion and Reason are true, and Reason is correct explanation.*\n\n` +
-        `5. **Q5:** Calculate roots of $x^2 - 5x + 6 = 0$.\n` +
-        `   *Key: $x = 2$ and $x = 3$ ($ (x-2)(x-3) = 0 $)*\n\n` +
-        `*(Questions 6 through 10 with solutions have been compiled successfully!)*`;
+    if (/^(bye|goodbye|see you|cya|ttyl|later)[\s!?]*$/.test(q)) {
+      return `Bye! 👋 Come back anytime you need help. Keep learning and growing! 🚀`;
     }
-    if (/lesson\s*plan|planner/i.test(q)) {
-      const topicName = userText.replace(/create a lesson plan suitable for the learner profile on:/gi, '').trim() || 'Lesson Pedagogy';
-      return `### 🧑‍🏫 Structured Pedagogical Lesson Plan\n\n` +
-        `**Topic:** ${topicName} | **Class Level:** Standard Academic | **Duration:** 45 Minutes\n\n` +
-        `1. **Learning Objectives:** Students will define core concepts, state governing equations, and solve standard numerical exercises.\n` +
-        `2. **Introduction & Hook (7 Mins):** Real-world demonstration linking everyday observations to the underlying theory.\n` +
-        `3. **Concept Exploration (20 Mins):** Interactive board breakdown of definitions, step-by-step derivations, and worked examples.\n` +
-        `4. **Guided Practice (12 Mins):** Small-group problem-solving with teacher facilitation and error prevention.\n` +
-        `5. **Wrap-up & Homework (6 Mins):** 3-question exit ticket to assess mastery before concluding the session.`;
+    if (/your name|who are you|what are you/.test(q)) {
+      return `I'm **Bharat Voice** — an AI-powered tutor and assistant by the Bharat Voice Team. I can help with academics, coding, exam prep, and much more. Ask me anything! 🤖`;
     }
-    if (/translate/i.test(q)) {
-      return `### 🌐 Bilingual Technical Translation\n\n` +
-        `| English Source | Hindi / Hinglish Technical Translation |\n` +
-        `| :--- | :--- |\n` +
-        `| Understanding fundamental academic concepts is the first step toward problem-solving excellence. | मौलिक शैक्षणिक अवधारणाओं को समझना समस्या-समाधान में उत्कृष्टता की दिशा में पहला कदम है। |\n` +
-        `| Consistent practice and conceptual clarity ensure full marks in examinations. | लगातार अभ्यास और वैचारिक स्पष्टता परीक्षाओं में शत-प्रतिशत अंक सुनिश्चित करते हैं। |\n\n` +
-        `**Grammar & Context Note:** Technical terminology has been preserved in standard recognized formats for academic accuracy.`;
-    }
-    if (/summar|notes/i.test(q)) {
-      return `### ✨ Smart Structured Summary & Notes\n\n` +
-        `#### 📌 Executive Overview\n` +
-        `- **Core Premise:** Clear conceptual foundation coupled with targeted problem-solving delivers top academic outcomes.\n` +
-        `- **Critical Takeaway:** Focus on derivations, standard formulas, and error-prevention techniques.\n\n` +
-        `#### 🔑 Key Highlights:\n` +
-        `1. **Theoretical Clarity:** Understand why formulas work, not just how to plug in numbers.\n` +
-        `2. **Common Traps:** Watch out for unit conversions (e.g. cm to meters, grams to kg) and sign conventions.\n` +
-        `3. **Memory Hook:** Connect abstract concepts to physical analogies (e.g. water flow for electrical current).`;
-    }
-    if (/newton|law|motion|force|velocity|gravity|physics/i.test(q)) {
-      return `### 🔬 Newton's Laws of Motion (Explained in Hinglish)\n\n` +
-        `1. **First Law (Inertia / जड़त्व):** Har object apni state of rest ya uniform motion me tab tak rehta hai jab tak external unbalanced force na lage.\n` +
-        `2. **Second Law (F = ma):** Force is directly proportional to rate of change of momentum ($F = ma$). Catch pakadte waqt player haath piche karke impact kam karta hai.\n` +
-        `3. **Third Law (Action-Reaction):** Every action has an equal and opposite reaction ($F_{AB} = -F_{BA}$). Rocket launch is the best example!`;
-    }
-    if (/python|code|binary search|sorting|algorithm|function|java|javascript|cpp|sql/i.test(q)) {
-      return `### 💻 Code Mentor: Analysis & Verified Solution\n\n` +
-        `Here is the clean, optimized implementation for your query with error-handling:\n\n` +
-        `\`\`\`python\n` +
-        `def solve_optimally(data_list):\n` +
-        `    """\n` +
-        `    Optimized execution with O(n) time and O(1) auxiliary space.\n` +
-        `    """\n` +
-        `    if not data_list:\n` +
-        `        return []\n` +
-        `    \n` +
-        `    # Filter and process valid items efficiently\n` +
-        `    return [item for item in data_list if item is not None]\n` +
-        `\n` +
-        `# Verification\n` +
-        `sample_input = [10, 25, None, 40, 55]\n` +
-        `print("Output:", solve_optimally(sample_input))  # Verified: [10, 25, 40, 55]\n` +
-        `\`\`\`\n\n` +
-        `**Key Note:** The time complexity is optimized at $O(n)$ with minimal space overhead.`;
-    }
-    if (/mitosis|meiosis|cell|biology|photosynthesis/i.test(q)) {
-      return `### 🧬 Biology Conceptual Breakdown\n\n` +
-        `**Mitosis vs Meiosis:**\n` +
-        `- **Mitosis:** Somatic cells me hota hai, produces 2 identical diploid ($2n$) daughter cells for body growth and repair.\n` +
-        `- **Meiosis:** Germ cells me hota hai for reproduction, produces 4 genetically diverse haploid ($n$) daughter cells with crossing-over in Prophase I.\n\n` +
-        `*Quick Tip:* Mitosis = Growth & Repair; Meiosis = Reproduction & Diversity.`;
+    if (/who made you|who created you|who built you/.test(q)) {
+      return `I was created by the **Bharat Voice Team**. Contact: bharatvoicofficial1@gmail.com | +91 63879 16656.`;
     }
 
-    // Dynamic Math Arithmetic Evaluation
-    const mathMatch = q.match(/(\d+(?:\.\d+)?)\s*([\+\-\*\/xX\^]|plus|minus|times|multiplied by|divided by)\s*(\d+(?:\.\d+)?)/i);
+    // ── 2. SIMPLE MATH ARITHMETIC ──
+    const mathMatch = q.match(/(\d+(?:\.\d+)?)\s*([\+\-\*\/xX\^]|plus|minus|times|divided by|multiplied by)\s*(\d+(?:\.\d+)?)/i);
     if (mathMatch) {
       const n1 = parseFloat(mathMatch[1]);
-      const op = mathMatch[2].toLowerCase();
+      const op = mathMatch[2].toLowerCase().trim();
       const n2 = parseFloat(mathMatch[3]);
-      let res = 0;
+      let res;
       if (op === '+' || op === 'plus') res = n1 + n2;
       else if (op === '-' || op === 'minus') res = n1 - n2;
       else if (op === '*' || op === 'x' || op === 'times' || op === 'multiplied by') res = n1 * n2;
-      else if (op === '/' || op === 'divided by') res = n2 !== 0 ? (n1 / n2) : 'Undefined';
+      else if (op === '/' || op === 'divided by') res = n2 !== 0 ? parseFloat((n1 / n2).toFixed(6)) : 'undefined (÷ by zero)';
       else if (op === '^') res = Math.pow(n1, n2);
-
-      return `### 📐 Mathematical Solution Breakdown\n\n` +
-        `**Problem:** $${n1} ${op === '*' || op === 'x' ? '\\times' : op} ${n2}$\n\n` +
-        `**Step-by-Step Calculation:**\n` +
-        `1. Identify terms: $a = ${n1}$, $b = ${n2}$\n` +
-        `2. Apply arithmetic operator: $${n1} \\rightarrow ${res}$\n\n` +
-        `**Verified Result:** $\\mathbf{${res}}$`;
+      return `**${n1} ${op} ${n2} = ${res}** ✅\n\nNeed step-by-step working or a harder problem? Just ask!`;
     }
 
-    // Dynamic Topic Extraction
-    const cleanTopic = userText.replace(/^(what is|who is|explain|tell me about|how to|why does|solve)\s+/i, '').trim();
+    // ── 3. ALGEBRA ──
+    if (/\bsolve\b|linear equation|algebra/i.test(q)) {
+      const eqMatch = q.match(/(\d+)\s*x\s*[\+\-]?\s*(-?\d+)?\s*=\s*(-?\d+)/i);
+      if (eqMatch) {
+        const a = parseFloat(eqMatch[1]);
+        const b = eqMatch[2] ? parseFloat(eqMatch[2]) : 0;
+        const c = parseFloat(eqMatch[3]);
+        const x = parseFloat(((c - b) / a).toFixed(6));
+        return `**Solving: ${a}x ${b >= 0 ? '+' : ''}${b} = ${c}**\n\n1. Move ${b} to right: ${a}x = ${c - b}\n2. Divide by ${a}: x = **${x}** ✅`;
+      }
+    }
 
-    return `### ⚡ Bharat Voice Academic Breakdown\n\n` +
-      `**Subject Analysis:** "${cleanTopic || userText}"\n\n` +
-      `#### 1. Core Principles & Definition\n` +
-      `Is topic ko clear aur step-by-step understand karne ke liye key principles follow karein:\n` +
-      `- **Primary Rule:** Pehle base definitions aur governing conditions ko visualize kijiye.\n` +
-      `- **Mechanics:** Formula aur step-by-step logic ko derive karke apply karein.\n` +
-      `- **Exam Tip:** Numerical problems me hamesha units (SI units) aur boundary conditions verify karein.\n\n` +
-      `#### 2. Key Takeaways\n` +
-      `- Always verify against edge cases before finalizing answers.\n` +
-      `- Connect theoretical definitions with practical worked examples.`;
-  }
+    // ── 4. SQUARE ROOT ──
+    if (/square root|sqrt/.test(q)) {
+      const m = q.match(/(?:square root of|sqrt)\s*(\d+)/i);
+      if (m) {
+        const val = parseFloat(m[1]);
+        const ans = Math.sqrt(val);
+        return `**√${val} = ${ans % 1 === 0 ? ans : ans.toFixed(4)}** ${Number.isInteger(ans) ? '(perfect square! ✅)' : '(approximate value)'}`;
+      }
+    }
+
+    // ── 5. CONCEPT MAP ──
+    if (/concept\s*map|mind\s*map|flowchart/i.test(q)) {
+      const topic = userText.replace(/create\s*(a|an)?\s*(concept map|mind map|flowchart)\s*(for|of|on)?/gi, '').trim() || 'Topic';
+      return `### 🗺️ Concept Map: ${topic}\n\n\`\`\`mermaid\ngraph TD\n    A["📌 ${topic}"] --> B["🔬 Core Theory"]\n    A --> C["⚙️ Key Mechanisms"]\n    A --> D["🚀 Applications"]\n    B --> B1["Definitions & Laws"]\n    C --> C1["Step-by-Step Process"]\n    D --> D1["Real-World Examples"]\n\`\`\`\n\n💡 Paste the chapter text (📄) for a more precise map!`;
+    }
+
+    // ── 6. PHYSICS ──
+    if (/newton.*second|f\s*=\s*ma/.test(q)) {
+      return `### Newton's Second Law\n\n$$F = m \\cdot a$$\n\n- **F** = Force (N), **m** = Mass (kg), **a** = Acceleration (m/s²)\n- Example: 5 kg object, 20N force → a = 20/5 = **4 m/s²**`;
+    }
+    if (/newton.*first|law of inertia/.test(q)) {
+      return `### Newton's First Law (Inertia)\n\nAn object at rest stays at rest, and an object in motion stays in motion, unless acted on by a net external force.`;
+    }
+    if (/newton.*third|action.*reaction/.test(q)) {
+      return `### Newton's Third Law\n\nFor every action there is an **equal and opposite reaction**: $\\vec{F}_{12} = -\\vec{F}_{21}$\n\nExamples: rockets, swimming, walking.`;
+    }
+    if (/photosynthesis/.test(q)) {
+      return `### Photosynthesis\n\n$$6CO_2 + 6H_2O \\xrightarrow{\\text{sunlight}} C_6H_{12}O_6 + 6O_2$$\n\n**Two stages:** Light Reactions (thylakoid → ATP) and Calvin Cycle (stroma → glucose).`;
+    }
+
+    // ── 7. CODING ──
+    if (/python|javascript|java|coding|code|function|loop|algorithm|html|css|bug|error/i.test(q)) {
+      return `### 💻 Coding Help\n\nI can help with **${userText}**! Share your code or describe the exact problem and I'll provide:\n- ✅ Working solution\n- 🔍 Step-by-step explanation\n- ⚡ Best practices & complexity analysis`;
+    }
+
+    // ── 8. EXAM TOOLS ──
+    if (/quiz|mcq|exam|test|revision|notes|sample paper/i.test(q)) {
+      return `### 📝 Study Tools\n\nTell me the **subject and topic** and what you need:\n- 🧾 Quiz / MCQs\n- 📄 Revision Notes\n- 📝 Sample Paper\n- 🃏 Flashcards\n\nExample: *"Give me 10 MCQs on Newton's Laws"*`;
+    }
+
+    // ── 9. GENERAL / CATCH-ALL (clean, friendly, not boilerplate) ──
+    const cleanQ = userText.replace(/^(what is|who is|explain|tell me about|how to|why does|can you)\s+/i, '').trim();
+    return `I'd love to help with **"${cleanQ || userText}"**! 😊\n\nCould you share a little more detail so I can give you the most accurate answer? You can ask me:\n- 📐 Math problems\n- 🔬 Science concepts\n- 💻 Coding questions\n- 📖 General knowledge\n\nJust ask away!`;
+
 
   // ---------- Call the LLM ----------
   async function askBharat(userText, opts){
