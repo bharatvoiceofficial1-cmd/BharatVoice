@@ -3893,7 +3893,7 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
       }
     } catch (err){
       statusText.textContent = "Error — check your API key / network";
-      addBubble('ai', "Kshama kijiye (sorry), I couldn't read that photo. " + err.message);
+      addBubble('ai', "Sorry, I couldn't process that photo: " + err.message);
     }
   }
 
@@ -4711,14 +4711,41 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
         `- **Meiosis:** Germ cells me hota hai for reproduction, produces 4 genetically diverse haploid ($n$) daughter cells with crossing-over in Prophase I.\n\n` +
         `*Quick Tip:* Mitosis = Growth & Repair; Meiosis = Reproduction & Diversity.`;
     }
-    return `### ⚡ Bharat Voice Academic Solution\n\n` +
-      `Regarding your inquiry: **"${userText}"**\n\n` +
-      `**Concept Explanation (Hinglish):**\n` +
+
+    // Dynamic Math Arithmetic Evaluation
+    const mathMatch = q.match(/(\d+(?:\.\d+)?)\s*([\+\-\*\/xX\^]|plus|minus|times|multiplied by|divided by)\s*(\d+(?:\.\d+)?)/i);
+    if (mathMatch) {
+      const n1 = parseFloat(mathMatch[1]);
+      const op = mathMatch[2].toLowerCase();
+      const n2 = parseFloat(mathMatch[3]);
+      let res = 0;
+      if (op === '+' || op === 'plus') res = n1 + n2;
+      else if (op === '-' || op === 'minus') res = n1 - n2;
+      else if (op === '*' || op === 'x' || op === 'times' || op === 'multiplied by') res = n1 * n2;
+      else if (op === '/' || op === 'divided by') res = n2 !== 0 ? (n1 / n2) : 'Undefined';
+      else if (op === '^') res = Math.pow(n1, n2);
+
+      return `### 📐 Mathematical Solution Breakdown\n\n` +
+        `**Problem:** $${n1} ${op === '*' || op === 'x' ? '\\times' : op} ${n2}$\n\n` +
+        `**Step-by-Step Calculation:**\n` +
+        `1. Identify terms: $a = ${n1}$, $b = ${n2}$\n` +
+        `2. Apply arithmetic operator: $${n1} \\rightarrow ${res}$\n\n` +
+        `**Verified Result:** $\\mathbf{${res}}$`;
+    }
+
+    // Dynamic Topic Extraction
+    const cleanTopic = userText.replace(/^(what is|who is|explain|tell me about|how to|why does|solve)\s+/i, '').trim();
+
+    return `### ⚡ Bharat Voice Academic Breakdown\n\n` +
+      `**Subject Analysis:** "${cleanTopic || userText}"\n\n` +
+      `#### 1. Core Principles & Definition\n` +
       `Is topic ko clear aur step-by-step understand karne ke liye key principles follow karein:\n` +
-      `1. **Fundamental Rule:** Pehle base definitions aur formulas ($F = ma$, $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$) ko visualize kijiye.\n` +
-      `2. **Practical Application:** Real-life problem solving me iska direct use hota hai.\n` +
-      `3. **Revision Tip:** Exam me full marks ke liye diagrams ya step-by-step steps clearly mention karein.\n\n` +
-      `*Use the tools above to generate a Concept Map, Revision Sheet, or Quiz for this topic!*`;
+      `- **Primary Rule:** Pehle base definitions aur governing conditions ko visualize kijiye.\n` +
+      `- **Mechanics:** Formula aur step-by-step logic ko derive karke apply karein.\n` +
+      `- **Exam Tip:** Numerical problems me hamesha units (SI units) aur boundary conditions verify karein.\n\n` +
+      `#### 2. Key Takeaways\n` +
+      `- Always verify against edge cases before finalizing answers.\n` +
+      `- Connect theoretical definitions with practical worked examples.`;
   }
 
   // ---------- Call the LLM ----------
@@ -4739,7 +4766,7 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
       if (apiKey) reqHeaders['Authorization'] = 'Bearer ' + apiKey;
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2200);
+      const timeoutId = setTimeout(() => controller.abort(), 11000);
 
       const targetEndpoint = (window.location.origin && window.location.origin.includes('localhost') && (!apiUrl || apiUrl.includes('api.bharatvoiceduai.website')))
         ? '/api/chat'

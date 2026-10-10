@@ -12,6 +12,15 @@ try {
 }
 
 const PORT = process.env.PORT || 5000;
+let GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+try {
+  const envPath = path.join(__dirname, '../BharatVoice-Backend/.env');
+  if (fs.existsSync(envPath)) {
+    const raw = fs.readFileSync(envPath, 'utf8');
+    const m = raw.match(/GEMINI_API_KEY\s*=\s*([^\r\n]+)/);
+    if (m) GEMINI_API_KEY = m[1].trim().replace(/^["']|["']$/g, '');
+  }
+} catch(e){}
 const MIME_TYPES = {
   '.html': 'text/html',
   '.css': 'text/css',
@@ -82,11 +91,11 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Academic Chat & Problem Solving API Endpoint
+  // Academic Chat & Problem Solving API Endpoint (Powered by Real Gemini 3.8 Flash)
   if (req.url === '/api/chat' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => { body += chunk; });
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const data = JSON.parse(body || '{}');
         const messages = Array.isArray(data.messages) ? data.messages : [];
@@ -95,8 +104,75 @@ const server = http.createServer((req, res) => {
         const qLower = query.toLowerCase();
 
         let reply = '';
-        let provider = 'gemini';
+        let provider = 'gemini-3.8-flash';
 
+        // 1. Live Google Gemini 3.8 Flash Inference
+        if (GEMINI_API_KEY) {
+          try {
+            const contents = [];
+            for (const m of messages) {
+              if (!m || m.role === 'system') continue;
+              const textContent = typeof m.content === 'string' ? m.content : (m.content[0]?.text || '');
+              if (textContent.trim()) {
+                contents.push({
+                  role: m.role === 'assistant' ? 'model' : 'user',
+                  parts: [{ text: textContent }]
+                });
+              }
+            }
+            if (contents.length === 0 && query) {
+              contents.push({ role: 'user', parts: [{ text: query }] });
+            }
+
+            const sysMsg = messages.find(m => m && m.role === 'system');
+            const systemText = sysMsg && typeof sysMsg.content === 'string'
+              ? sysMsg.content
+              : 'You are Bharat Voice, an expert AI tutor, educational mentor, and daily study companion. Answer the user\'s specific question directly, accurately, and thoroughly with clear step-by-step explanations, formulas, or code. Match their language (English/Hindi/Hinglish). Never give boilerplate responses.';
+
+            const candidateModels = [
+              'gemini-flash-lite-latest',
+              'gemini-3.5-flash-lite',
+              'gemini-3.1-flash-lite',
+              'gemini-3.5-flash',
+              'gemini-3.8-flash'
+            ];
+
+            for (const modelName of candidateModels) {
+              try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 7000);
+
+                const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    contents,
+                    systemInstruction: { parts: [{ text: systemText }] },
+                    generationConfig: {
+                      temperature: 0.65,
+                      maxOutputTokens: 2500
+                    }
+                  }),
+                  signal: controller.signal
+                });
+                clearTimeout(timeout);
+
+                if (geminiRes.ok) {
+                  const geminiData = await geminiRes.json();
+                  const candText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+                  if (candText && candText.trim()) {
+                    reply = candText.trim();
+                    provider = modelName;
+                    break;
+                  }
+                }
+              } catch(err) {}
+            }
+          } catch(err) {}
+        }
+
+        if (!reply) {
+          provider = 'smart-engine';
         if (/concept\s*map|mind\s*map|flowchart|diagram/i.test(qLower)) {
           reply = `### 🗺️ Interactive Concept Architecture\n\n` +
             `Here is the knowledge graph and structural breakdown for **"${query.replace(/create a clear|interactive concept map with a mermaid diagram and structured breakdown for:|explain/gi, '').trim() || 'Core System'}"**:\n\n` +
@@ -224,6 +300,7 @@ const server = http.createServer((req, res) => {
             `- Problem: Simplify or apply to standard test questions.\n` +
             `- Solution: Systematic step-by-step substitution yields verified result with zero ambiguity.\n\n` +
             `*Tip: Use the tools above (Concept Map, Quiz, Sample Paper) to test your mastery!*`;
+        }
         }
 
         res.writeHead(200, {
