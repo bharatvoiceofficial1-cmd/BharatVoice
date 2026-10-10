@@ -143,81 +143,7 @@
   }
   .btn-submit:hover{ filter:brightness(1.1); transform:translateY(-1px); }
 
-  /* Posters Section & Modal */
-  .posters-section{
-    margin-top:40px; margin-bottom:40px;
-    background:rgba(29,22,64,0.55); border:1px solid var(--line);
-    border-radius:14px; padding:32px;
-  }
-  .posters-grid{
-    display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
-    gap:20px; margin-top:20px;
-  }
-  .poster-card{
-    background:rgba(20,15,43,0.7); border:1px solid var(--line);
-    border-radius:14px; overflow:hidden; display:flex; flex-direction:column;
-    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-  }
-  .poster-card:hover{
-    transform:translateY(-5px); box-shadow:0 12px 30px rgba(255,159,28,0.2);
-    border-color:rgba(255,201,60,0.5);
-  }
-  .poster-img-box{
-    position:relative; width:100%; aspect-ratio:3/4; overflow:hidden; background:#100b20;
-    cursor:pointer;
-  }
-  .poster-img-box img{
-    width:100%; height:100%; object-fit:cover; transition:transform .3s ease;
-  }
-  .poster-card:hover .poster-img-box img{
-    transform:scale(1.04);
-  }
-  .poster-zoom-hint{
-    position:absolute; bottom:8px; right:8px;
-    background:rgba(20,15,43,0.85); backdrop-filter:blur(6px);
-    color:var(--marigold); font-size:11px; font-weight:600;
-    padding:3px 8px; border-radius:10px; border:1px solid var(--line);
-    pointer-events:none;
-  }
-  .poster-info{
-    padding:16px; display:flex; flex-direction:column; flex:1;
-  }
-  .poster-info h4{
-    font-size:15px; color:var(--ivory); margin:0 0 6px; font-weight:600;
-  }
-  .poster-info p{
-    font-size:12px; color:var(--ivory-dim); margin:0 0 12px; line-height:1.55; flex:1;
-  }
-  .poster-btn{
-    display:inline-flex; align-items:center; justify-content:center;
-    padding:8px 14px; border-radius:20px; font-size:12px; font-weight:600;
-    color:#221200 !important; background:linear-gradient(90deg, var(--saffron), var(--marigold));
-    text-decoration:none !important; transition:filter .2s;
-  }
-  .poster-btn:hover{ filter:brightness(1.12); }
-  /* Poster Modal */
-  .poster-modal{
-    display:none; position:fixed; inset:0; z-index:100;
-    background:rgba(10,7,20,0.88); backdrop-filter:blur(10px);
-    align-items:center; justify-content:center; padding:20px;
-  }
-  .poster-modal.open{ display:flex; }
-  .poster-modal-content{
-    position:relative; max-width:min(90vw, 540px); max-height:92vh;
-    display:flex; flex-direction:column; align-items:center;
-    background:rgba(29,22,64,0.95); border:1px solid var(--line);
-    border-radius:20px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,0.6);
-  }
-  .poster-modal-content img{
-    max-width:100%; max-height:72vh; object-fit:contain; border-radius:12px;
-  }
-  .poster-modal-close{
-    position:absolute; top:12px; right:12px;
-    background:rgba(255,255,255,0.1); border:none; color:var(--ivory);
-    font-size:22px; width:36px; height:36px; border-radius:50%;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-  }
-  .poster-modal-close:hover{ background:rgba(255,159,28,0.3); }
+
 
   /* Footer */
   footer{
@@ -375,88 +301,7 @@
     </form>
   </div>
 
-  <!-- ===================== OFFICIAL AI POSTERS ===================== -->
-  <div class="posters-section" id="posters">
-    <div class="page-tag">Official AI Visuals · पोस्टर प्रदर्शनी</div>
-    <h2 style="font-family:'Yatra One',cursive; font-size:24px; color:var(--marigold); margin:0 0 8px;">
-      Bharat Voice AI Posters · आधिकारिक पोस्टर
-    </h2>
-    <p style="font-size:13.5px; color:var(--ivory-dim); margin-bottom:20px; line-height:1.6;">
-      Download and explore our high-resolution AI-generated educational posters designed for Bharat Voice. Click any poster to view full-size.
-    </p>
 
-    <div class="posters-grid">
-      <!-- Poster 1 -->
-      <div class="poster-card">
-        <div class="poster-img-box" onclick="openPosterModal('assets/posters/poster1.jpg', 'Bharat Voice · Bilingual Voice AI Study Companion')">
-          <img src="assets/posters/poster1.jpg" alt="Bharat Voice Bilingual Voice AI Study Companion Poster" loading="lazy">
-          <span class="poster-zoom-hint">🔍 Tap to View</span>
-        </div>
-        <div class="poster-info">
-          <span class="badge">Poster 1 · Voice Tutor</span>
-          <h4>Bilingual Voice AI Companion</h4>
-          <p>Study, speak, and succeed with interactive voice tutoring in Hindi &amp; English.</p>
-          <a href="assets/posters/poster1.jpg" target="_blank" class="poster-btn">View Full Poster</a>
-        </div>
-      </div>
-
-      <!-- Poster 2 -->
-      <div class="poster-card">
-        <div class="poster-img-box" onclick="openPosterModal('assets/posters/poster2.jpg', 'Exam Success with Bharat Voice AI')">
-          <img src="assets/posters/poster2.jpg" alt="Exam Success with Bharat Voice AI Poster" loading="lazy">
-          <span class="poster-zoom-hint">🔍 Tap to View</span>
-        </div>
-        <div class="poster-info">
-          <span class="badge">Poster 2 · Exam Prep</span>
-          <h4>Board &amp; Competitive Exam Success</h4>
-          <p>Ace board exams with AI mock tests, sample papers, formulas, and revision sheets.</p>
-          <a href="assets/posters/poster2.jpg" target="_blank" class="poster-btn">View Full Poster</a>
-        </div>
-      </div>
-
-      <!-- Poster 3 -->
-      <div class="poster-card">
-        <div class="poster-img-box" onclick="openPosterModal('assets/posters/poster3.jpg', 'बोल कर सीखो · Instant Voice Doubt Solver')">
-          <img src="assets/posters/poster3.jpg" alt="Instant Voice Doubt Solver Bol Kar Seekho Poster" loading="lazy">
-          <span class="poster-zoom-hint">🔍 Tap to View</span>
-        </div>
-        <div class="poster-info">
-          <span class="badge">Poster 3 · Doubt Solver</span>
-          <h4>बोल कर सीखो · Voice Doubt Solver</h4>
-          <p>24/7 instant conceptual doubt resolution across Science, Math, and Arts.</p>
-          <a href="assets/posters/poster3.jpg" target="_blank" class="poster-btn">View Full Poster</a>
-        </div>
-      </div>
-
-      <!-- Poster 4 -->
-      <div class="poster-card">
-        <div class="poster-img-box" onclick="openPosterModal('assets/posters/poster4.jpg', 'हर विद्यार्थी का AI साथी · Empowering Every Student Across India')">
-          <img src="assets/posters/poster4.jpg" alt="Empowering Every Student Across India Poster" loading="lazy">
-          <span class="poster-zoom-hint">🔍 Tap to View</span>
-        </div>
-        <div class="poster-info">
-          <span class="badge">Poster 4 · Education For All</span>
-          <h4>हर विद्यार्थी का AI साथी</h4>
-          <p>Empowering rural and urban learners nationwide with accessible AI education.</p>
-          <a href="assets/posters/poster4.jpg" target="_blank" class="poster-btn">View Full Poster</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- Poster Lightbox Modal -->
-<div class="poster-modal" id="posterModal" onclick="closePosterModal(event)">
-  <div class="poster-modal-content" onclick="event.stopPropagation()">
-    <button class="poster-modal-close" onclick="closePosterModal()">&times;</button>
-    <img id="posterModalImg" src="" alt="Bharat Voice Poster Preview">
-    <div style="margin-top:14px; text-align:center; width:100%;">
-      <div id="posterModalTitle" style="font-size:14px; font-weight:600; color:var(--marigold); margin-bottom:10px;"></div>
-      <a id="posterModalDownload" href="" target="_blank" class="poster-btn" download style="display:inline-flex;">Open Original High-Res</a>
-    </div>
-  </div>
-</div>
 
 <footer>
   <div class="footer-inner">
@@ -548,30 +393,6 @@
     }
   }
 
-  function openPosterModal(src, title){
-    const modal = document.getElementById('posterModal');
-    const img = document.getElementById('posterModalImg');
-    const titleEl = document.getElementById('posterModalTitle');
-    const dlBtn = document.getElementById('posterModalDownload');
-    if(modal && img){
-      img.src = src;
-      if(titleEl) titleEl.textContent = title || 'Bharat Voice AI Poster';
-      if(dlBtn) dlBtn.href = src;
-      modal.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-  }
-  function closePosterModal(e){
-    if(e && e.target && e.target.closest && e.target.closest('.poster-modal-content') && !e.target.classList.contains('poster-modal-close')) return;
-    const modal = document.getElementById('posterModal');
-    if(modal){
-      modal.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-  }
-  document.addEventListener('keydown', (e) => {
-    if(e.key === 'Escape') closePosterModal();
-  });
 </script>
 
 </body>
