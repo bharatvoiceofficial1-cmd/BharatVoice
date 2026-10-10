@@ -2719,7 +2719,19 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
     const role = learnerProfile.role || 'general';
     const grade = learnerProfile.grade || 'not specified';
     const subject = learnerProfile.subject || 'not specified';
-    let content = EDUCATOR_SYSTEM_PROMPT
+
+    // Critical: always answer what was actually asked. Simple = simple reply.
+    const criticalRule = `CRITICAL RULE (highest priority, overrides everything): Match your reply EXACTLY to what the user asked.
+- If user says "hi", "hello", "hey" → ONLY reply with a short friendly greeting. Do NOT add any academic content.
+- If user says "how are you", "good morning", "thanks", "bye" → reply naturally and briefly like a friend would.
+- If user asks a simple question (math, fact, definition) → give a SHORT direct answer in 1-3 sentences max. No long essays.
+- If user asks for detailed explanation, concept map, quiz, or code → THEN give the full detailed academic answer.
+- NEVER dump formulas, math, or academic content onto a greeting or casual message.
+- Always match the energy and length of the user's message. Short question = short answer.
+
+`;
+
+    let content = criticalRule + EDUCATOR_SYSTEM_PROMPT
       .replace('{{ROLE}}', role)
       .replace('{{GRADE}}', grade)
       .replace('{{SUBJECT}}', subject);
@@ -4677,9 +4689,10 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 11000);
 
-      const targetEndpoint = (window.location.origin && window.location.origin.includes('localhost') && (!apiUrl || apiUrl.includes('api.bharatvoiceduai.website')))
-        ? '/api/chat'
-        : apiUrl;
+      // Always route to backend API. On local dev, use /api/chat. On live site, use production backend.
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const BACKEND_URL = 'https://api.bharatvoiceduai.website/api/chat';
+      const targetEndpoint = isLocalhost ? (apiUrl === '/api/chat' ? '/api/chat' : apiUrl) : BACKEND_URL;
 
       const res = await fetch(targetEndpoint, {
         method: 'POST',
@@ -4688,7 +4701,7 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
           model: model,
           messages: [buildSystemMessage(!!opts.speakReply), ...conversation],
           temperature: 0.7,
-          max_tokens: 8192
+          max_tokens: 4096
         }),
         signal: controller.signal
       });
