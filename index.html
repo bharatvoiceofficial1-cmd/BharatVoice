@@ -1,126 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bharat Voice — AI Study Companion</title>
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="alternate icon" type="image/png" href="assets/logo.png">
-<link rel="apple-touch-icon" href="assets/logo.png">
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251310303606994"
-     crossorigin="anonymous"></script>
-<meta name="google-adsense-account" content="ca-pub-6251310303606994">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<meta name="description" content="Bharat Voice: a bilingual voice study companion for Indian students. Learn how it works and start learning online.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bharat Voice — AI Study Companion</title>
+  <meta name="description" content="Bharat Voice is a bilingual AI study companion helping students with learning, doubt solving, and exam prep." />
+  <style>
+    :root {
+      --night: #140f2b;
+      --night-2: #1d1640;
+      --saffron: #ff9f1c;
+      --marigold: #ffc93c;
+      --peacock: #0f6e6e;
+      --peacock-light: #1c9a92;
+      --maroon: #7a1f2b;
+      --ivory: #fdf6e9;
+      --ivory-dim: #cfc6b8;
+      --line: rgba(255, 201, 60, 0.18);
+    }
 
-<!-- Performance Mode (auto-enable for Windows / low-memory devices) -->
-<style>
-  /* Minimal overrides for low-end Performance Mode on the homepage */
-  body.low-end::before{ animation:none !important; background:none !important; }
-  .festive-mandala-bg{ animation:none !important; opacity:0.6 !important; }
-  .poster-showcase-card, .poster-card, .poster-img-box img{ transition:none !important; }
-  .poster-card:hover{ transform:none !important; box-shadow:none !important; }
-  .veil, .veil.run{ animation:none !important; }
-  .splash-particles, .splash-particle, .splash-orb, .splash-ring, .orb, .ring{ animation:none !important; }
-  .poster-showcase-card, .poster-card, .dl-card, .plaque, .direct-card{ box-shadow:none !important; }
-  body.low-end *{ backface-visibility: hidden; will-change: auto !important; }
-  body.low-end img, body.low-end video{ image-rendering: optimizeSpeed !important; }
-  /* reduce heavy gradients and backdrop filters */
-  body.low-end .rail, body.low-end .veil, body.low-end .poster-modal-content, body.low-end .posters-section{ backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
-  /* hide decorative background overlay */
-  body.low-end .festive-mandala-bg{ display:none !important; }
-  /* slightly reduce animation durations and frequencies as fallback */
-  @media (prefers-reduced-motion: reduce){ body, body *{ animation-duration:0.001s !important; transition-duration:0.001s !important; } }
-</style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(255,159,28,0.18), transparent 35%),
+        linear-gradient(180deg, var(--night), var(--night-2));
+      color: var(--ivory);
+      overflow-x: hidden;
+    }
 
-<script>
-  (function(){
-    try {
-      const stored = localStorage.getItem('bharat.performanceMode');
-      if (stored === 'off') return; // user explicitly disabled
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
 
-      const ua = navigator.userAgent || '';
-      const platform = navigator.platform || '';
-      const isWindows = /Win(dows)?/.test(platform) || /Windows/.test(ua);
-      const deviceMemory = navigator.deviceMemory || 0; // in GB
-      const hc = navigator.hardwareConcurrency || 0; // logical cores
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      background: rgba(20,15,43,0.9);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
 
-      // Criteria to enable performance mode automatically:
-      // - Windows desktop OR deviceMemory <= 2GB OR hardwareConcurrency <= 2
-      const enable = isWindows || (deviceMemory > 0 && deviceMemory <= 2) || (hc > 0 && hc <= 2);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--marigold);
+      font-size: 22px;
+    }
 
-      if (enable) {
-        document.documentElement.classList.add('low-end');
-        document.body && document.body.classList.add('low-end');
-        try { localStorage.setItem('bharat.performanceMode', 'auto'); } catch(e){}
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--saffron), var(--maroon));
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      color: var(--ivory-dim);
+      font-size: 14px;
+    }
+
+    .nav a:hover { color: var(--marigold); }
+
+    .cta {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--saffron), var(--marigold));
+      color: #221200;
+      font-weight: 700;
+      box-shadow: 0 6px 18px rgba(255,159,28,0.25);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 40px;
+      align-items: center;
+      padding-top: 30px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--peacock-light);
+      background: rgba(15,110,110,0.09);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(42px, 6vw, 80px);
+      line-height: 1.02;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      background: linear-gradient(90deg, var(--saffron), var(--marigold) 40%, var(--peacock-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      margin: 0 0 24px;
+      max-width: 680px;
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--ivory-dim);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, var(--saffron), var(--marigold));
+      color: #221200;
+    }
+
+    .btn.secondary {
+      border-color: var(--line);
+      color: var(--ivory);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .mini-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      color: var(--ivory-dim);
+      font-size: 14px;
+      padding-top: 10px;
+    }
+
+    .mini-stats strong {
+      color: var(--ivory);
+      font-size: 18px;
+    }
+
+    .hero-card {
+      background: linear-gradient(160deg, rgba(29,22,64,0.8), rgba(20,15,43,0.95));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    .hero-card .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--marigold);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 18px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,159,28,0.12);
+      border: 1px solid rgba(255,159,28,0.3);
+      color: var(--marigold);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .demo-box {
+      padding: 18px;
+      border-radius: 14px;
+      background: rgba(253,246,233,0.04);
+      border: 1px solid rgba(255,201,60,0.2);
+      color: var(--ivory-dim);
+      line-height: 1.7;
+    }
+
+    .demo-box strong { color: var(--ivory); }
+
+    .grid {
+      margin-top: 70px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .feature {
+      background: rgba(29,22,64,0.62);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px 18px;
+    }
+
+    .feature .icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .feature h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+
+    .feature p {
+      margin: 0;
+      line-height: 1.7;
+      color: var(--ivory-dim);
+      font-size: 15px;
+    }
+
+    .footer {
+      padding: 30px 24px 60px;
+      border-top: 1px solid var(--line);
+      color: var(--ivory-dim);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
       }
-
-      // Add a small unobtrusive toggler in bottom-left so user can turn off if they want
-      function insertToggle(){
-        const badge = document.createElement('button');
-        badge.id = 'perfToggleBtn';
-        badge.title = 'Performance Mode is enabled automatically for a smoother experience. Click to toggle.';
-        badge.style.position = 'fixed';
-        badge.style.left = '12px';
-        badge.style.bottom = '12px';
-        badge.style.zIndex = 9999;
-        badge.style.padding = '8px 10px';
-        badge.style.borderRadius = '10px';
-        badge.style.border = '1px solid rgba(255,201,60,0.22)';
-        badge.style.background = 'rgba(20,15,43,0.78)';
-        badge.style.color = 'var(--marigold, #ffc93c)';
-        badge.style.fontSize = '12px';
-        badge.style.cursor = 'pointer';
-        badge.style.backdropFilter = 'blur(6px)';
-        badge.style.boxShadow = '0 6px 16px rgba(0,0,0,0.5)';
-        badge.textContent = document.documentElement.classList.contains('low-end') ? 'Perf Mode: On' : 'Perf Mode: Off';
-
-        badge.addEventListener('click', function(){
-          const isOn = document.documentElement.classList.toggle('low-end');
-          if (isOn) {
-            localStorage.setItem('bharat.performanceMode','on');
-            badge.textContent = 'Perf Mode: On';
-          } else {
-            localStorage.setItem('bharat.performanceMode','off');
-            badge.textContent = 'Perf Mode: Off';
-          }
-        });
-        document.body.appendChild(badge);
+      .grid {
+        grid-template-columns: 1fr;
       }
-
-      // If DOM already ready, insert; otherwise wait
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', insertToggle, { once:true });
-      } else {
-        insertToggle();
+      .nav {
+        gap: 10px;
+        font-size: 12px;
       }
-
-      // Defer heavy third-party library initializations if not on app page
-      // (these functions may not exist on homepage, but safe guards)
-      window.__deferHeavyInit = function(){
-        // Example: if mermaid initialization exists, defer until user opens the tools
-        if (window.mermaid && window.mermaid.initialize) {
-          // don't auto-init
-        }
-      };
-
-    } catch(e){ console.warn('PerfMode guard error', e); }
-  })();
-</script>
-
-<style>
-  /* Additional defensive styles to reduce repaints on Windows */
-  .poster-showcase-card{ will-change: transform; }
-  .poster-img-wrapper, .poster-img-box{ transform: translateZ(0); }
-</style>
-
+    }
+  </style>
 </head>
 <body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">B</span>
+      <span>Bharat Voice</span>
+    </div>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a class="cta" href="app.html">Launch App</a>
+    </nav>
+  </header>
 
-... (original page content continues unchanged) ...
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">✨ AI Study Companion</div>
+        <h1>Learn faster. Speak smarter. Study with confidence.</h1>
+        <p class="lead">
+          Bharat Voice brings bilingual AI tutoring, smart doubt solving, exam guidance, concept maps, and voice-driven learning into one simple experience for students.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="app.html">Open App</a>
+          <a class="btn secondary" href="contact.html">Contact Us</a>
+        </div>
+        <div class="mini-stats">
+          <div><strong>24/7</strong><br />AI support</div>
+          <div><strong>Hindi + English</strong><br />bilingual learning</div>
+          <div><strong>Voice + Text</strong><br />learning modes</div>
+        </div>
+      </div>
 
+      <div class="hero-card">
+        <div class="panel-header">
+          <span>Live Learning</span>
+          <span class="chip">Smart Mode</span>
+        </div>
+        <div class="demo-box">
+          <strong>Ask any question:</strong><br />
+          “Explain photosynthesis in simple language.”<br /><br />
+          <strong>Get instant help with:</strong><br />
+          • concept explanations<br />
+          • step-by-step solutions<br />
+          • revision prompts<br />
+          • exam-style practice
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="grid" aria-label="Features">
+      <article class="feature">
+        <div class="icon">🧠</div>
+        <h3>AI Tutor</h3>
+        <p>Get clear explanations, step-by-step guidance, and personalized study support for classwork and revision.</p>
+      </article>
+
+      <article class="feature">
+        <div class="icon">🎙️</div>
+        <h3>Voice Learning</h3>
+        <p>Speak naturally in Hindi, English, or Hinglish and let the app respond in a simple, student-friendly way.</p>
+      </article>
+
+      <article class="feature">
+        <div class="icon">📚</div>
+        <h3>Exam Ready</h3>
+        <p>Practice concepts, remember formulas, and stay organized with quick-thinking study and revision help.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    © 2025 Bharat Voice · Bilingual AI Study Companion
+  </footer>
 </body>
 </html>
