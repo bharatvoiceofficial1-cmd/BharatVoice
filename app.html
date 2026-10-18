@@ -4855,6 +4855,7 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
       updateEngineBadge(provider);
 
       conversation.push({ role: 'assistant', content: reply });
+      recordChatTurn('ai', reply);
       addBubble('ai', reply, { provider: provider });
       if (opts.speakReply){
         speak(reply);
@@ -4868,6 +4869,7 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
       const provider = isConceptMap || /python|javascript|java|c\+\+|code/i.test(userText) ? 'gemini' : 'groq';
       updateEngineBadge(provider);
       conversation.push({ role: 'assistant', content: fallbackReply });
+      recordChatTurn('ai', fallbackReply);
       addBubble('ai', fallbackReply, { provider: provider });
       if (opts.speakReply){
         speak(fallbackReply);
@@ -5385,23 +5387,19 @@ You are an advanced bilingual AI educational assistant and voice tutor created b
   window.deleteChatSession = deleteChatSession;
   window.exportChatSession = exportChatSession;
 
-  // Restore latest chat session on startup if available
+  // On startup: always start with a clean fresh chat.
+  // Previous sessions are saved and accessible via the History (📂) button.
+  // We do NOT auto-reload the last session into the main view — that caused
+  // all old messages to pile up in the same conversation.
   (function initSessionRestore(){
-    const sessions = getStoredSessions();
-    if (sessions.length > 0){
-      const active = sessions.find(s => s.id === activeChatSessionId) || sessions[0];
-      if (active && active.rawBubbles && active.rawBubbles.length > 0){
-        activeChatSessionId = active.id;
-        localStorage.setItem(ACTIVE_SESSION_KEY, active.id);
-        conversation = Array.isArray(active.conversation) ? active.conversation.slice() : [];
-        transcript.innerHTML = '';
-        active.rawBubbles.forEach(b => {
-          addBubble(b.who, b.text, { imageDataUrl: b.imageDataUrl });
-        });
-      }
-    }
+    // Detach the stored "active session" so we begin fresh every page load
+    activeChatSessionId = null;
+    localStorage.removeItem(ACTIVE_SESSION_KEY);
+    conversation = [];
     updateHistoryUI();
   })();
+
+
 
 </script>
 
