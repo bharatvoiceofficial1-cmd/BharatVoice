@@ -377,6 +377,7 @@ Match the user's language (English, Hindi, or Hinglish).`;
           'Access-Control-Allow-Origin': '*'
         });
         res.end(JSON.stringify({
+          image: dataUrl,
           imageUrl: dataUrl,
           meta: {
             style: data.style || 'auto',
