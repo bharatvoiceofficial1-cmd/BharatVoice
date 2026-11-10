@@ -875,7 +875,25 @@
 .plan-badge.premium{background:rgba(28,154,146,.14);border-color:rgba(28,154,146,.38);color:var(--peacock-light)}
 
 /* ================= COOKIES & TOKEN SYSTEM STYLES ================= */
-.header-badges-row{
+
+  .agentic-nav-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:6px 14px; border-radius:20px;
+    background:linear-gradient(90deg, rgba(118,185,0,0.2), rgba(6,182,212,0.2));
+    border:1px solid #76b900; color:#a3e635; font-size:12px; font-weight:700;
+    text-decoration:none; cursor:pointer; transition:all .2s ease;
+    box-shadow:0 0 12px rgba(118,185,0,0.3);
+  }
+  .agentic-nav-chip:hover{
+    background:#76b900; color:#0b0f19; transform:translateY(-1px);
+    box-shadow:0 0 18px rgba(118,185,0,0.5);
+  }
+  .agentic-dot{
+    width:7px; height:7px; border-radius:50%; background:#a3e635;
+    box-shadow:0 0 8px #a3e635; animation:engineGlow 1.8s ease-in-out infinite;
+  }
+
+  .header-badges-row{
   display:flex; align-items:center; justify-content:center; gap:8px;
   margin:8px auto 0; flex-wrap:wrap;
 }
@@ -2274,6 +2292,11 @@
       <div class="tagline">Namaste 🙏 — apni awaaz mein baat kariye, ya likh kar poochiye</div>
       <div class="model-badge" id="modelBadge"><span class="dot"></span><span id="modelBadgeText">Bharat Voice · gpt-oss-20b</span></div>
       <div class="header-badges-row">
+        
+        <a href="agentic.html" class="agentic-nav-chip" title="Open Agentic AI Work Automation (Powered by NVIDIA Nemotron)">
+          <span class="agentic-dot"></span>
+          <span>⚡ Agentic AI</span>
+        </a>
         <div class="plan-badge" id="planBadge" role="button" tabindex="0" title="Manage plan">Free plan · Upgrade ✨</div>
         <div class="cookie-badge" id="cookieBadge" role="button" tabindex="0" title="View cookie balance &amp; usage">
           <span class="cookie-icon">🍪</span>
@@ -2317,6 +2340,7 @@
     <div class="tool-launcher">
       <div class="tool-title"><b>Tools</b> · create, study, analyse &amp; organise</div>
       <div style="display:flex;gap:6px;align-items:center">
+        <a href="agentic.html" class="tool-launch-btn" style="text-decoration:none;background:rgba(118,185,0,0.18);border-color:#76b900;color:#a3e635;">⚡ Agentic Work</a>
         <button type="button" class="tool-launch-btn" id="conceptMapTopBtn">🗺️ Concept Map</button>
         <button type="button" class="tool-launch-btn" id="createImageTopBtn">🎨 Image</button>
         <button type="button" class="tool-launch-btn" id="openToolsBtn">Open Tools ▾</button>
