@@ -1,338 +1,1586 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bharat Voice · Agentic AI Work Automation</title>
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --night: #0b0f19;
-    --night-card: #111827;
-    --nvidia-green: #76b900;
-    --nvidia-glow: rgba(118, 185, 0, 0.4);
-    --saffron: #ff9f1c;
-    --cyan: #06b6d4;
-    --ivory: #f9fafb;
-    --ivory-dim: #9ca3af;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(118,185,0,0.15), transparent 70%), var(--night);
-    color: var(--ivory);
-    font-family: 'Poppins', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  .navbar {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 24px;
-    background: rgba(17, 24, 39, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(118, 185, 0, 0.25);
-    position: sticky; top: 0; z-index: 50;
-  }
-  .nav-brand {
-    display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit;
-  }
-  .nav-brand img { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--nvidia-green); }
-  .nav-title { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-  .agentic-pill {
-    font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
-    padding: 3px 8px; border-radius: 12px;
-    background: rgba(118, 185, 0, 0.18); border: 1px solid var(--nvidia-green); color: #a3e635;
-  }
-  .nav-links { display: flex; gap: 10px; align-items: center; }
-  .back-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 16px; border-radius: 20px;
-    background: rgba(255, 159, 28, 0.12); border: 1px solid var(--saffron);
-    color: var(--saffron); font-size: 13px; font-weight: 600; text-decoration: none;
-    transition: all .2s;
-  }
-  .back-btn:hover { background: var(--saffron); color: #111; transform: translateY(-1px); }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bharat Voice AI Workspace — Multi-Model Studio (Mistral, Nemotron, Gemini)</title>
+  <meta name="description" content="Explore and run frontier AI models in a unified NVIDIA-style workspace. Fine-tune parameters for Mistral Large 1T, NVIDIA Nemotron 120B, Google Gemini, and Codestral." />
 
-  .hero {
-    text-align: center; padding: 40px 20px 20px; max-width: 820px; margin: 0 auto;
-  }
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 5px 14px; border-radius: 20px;
-    background: rgba(118,185,0,0.12); border: 1px solid rgba(118,185,0,0.4);
-    color: #a3e635; font-size: 12px; font-weight: 600; margin-bottom: 12px;
-  }
-  .hero h1 {
-    font-size: clamp(28px, 6vw, 44px); font-weight: 700; line-height: 1.25; margin-bottom: 12px;
-    background: linear-gradient(90deg, #a3e635, #76b900 40%, #06b6d4);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .hero p {
-    font-size: 14.5px; color: var(--ivory-dim); line-height: 1.6; max-width: 650px; margin: 0 auto;
-  }
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="alternate icon" type="image/png" href="assets/logo.png">
 
-  .engine-chip {
-    display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
-    background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(118, 185, 0, 0.35);
-    padding: 7px 16px; border-radius: 24px; font-size: 12px; color: #a3e635;
-  }
-  .engine-chip .pulse-dot {
-    width: 8px; height: 8px; border-radius: 50%; background: #76b900; box-shadow: 0 0 10px #76b900;
-  }
+  <style>
+    :root {
+      --bg-darkest: #07060d;
+      --bg-main: #0c0b16;
+      --bg-card: #131224;
+      --bg-sidebar: #0f0e1c;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(118, 185, 0, 0.5);
+      --nvidia-green: #76b900;
+      --nvidia-glow: rgba(118, 185, 0, 0.35);
+      --mistral-orange: #ff7000;
+      --gemini-blue: #3b82f6;
+      --accent-gold: #ffbe0b;
+      --text-main: #ffffff;
+      --text-muted: #9e9bb0;
+      --text-dim: #6c6980;
+      --radius: 12px;
+    }
 
-  .main-container {
-    max-width: 960px; margin: 0 auto; padding: 20px; width: 100%; flex: 1;
-    display: grid; grid-template-columns: 1fr; gap: 20px;
-  }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg-darkest);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
 
-  /* Preset Agents / Automation Cards */
-  .presets-section { margin-bottom: 10px; }
-  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ivory-dim); margin-bottom: 12px; }
-  .presets-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;
-  }
-  .preset-card {
-    background: var(--night-card); border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px; padding: 16px; cursor: pointer; transition: all .2s;
-    text-align: left;
-  }
-  .preset-card:hover {
-    border-color: var(--nvidia-green); transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--nvidia-glow);
-  }
-  .preset-icon { font-size: 24px; margin-bottom: 8px; display: block; }
-  .preset-name { font-size: 14px; font-weight: 600; color: #a3e635; margin-bottom: 4px; }
-  .preset-desc { font-size: 12px; color: var(--ivory-dim); line-height: 1.45; }
+    /* Top Sticky Navigation */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(12, 11, 22, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--nvidia-green), #a3e635);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      color: #0b1c00;
+      font-size: 16px;
+      box-shadow: 0 0 16px var(--nvidia-glow);
+    }
+    .brand-text h1 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .badge-workspace {
+      background: rgba(118, 185, 0, 0.15);
+      border: 1px solid var(--nvidia-green);
+      color: #a3e635;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-  /* Execution Workspace */
-  .workspace-card {
-    background: var(--night-card); border: 1px solid rgba(118, 185, 0, 0.3);
-    border-radius: 18px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  }
-  .input-label { font-size: 13px; font-weight: 600; color: #a3e635; margin-bottom: 8px; display: block; }
-  .task-input {
-    width: 100%; min-height: 120px; padding: 14px 16px; border-radius: 12px;
-    background: rgba(11, 15, 25, 0.85); border: 1px solid rgba(118, 185, 0, 0.25);
-    color: var(--ivory); font-family: 'Poppins', sans-serif; font-size: 14px; outline: none;
-    line-height: 1.5; resize: vertical; margin-bottom: 14px;
-  }
-  .task-input:focus { border-color: var(--nvidia-green); box-shadow: 0 0 12px var(--nvidia-glow); }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .nav-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .btn-nav-app {
+      background: linear-gradient(135deg, #ff9f1c, #ffc93c);
+      color: #170900;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-nav-app:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(255, 159, 28, 0.4);
+    }
 
-  .controls-row {
-    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
-  }
-  .options-group { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--ivory-dim); }
-  .options-group input[type="checkbox"] { accent-color: var(--nvidia-green); }
+    /* Views container */
+    .view-container {
+      display: none;
+      width: 100%;
+      min-height: calc(100vh - 61px);
+    }
+    .view-container.active {
+      display: block;
+    }
 
-  .run-agent-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 12px 28px; border-radius: 24px; border: none; cursor: pointer;
-    background: linear-gradient(90deg, #76b900, #a3e635);
-    color: #0b0f19; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 14px;
-    letter-spacing: 0.02em; transition: all .2s;
-    box-shadow: 0 4px 16px var(--nvidia-glow);
-  }
-  .run-agent-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-  .run-agent-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    /* ======================================================== */
+    /* 1. CATALOG VIEW (NVIDIA BUILD STYLE)                    */
+    /* ======================================================== */
+    .catalog-hero {
+      padding: 48px 24px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .catalog-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(118, 185, 0, 0.12);
+      border: 1px solid rgba(118, 185, 0, 0.35);
+      color: #a3e635;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .catalog-hero h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff 40%, #c3f584 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .catalog-hero p {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 32px;
+    }
 
-  /* Output Stream / Step Execution */
-  .output-container {
-    margin-top: 24px; display: none;
-  }
-  .output-container.active { display: block; }
-  .thinking-drawer {
-    background: rgba(11, 15, 25, 0.95); border: 1px solid rgba(6, 182, 212, 0.35);
-    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; font-family: 'Fira Code', monospace;
-    font-size: 12px; color: #a5f3fc; line-height: 1.55; max-height: 220px; overflow-y: auto;
-  }
-  .thinking-header {
-    display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--cyan);
-    margin-bottom: 8px; font-size: 12px; text-transform: uppercase;
-  }
-  .final-output {
-    background: rgba(11, 15, 25, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px; padding: 18px; line-height: 1.6; font-size: 14px;
-  }
-  .final-output h2, .final-output h3 { color: #a3e635; margin: 12px 0 6px; }
-  .final-output pre {
-    background: #000; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 10px 0;
-    font-family: 'Fira Code', monospace; font-size: 12.5px; border: 1px solid rgba(118,185,0,0.25);
-  }
+    /* Filters bar */
+    .filters-bar {
+      max-width: 1280px;
+      margin: 0 auto 24px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: rgba(118, 185, 0, 0.15);
+      border-color: var(--nvidia-green);
+      color: #a3e635;
+    }
+    .search-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 260px;
+    }
+    .search-box input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      width: 100%;
+      outline: none;
+    }
 
-  footer {
-    text-align: center; padding: 20px; font-size: 12px; color: var(--ivory-dim);
-    border-top: 1px solid rgba(255,255,255,0.06); margin-top: auto;
-  }
-</style>
+    /* Models Grid */
+    .models-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+    .model-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .model-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(118, 185, 0, 0.12);
+    }
+    .model-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .model-provider-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .provider-mistral { background: rgba(255, 112, 0, 0.15); color: #ff8c33; border: 1px solid rgba(255, 112, 0, 0.4); }
+    .provider-nvidia { background: rgba(118, 185, 0, 0.15); color: #a3e635; border: 1px solid rgba(118, 185, 0, 0.4); }
+    .provider-gemini { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .provider-bfl { background: rgba(255, 190, 11, 0.15); color: #ffbe0b; border: 1px solid rgba(255, 190, 11, 0.4); }
+
+    .model-card h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .model-card p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+    .model-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .model-tag {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .model-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-color);
+    }
+    .model-specs {
+      font-size: 12px;
+      color: var(--text-dim);
+      display: flex;
+      gap: 12px;
+    }
+    .btn-launch-model {
+      background: rgba(118, 185, 0, 0.12);
+      border: 1px solid var(--nvidia-green);
+      color: #a3e635;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .model-card:hover .btn-launch-model {
+      background: var(--nvidia-green);
+      color: #0b1a00;
+    }
+
+    /* ======================================================== */
+    /* 2. PLAYGROUND STUDIO VIEW (NVIDIA BUILD WORKSPACE)       */
+    /* ======================================================== */
+    .playground-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      height: calc(100vh - 61px);
+      overflow: hidden;
+    }
+    @media (max-width: 1024px) {
+      .playground-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow: visible;
+      }
+    }
+
+    /* Main chat / test area */
+    .playground-main {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: var(--bg-darkest);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+    }
+    .playground-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-main);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-model-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-back {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .active-model-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Conversation stream */
+    .chat-stream {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .message-bubble {
+      display: flex;
+      gap: 14px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .avatar-user {
+      background: #374151;
+      color: #fff;
+    }
+    .avatar-ai {
+      background: linear-gradient(135deg, var(--nvidia-green), #a3e635);
+      color: #0b1a00;
+      box-shadow: 0 0 12px var(--nvidia-glow);
+    }
+    .message-content {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #f3f4f6;
+    }
+    .message-content pre {
+      background: #000;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      margin: 10px 0;
+      border: 1px solid var(--border-color);
+    }
+    .thinking-drawer {
+      background: rgba(118, 185, 0, 0.05);
+      border-left: 3px solid var(--nvidia-green);
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 12.5px;
+      color: #a3e635;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .thinking-drawer summary {
+      cursor: pointer;
+      font-weight: 700;
+      outline: none;
+      user-select: none;
+    }
+    .thinking-text {
+      margin-top: 8px;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    /* Prompt composer at bottom */
+    .playground-composer {
+      padding: 18px 24px;
+      background: var(--bg-main);
+      border-top: 1px solid var(--border-color);
+      position: sticky;
+      bottom: 0;
+    }
+    .composer-presets {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .preset-chip {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-chip:hover {
+      background: rgba(118, 185, 0, 0.1);
+      border-color: var(--nvidia-green);
+      color: #a3e635;
+    }
+    .composer-input-wrap {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      transition: border-color 0.2s;
+    }
+    .composer-input-wrap:focus-within {
+      border-color: var(--nvidia-green);
+      box-shadow: 0 0 14px var(--nvidia-glow);
+    }
+    .composer-textarea {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      min-height: 54px;
+      max-height: 180px;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+    .composer-bar-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .composer-left-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-vision-upload {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+    .btn-vision-upload:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .image-preview-pill {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: rgba(118, 185, 0, 0.15);
+      border: 1px solid var(--nvidia-green);
+      color: #a3e635;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .btn-execute-prompt {
+      background: linear-gradient(135deg, var(--nvidia-green), #a3e635);
+      color: #0b1a00;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px var(--nvidia-glow);
+      transition: all 0.2s;
+    }
+    .btn-execute-prompt:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--nvidia-glow);
+    }
+    .btn-execute-prompt:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ======================================================== */
+    /* 3. PARAMETERS SIDEBAR (NVIDIA BUILD SLIDERS)             */
+    /* ======================================================== */
+    .playground-sidebar {
+      background: var(--bg-sidebar);
+      border-left: 1px solid var(--border-color);
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .sidebar-section-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--nvidia-green);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .param-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .param-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+    .param-val-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #a3e635;
+      background: rgba(118, 185, 0, 0.1);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .param-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #252438;
+      outline: none;
+    }
+    .param-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--nvidia-green);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--nvidia-glow);
+    }
+    .param-select, .param-textarea {
+      background: #17162b;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      outline: none;
+      font-family: inherit;
+    }
+    .param-select:focus, .param-textarea:focus {
+      border-color: var(--nvidia-green);
+    }
+    .param-textarea {
+      min-height: 80px;
+      resize: vertical;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+    .toggle-row input[type="checkbox"] {
+      accent-color: var(--nvidia-green);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .btn-view-code {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-view-code:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #fff;
+    }
+
+    /* Modal for View Code */
+    #codeModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #codeModal.active {
+      display: flex;
+    }
+    .code-modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 720px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .modal-tab-btn.active {
+      background: rgba(118, 185, 0, 0.15);
+      border-color: var(--nvidia-green);
+      color: #a3e635;
+    }
+    .modal-code-wrap {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      background: #06050b;
+    }
+    .modal-code-wrap pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: #d1d5db;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <a href="app.html" class="nav-brand">
-      <img src="assets/logo.png" alt="Bharat Voice">
-      <div class="nav-title">Bharat Voice <span class="agentic-pill">Agentic AI Work</span></div>
+  <!-- Top Sticky Navigation -->
+  <header class="topbar">
+    <a href="index.html" class="brand-wrap">
+      <div class="brand-logo">⚡</div>
+      <div class="brand-text">
+        <h1>Bharat Voice Studio <span class="badge-workspace">NVIDIA &amp; Mistral</span></h1>
+        <p>Unified Multi-Model Playground &amp; Parameter Studio</p>
+      </div>
     </a>
-    <div class="nav-links">
-      <a href="app.html" class="back-btn">← Switch to Study Chat</a>
-    </div>
-  </nav>
 
-  <div class="hero">
-    <div class="hero-tag">⚡ Autonomous Task Automation Engine</div>
-    <h1>Automate Complex Work with Agentic AI</h1>
-    <p>
-      Delegate multi-step workflows, code refactoring, curriculum mapping, problem-solving, and deep document automation powered by the <b>NVIDIA Nemotron 3.5 Super VL 120B</b> reasoning engine.
-    </p>
-    <div class="engine-chip">
-      <span class="pulse-dot"></span>
-      <span>NVIDIA Nemotron 3.5 Super VL 120B (Active &amp; Ready)</span>
-    </div>
-  </div>
+    <nav class="nav-actions">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="javascript:showCatalogView()" class="nav-link" style="color:#a3e635;">All Models</a>
+      <a href="app.html" class="btn-nav-app">Study App 🚀</a>
+    </nav>
+  </header>
 
-  <div class="main-container">
+  <!-- ======================================================== -->
+  <!-- 1. CATALOG VIEW (NVIDIA NIM STYLE)                       -->
+  <!-- ======================================================== -->
+  <div id="catalogView" class="view-container active">
+    <section class="catalog-hero">
+      <div class="catalog-pill">
+        <span>⚡ NVIDIA NIM &amp; Frontier Model Hub</span>
+      </div>
+      <h2>Unified Multi-Model AI Workspace</h2>
+      <p>
+        Select from state-of-the-art reasoning, vision, and coding models. Configure deep hyperparameters, test chains of thought, and run prompts with zero lag.
+      </p>
+    </section>
 
-    <div class="presets-section">
-      <div class="section-title">⚡ Quick Workflow Templates</div>
-      <div class="presets-grid">
-        <div class="preset-card" onclick="setTask('Analyze this entire curriculum topic, break it down into 5 autonomous learning milestones, design assessment questions for each, and generate self-testing rubrics.')">
-          <span class="preset-icon">📋</span>
-          <div class="preset-name">Autonomous Lesson Architecture</div>
-          <div class="preset-desc">Creates 5 progressive learning milestones, self-grading tests, and rubrics.</div>
-        </div>
+    <div class="filters-bar">
+      <div class="filter-pills">
+        <button class="filter-btn active" onclick="filterCategory('all', this)">All Models (5)</button>
+        <button class="filter-btn" onclick="filterCategory('reasoning', this)">Reasoning &amp; Thinking</button>
+        <button class="filter-btn" onclick="filterCategory('vision', this)">Vision &amp; Multimodal</button>
+        <button class="filter-btn" onclick="filterCategory('code', this)">Code Generation</button>
+        <button class="filter-btn" onclick="filterCategory('general', this)">Bilingual General</button>
+      </div>
 
-        <div class="preset-card" onclick="setTask('Act as a Senior System Architect. Take this problem specification, break down the complete architecture step-by-step, draft optimal code logic, review edge cases, and output clean implementation steps.')">
-          <span class="preset-icon">💻</span>
-          <div class="preset-name">Full-Stack Code Synthesis &amp; Audit</div>
-          <div class="preset-desc">Autonomous code generation, architecture planning, and edge-case validation.</div>
-        </div>
-
-        <div class="preset-card" onclick="setTask('Autonomous Research &amp; Synthesis Agent: Compile an executive-level brief on this subject with key findings, counter-arguments, mathematical/logical verification, and action recommendations.')">
-          <span class="preset-icon">🔬</span>
-          <div class="preset-name">Deep Research &amp; Synthesis Agent</div>
-          <div class="preset-desc">Synthesizes key concepts, logical proofs, and structured executive briefs.</div>
-        </div>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="modelSearch" placeholder="Search models or tasks..." oninput="searchModels(this.value)">
       </div>
     </div>
 
-    <div class="workspace-card">
-      <label class="input-label" for="agentTaskInput">🎯 Describe the goal or autonomous workflow for the Agent:</label>
-      <textarea id="agentTaskInput" class="task-input" placeholder="e.g. Break down the entire Class 10 Physics Optics chapter into a 3-week study roadmap with daily practice schedules, formulas to memorize, and autonomous question generation..."></textarea>
+    <div class="models-grid" id="modelsGrid">
+      <!-- Models will be rendered dynamically by JavaScript -->
+    </div>
+  </div>
 
-      <div class="controls-row">
-        <div class="options-group">
-          <label><input type="checkbox" id="showReasoningCheck" checked> Show internal chain-of-thought reasoning</label>
+  <!-- ======================================================== -->
+  <!-- 2. INTERACTIVE PLAYGROUND STUDIO (NVIDIA BUILD)          -->
+  <!-- ======================================================== -->
+  <div id="playgroundView" class="view-container">
+    <div class="playground-layout">
+
+      <!-- Left / Main Chat & Execution Canvas -->
+      <main class="playground-main">
+        <div class="playground-header">
+          <div class="header-model-info">
+            <button class="btn-back" onclick="showCatalogView()">← All Models</button>
+            <div class="active-model-title" id="activeModelTitle">
+              <span>Mistral Large 4 1T</span>
+              <span id="activeModelBadge" class="model-provider-badge provider-mistral">Mistral AI</span>
+            </div>
+          </div>
+          <button class="btn-back" onclick="clearConversation()">🧹 Clear History</button>
         </div>
-        <button type="button" class="run-agent-btn" id="runAgentBtn" onclick="runAgentTask()">
-          <span>⚡ Execute Autonomous Agent</span>
+
+        <div class="chat-stream" id="chatStream">
+          <!-- Initial welcome card in stream -->
+          <div class="message-bubble">
+            <div class="message-avatar avatar-ai">AI</div>
+            <div class="message-content">
+              <strong>Welcome to Bharat Voice AI Studio!</strong><br>
+              You are connected directly to <strong id="welcomeModelName" style="color:#a3e635;">Mistral Large 4 1T</strong>. Adjust parameters on the right sidebar, select sample prompts below, or enter your custom task.
+            </div>
+          </div>
+        </div>
+
+        <!-- Prompt Composer at bottom -->
+        <div class="playground-composer">
+          <div class="composer-presets" id="composerPresets">
+            <!-- Presets populated per model -->
+          </div>
+
+          <div class="composer-input-wrap">
+            <textarea id="promptInput" class="composer-textarea" placeholder="Enter instructions, code snippet, math derivation, or question... (Press Ctrl + Enter to submit)"></textarea>
+
+            <div class="composer-bar-bottom">
+              <div class="composer-left-tools">
+                <label class="btn-vision-upload" title="Attach image for multimodal vision models">
+                  📷 <span>Attach Image</span>
+                  <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+                </label>
+                <span id="imagePill" class="image-preview-pill">
+                  <span>🖼️ Image Attached</span>
+                  <span style="cursor:pointer;" onclick="removeImage()">✕</span>
+                </span>
+              </div>
+
+              <button id="runBtn" class="btn-execute-prompt" onclick="executeModelPrompt()">
+                <span>⚡ Run Model</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right Sidebar: Full Hyperparameter Tuning Studio -->
+      <aside class="playground-sidebar">
+        <div>
+          <div class="sidebar-section-title">
+            <span>Model Selection</span>
+          </div>
+          <div class="param-group">
+            <select id="modelSelector" class="param-select" onchange="switchModel(this.value)">
+              <!-- Options populated by JS -->
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <div class="sidebar-section-title">
+            <span>Hyperparameters</span>
+            <span style="font-size:10px; color:var(--text-dim); text-transform:none;">NVIDIA Studio</span>
+          </div>
+
+          <!-- Temperature -->
+          <div class="param-group">
+            <div class="param-label-row">
+              <span>Temperature</span>
+              <span id="tempVal" class="param-val-badge">0.50</span>
+            </div>
+            <input type="range" id="tempSlider" class="param-slider" min="0" max="2" step="0.05" value="0.5" oninput="updateParam('temp', this.value)">
+          </div>
+
+          <!-- Top-P -->
+          <div class="param-group">
+            <div class="param-label-row">
+              <span>Top-P Sampling</span>
+              <span id="topPVal" class="param-val-badge">1.00</span>
+            </div>
+            <input type="range" id="topPSlider" class="param-slider" min="0" max="1" step="0.01" value="1.0" oninput="updateParam('topP', this.value)">
+          </div>
+
+          <!-- Max Tokens -->
+          <div class="param-group">
+            <div class="param-label-row">
+              <span>Max Output Tokens</span>
+              <span id="maxTokensVal" class="param-val-badge">4096</span>
+            </div>
+            <input type="range" id="maxTokensSlider" class="param-slider" min="64" max="16384" step="64" value="4096" oninput="updateParam('maxTokens', this.value)">
+          </div>
+
+          <!-- Frequency Penalty -->
+          <div class="param-group">
+            <div class="param-label-row">
+              <span>Frequency Penalty</span>
+              <span id="freqPenaltyVal" class="param-val-badge">0.00</span>
+            </div>
+            <input type="range" id="freqPenaltySlider" class="param-slider" min="-2" max="2" step="0.1" value="0.0" oninput="updateParam('freqPenalty', this.value)">
+          </div>
+
+          <!-- Presence Penalty -->
+          <div class="param-group">
+            <div class="param-label-row">
+              <span>Presence Penalty</span>
+              <span id="presPenaltyVal" class="param-val-badge">0.00</span>
+            </div>
+            <input type="range" id="presPenaltySlider" class="param-slider" min="-2" max="2" step="0.1" value="0.0" oninput="updateParam('presPenalty', this.value)">
+          </div>
+
+          <!-- Reasoning Effort -->
+          <div class="param-group" id="reasoningEffortGroup">
+            <div class="param-label-row">
+              <span>Reasoning Effort</span>
+            </div>
+            <select id="reasoningEffortSelect" class="param-select">
+              <option value="high" selected>High (Deep Verification)</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low (Fast Inference)</option>
+            </select>
+          </div>
+
+          <!-- Thinking toggle -->
+          <div class="param-group">
+            <label class="toggle-row">
+              <span>Show Chain-of-Thought</span>
+              <input type="checkbox" id="thinkingToggle" checked>
+            </label>
+          </div>
+        </div>
+
+        <!-- System Prompt -->
+        <div>
+          <div class="sidebar-section-title">
+            <span>System Persona &amp; Instructions</span>
+          </div>
+          <div class="param-group">
+            <textarea id="systemPromptInput" class="param-textarea" placeholder="Define model behavior, format, or persona...">You are an expert AI intelligence engine on Bharat Voice AI Studio. Provide clear, structured, accurate, and deeply reasoned answers.</textarea>
+          </div>
+        </div>
+
+        <!-- View Code Button -->
+        <button class="btn-view-code" onclick="openCodeModal()">
+          <span>&lt;/&gt;</span>
+          <span>View Code (Python / cURL)</span>
         </button>
-      </div>
-
-      <div class="output-container" id="outputContainer">
-        <div class="thinking-drawer" id="thinkingDrawer">
-          <div class="thinking-header">🧠 Nemotron 120B Chain-of-Thought (Reasoning)</div>
-          <div id="thinkingContent">Thinking through steps...</div>
-        </div>
-
-        <div class="final-output" id="finalOutput">
-          <!-- Final Agent Results -->
-        </div>
-      </div>
+      </aside>
     </div>
-
   </div>
 
-  <footer>
-    Bharat Voice Agentic AI · Powered by NVIDIA Nemotron 3.5 Super VL 120B &amp; Google Gemini · Connected with <a href="app.html" style="color:var(--nvidia-green);">Bharat Voice App</a>
-  </footer>
+  <!-- ======================================================== -->
+  <!-- 4. VIEW CODE MODAL (NVIDIA BUILD EXPORT)                 -->
+  <!-- ======================================================== -->
+  <div id="codeModal">
+    <div class="code-modal-card">
+      <div class="modal-header">
+        <h3 style="font-size:15px; font-weight:800; color:#fff;">Integrate with API</h3>
+        <button onclick="closeCodeModal()" style="background:transparent; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab-btn active" onclick="switchCodeLang('python', this)">Python</button>
+        <button class="modal-tab-btn" onclick="switchCodeLang('curl', this)">cURL</button>
+        <button class="modal-tab-btn" onclick="switchCodeLang('javascript', this)">JavaScript</button>
+      </div>
+      <div class="modal-code-wrap">
+        <pre><code id="codeSnippet"></code></pre>
+      </div>
+    </div>
+  </div>
 
   <script>
-    function setTask(text) {
-      const input = document.getElementById('agentTaskInput');
+    // Master Model Catalog
+    const MODELS = [
+      {
+        id: 'mistralai/mistral-large-4-1t-a52b',
+        name: 'Mistral Large 4 1T',
+        provider: 'Mistral AI',
+        providerClass: 'provider-mistral',
+        badge: 'Frontier Reasoning',
+        category: 'reasoning',
+        contextLength: '128K Context',
+        params: '1 Trillion MoE',
+        vision: true,
+        thinking: true,
+        description: 'Mistral flagship frontier model featuring multimodal vision, deep chain-of-thought, and top-tier mathematical synthesis.',
+        defaults: { temp: 0.5, topP: 1.0, maxTokens: 4096, freqPenalty: 0.0, presPenalty: 0.0, effort: 'high', thinking: true },
+        presets: [
+          'Prove step-by-step why the square root of 2 is irrational.',
+          'Analyze this algorithm: time complexity of QuickSort vs MergeSort in worst-case.',
+          'Draft a high-throughput microservices architecture in Golang.'
+        ]
+      },
+      {
+        id: 'nvidia/nemotron-3.5-super-vl-120b-a12b',
+        name: 'NVIDIA Nemotron 3.5 Super VL 120B',
+        provider: 'NVIDIA',
+        providerClass: 'provider-nvidia',
+        badge: 'Agentic Vision',
+        category: 'vision',
+        contextLength: '128K Context',
+        params: '120B MoE',
+        vision: true,
+        thinking: true,
+        description: 'Engineered for multimodal diagram reasoning, visual inspection of circuits and chemistry formulas, and autonomous workflows.',
+        defaults: { temp: 0.7, topP: 0.95, maxTokens: 4096, freqPenalty: 0.0, presPenalty: 0.0, effort: 'high', thinking: true },
+        presets: [
+          'Create an automated 7-day CBSE Class 10 Science revision roadmap.',
+          'Explain how light refraction through a glass prism produces a rainbow spectrum.',
+          'Deconstruct a complex chemical reaction mechanism step-by-step.'
+        ]
+      },
+      {
+        id: 'gemini-3.8-flash',
+        name: 'Google Gemini 3.8 Flash',
+        provider: 'Google DeepMind',
+        providerClass: 'provider-gemini',
+        badge: 'Bilingual Core',
+        category: 'general',
+        contextLength: '1M Context',
+        params: 'Multimodal',
+        vision: true,
+        thinking: false,
+        description: 'Ultra-low latency bilingual model for Indian educational curricula (CBSE, ICSE, State Boards) with 1M context.',
+        defaults: { temp: 0.6, topP: 0.95, maxTokens: 8192, freqPenalty: 0.0, presPenalty: 0.0, effort: 'medium', thinking: false },
+        presets: [
+          'प्रकाश संश्लेषण (Photosynthesis) की प्रक्रिया सरल हिंदी और अंग्रेजी में समझाइए।',
+          'Explain Ohm\'s law with real-world examples and unit derivations.',
+          'Generate 5 mock questions on Indian Constitution with answers.'
+        ]
+      },
+      {
+        id: 'mistralai/codestral-22b-instruct-v0.1',
+        name: 'Mistral Codestral 22B',
+        provider: 'Mistral AI',
+        providerClass: 'provider-mistral',
+        badge: 'Code & Logic',
+        category: 'code',
+        contextLength: '32K Context',
+        params: '22B Weights',
+        vision: false,
+        thinking: false,
+        description: 'Specialized coding powerhouse proficient in 80+ programming languages for code completion, refactoring, and debugging.',
+        defaults: { temp: 0.2, topP: 0.95, maxTokens: 4096, freqPenalty: 0.0, presPenalty: 0.0, effort: 'low', thinking: false },
+        presets: [
+          'Write a production-ready LRU Cache implementation in TypeScript with O(1) ops.',
+          'Debug this SQL query: recursive CTE for hierarchical organization tree.',
+          'Implement a binary search tree traversal with unit tests.'
+        ]
+      },
+      {
+        id: 'mistralai/mistral-7b-instruct-v0.3',
+        name: 'Mistral 7B Instruct v0.3',
+        provider: 'Mistral AI',
+        providerClass: 'provider-mistral',
+        badge: 'Ultra Fast',
+        category: 'general',
+        contextLength: '32K Context',
+        params: '7.3B',
+        vision: false,
+        thinking: false,
+        description: 'Lightweight, ultra-responsive model optimized for edge devices, rapid summarization, and flashcard generation.',
+        defaults: { temp: 0.7, topP: 1.0, maxTokens: 2048, freqPenalty: 0.0, presPenalty: 0.0, effort: 'low', thinking: false },
+        presets: [
+          'Summarize the key events of the Indian Independence Movement in 5 bullet points.',
+          'Create 3 quick mnemonics to remember the Periodic Table elements.',
+          'Define thermodynamics in 2 clear sentences.'
+        ]
+      }
+    ];
+
+    let currentModelId = 'mistralai/mistral-large-4-1t-a52b';
+    let attachedImageBase64 = null;
+    let conversationHistory = [];
+
+    // Initialize UI on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCatalog(MODELS);
+      populateModelSelector();
+
+      // Check URL query param for direct model launch
+      const params = new URLSearchParams(window.location.search);
+      const requestedModel = params.get('model');
+      if (requestedModel && MODELS.some(m => m.id === requestedModel)) {
+        launchPlayground(requestedModel);
+      } else {
+        showCatalogView();
+      }
+
+      // Allow Ctrl+Enter to submit prompt
+      document.getElementById('promptInput').addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          executeModelPrompt();
+        }
+      });
+    });
+
+    // Render Catalog Cards
+    function renderCatalog(modelList) {
+      const grid = document.getElementById('modelsGrid');
+      grid.innerHTML = modelList.map(m => `
+        <article class="model-card" onclick="launchPlayground('${m.id}')">
+          <div>
+            <div class="model-card-top">
+              <span class="model-provider-badge ${m.providerClass}">${m.provider}</span>
+              <span class="model-tag" style="color:#a3e635; border-color:rgba(118,185,0,0.3);">${m.badge}</span>
+            </div>
+            <h3>${m.name}</h3>
+            <p>${m.description}</p>
+            <div class="model-tags">
+              <span class="model-tag">📐 ${m.params}</span>
+              <span class="model-tag">📚 ${m.contextLength}</span>
+              ${m.vision ? '<span class="model-tag">👁️ Vision</span>' : ''}
+              ${m.thinking ? '<span class="model-tag">🧠 Chain-of-Thought</span>' : ''}
+            </div>
+          </div>
+          <div class="model-card-footer">
+            <div class="model-specs">
+              <span>Ready on NIM</span>
+            </div>
+            <button class="btn-launch-model">
+              <span>Open Studio</span>
+              <span>→</span>
+            </button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // Filter by category
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      if (cat === 'all') {
+        renderCatalog(MODELS);
+      } else {
+        const filtered = MODELS.filter(m => m.category === cat);
+        renderCatalog(filtered);
+      }
+    }
+
+    // Search models
+    function searchModels(query) {
+      const q = query.toLowerCase().trim();
+      const filtered = MODELS.filter(m =>
+        m.name.toLowerCase().includes(q) ||
+        m.provider.toLowerCase().includes(q) ||
+        m.description.toLowerCase().includes(q) ||
+        m.category.toLowerCase().includes(q)
+      );
+      renderCatalog(filtered);
+    }
+
+    // Populate model selector dropdown
+    function populateModelSelector() {
+      const sel = document.getElementById('modelSelector');
+      sel.innerHTML = MODELS.map(m => `
+        <option value="${m.id}">${m.name} (${m.provider})</option>
+      `).join('');
+    }
+
+    // Navigation switches
+    function showCatalogView() {
+      document.getElementById('catalogView').classList.add('active');
+      document.getElementById('playgroundView').classList.remove('active');
+      window.history.replaceState({}, '', 'workspace.html');
+    }
+
+    function launchPlayground(modelId) {
+      currentModelId = modelId;
+      document.getElementById('catalogView').classList.remove('active');
+      document.getElementById('playgroundView').classList.add('active');
+      window.history.replaceState({}, '', `workspace.html?model=${encodeURIComponent(modelId)}`);
+
+      const model = MODELS.find(m => m.id === modelId) || MODELS[0];
+      document.getElementById('activeModelTitle').innerHTML = `
+        <span>${model.name}</span>
+        <span class="model-provider-badge ${model.providerClass}">${model.provider}</span>
+      `;
+      document.getElementById('welcomeModelName').textContent = model.name;
+      document.getElementById('modelSelector').value = model.id;
+
+      // Set parameter defaults
+      applyModelDefaults(model);
+
+      // Render preset chips
+      renderPresetChips(model);
+    }
+
+    function switchModel(modelId) {
+      launchPlayground(modelId);
+    }
+
+    function applyModelDefaults(model) {
+      const d = model.defaults;
+      updateParam('temp', d.temp);
+      updateParam('topP', d.topP);
+      updateParam('maxTokens', d.maxTokens);
+      updateParam('freqPenalty', d.freqPenalty);
+      updateParam('presPenalty', d.presPenalty);
+      document.getElementById('tempSlider').value = d.temp;
+      document.getElementById('topPSlider').value = d.topP;
+      document.getElementById('maxTokensSlider').value = d.maxTokens;
+      document.getElementById('freqPenaltySlider').value = d.freqPenalty;
+      document.getElementById('presPenaltySlider').value = d.presPenalty;
+      document.getElementById('reasoningEffortSelect').value = d.effort;
+      document.getElementById('thinkingToggle').checked = d.thinking;
+
+      document.getElementById('reasoningEffortGroup').style.display = model.thinking ? 'flex' : 'none';
+    }
+
+    function renderPresetChips(model) {
+      const wrap = document.getElementById('composerPresets');
+      wrap.innerHTML = (model.presets || []).map(p => `
+        <span class="preset-chip" onclick="setPresetText(\`${p.replace(/`/g, '\\`')}\`)">${p.substring(0, 50)}...</span>
+      `).join('');
+    }
+
+    function setPresetText(text) {
+      const input = document.getElementById('promptInput');
       input.value = text;
       input.focus();
     }
 
-    async function runAgentTask() {
-      const taskInput = document.getElementById('agentTaskInput');
-      const task = taskInput.value.trim();
-      if (!task) return;
+    // Parameter sliders update handler
+    function updateParam(param, val) {
+      if (param === 'temp') document.getElementById('tempVal').textContent = Number(val).toFixed(2);
+      if (param === 'topP') document.getElementById('topPVal').textContent = Number(val).toFixed(2);
+      if (param === 'maxTokens') document.getElementById('maxTokensVal').textContent = val;
+      if (param === 'freqPenalty') document.getElementById('freqPenaltyVal').textContent = Number(val).toFixed(2);
+      if (param === 'presPenalty') document.getElementById('presPenaltyVal').textContent = Number(val).toFixed(2);
+    }
 
-      const runBtn = document.getElementById('runAgentBtn');
-      const outputContainer = document.getElementById('outputContainer');
-      const thinkingDrawer = document.getElementById('thinkingDrawer');
-      const thinkingContent = document.getElementById('thinkingContent');
-      const finalOutput = document.getElementById('finalOutput');
-      const showReasoning = document.getElementById('showReasoningCheck').checked;
+    // Image Upload Handler for Multimodal Models
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        attachedImageBase64 = event.target.result;
+        document.getElementById('imagePill').style.display = 'inline-flex';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeImage() {
+      attachedImageBase64 = null;
+      document.getElementById('imageInput').value = '';
+      document.getElementById('imagePill').style.display = 'none';
+    }
+
+    function clearConversation() {
+      conversationHistory = [];
+      const stream = document.getElementById('chatStream');
+      const model = MODELS.find(m => m.id === currentModelId) || MODELS[0];
+      stream.innerHTML = `
+        <div class="message-bubble">
+          <div class="message-avatar avatar-ai">AI</div>
+          <div class="message-content">
+            Chat history cleared. Ready for your next query on <strong style="color:#a3e635;">${model.name}</strong>.
+          </div>
+        </div>
+      `;
+    }
+
+    // Execute Model Prompt
+    async function executeModelPrompt() {
+      const promptInput = document.getElementById('promptInput');
+      const text = promptInput.value.trim();
+      if (!text && !attachedImageBase64) return;
+
+      const runBtn = document.getElementById('runBtn');
+      const chatStream = document.getElementById('chatStream');
+      const systemPrompt = document.getElementById('systemPromptInput').value.trim();
+
+      // Read parameter values
+      const temperature = parseFloat(document.getElementById('tempSlider').value);
+      const top_p = parseFloat(document.getElementById('topPSlider').value);
+      const max_tokens = parseInt(document.getElementById('maxTokensSlider').value, 10);
+      const frequency_penalty = parseFloat(document.getElementById('freqPenaltySlider').value);
+      const presence_penalty = parseFloat(document.getElementById('presPenaltySlider').value);
+      const reasoning_effort = document.getElementById('reasoningEffortSelect').value;
+      const enable_thinking = document.getElementById('thinkingToggle').checked;
+
+      // Construct user message (text or multimodal)
+      let userMessageContent;
+      if (attachedImageBase64) {
+        userMessageContent = [
+          { type: 'text', text: text || 'Inspect this image and provide comprehensive analysis.' },
+          { type: 'image_url', image_url: { url: attachedImageBase64 } }
+        ];
+      } else {
+        userMessageContent = text;
+      }
+
+      // Append user bubble to UI
+      appendUserBubble(text, attachedImageBase64);
+      promptInput.value = '';
+      const sentImage = attachedImageBase64;
+      removeImage();
+
+      // Append pending AI bubble
+      const aiBubbleId = 'ai-msg-' + Date.now();
+      appendAIPendingBubble(aiBubbleId);
 
       runBtn.disabled = true;
-      runBtn.innerHTML = '<span>⏳ Agent Thinking &amp; Executing...</span>';
-      outputContainer.classList.add('active');
-      thinkingDrawer.style.display = showReasoning ? 'block' : 'none';
-      thinkingContent.textContent = 'Agent is orchestrating steps, evaluating dependencies, and reasoning...';
-      finalOutput.innerHTML = '<div style="color:#9ca3af;">Processing your workflow...</div>';
+      runBtn.innerHTML = '<span>⏳ Executing Model...</span>';
+
+      // Build messages array
+      const messages = [];
+      if (systemPrompt) {
+        messages.push({ role: 'system', content: systemPrompt });
+      }
+      // Add existing history
+      conversationHistory.forEach(h => messages.push(h));
+      // Add current user message
+      messages.push({ role: 'user', content: userMessageContent });
 
       try {
-        const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:3000/api/vision/nemotron'
-          : 'https://api.bharatvoiceduai.website/api/vision/nemotron';
+        const backendEndpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+          ? 'http://localhost:3000/api/models/chat'
+          : 'https://api.bharatvoiceduai.website/api/models/chat';
 
-        const res = await fetch(backendUrl, {
+        const payload = {
+          model: currentModelId,
+          messages: messages,
+          temperature,
+          top_p,
+          max_tokens,
+          frequency_penalty,
+          presence_penalty,
+          reasoning_effort,
+          enable_thinking
+        };
+
+        const response = await fetch(backendEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [
-              {
-                role: 'system',
-                content: 'You are the Bharat Voice Autonomous Agentic AI, powered by NVIDIA Nemotron 3.5 Super VL 120B. Break down complex tasks into autonomous steps, analyze thoroughly with deep reasoning, and provide comprehensive execution results with clarity, structured markdown, and actionable deliverables.'
-              },
-              {
-                role: 'user',
-                content: task
-              }
-            ],
-            temperature: 0.7,
-            max_tokens: 8192
-          })
+          body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error?.message || 'Failed to execute agentic task');
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error?.message || 'Model execution failed');
         }
 
         const choice = data.choices && data.choices[0];
-        const reasoning = choice?.message?.reasoning_content || 'Reasoning completed directly.';
+        const reasoning = choice?.message?.reasoning_content;
         let content = choice?.message?.content || '';
+
         if (!content && reasoning) {
           content = reasoning;
         }
         if (!content) {
-          content = 'Autonomous task completed successfully.';
+          content = 'Model executed with no response content.';
         }
 
-        thinkingContent.textContent = reasoning;
-        finalOutput.innerHTML = formatMarkdown(content);
+        // Store in conversation history
+        conversationHistory.push({ role: 'user', content: userMessageContent });
+        conversationHistory.push({ role: 'assistant', content: content });
+
+        // Update UI with response
+        updateAIBubble(aiBubbleId, content, reasoning, enable_thinking);
 
       } catch (err) {
-        console.error('Agent task error:', err);
-        finalOutput.innerHTML = '<div style="color:#f87171;">⚠️ Agent execution error: ' + err.message + '</div>';
+        console.error('Model error:', err);
+        const bubble = document.getElementById(aiBubbleId);
+        if (bubble) {
+          bubble.innerHTML = `<span style="color:#f87171;">⚠️ Execution Error: ${escapeHtml(err.message)}</span>`;
+        }
       } finally {
         runBtn.disabled = false;
-        runBtn.innerHTML = '<span>⚡ Execute Autonomous Agent</span>';
+        runBtn.innerHTML = '<span>⚡ Run Model</span>';
+        chatStream.scrollTop = chatStream.scrollHeight;
       }
     }
 
+    function appendUserBubble(text, imageBase64) {
+      const stream = document.getElementById('chatStream');
+      const div = document.createElement('div');
+      div.className = 'message-bubble';
+      div.innerHTML = `
+        <div class="message-avatar avatar-user">You</div>
+        <div class="message-content">
+          ${imageBase64 ? `<div style="margin-bottom:8px;"><img src="${imageBase64}" style="max-width:240px; border-radius:8px; border:1px solid var(--border-color);"></div>` : ''}
+          <div>${escapeHtml(text || 'Inspect this image')}</div>
+        </div>
+      `;
+      stream.appendChild(div);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function appendAIPendingBubble(id) {
+      const stream = document.getElementById('chatStream');
+      const div = document.createElement('div');
+      div.className = 'message-bubble';
+      div.innerHTML = `
+        <div class="message-avatar avatar-ai">AI</div>
+        <div class="message-content" id="${id}">
+          <div style="color:var(--text-muted); display:flex; align-items:center; gap:8px;">
+            <span style="display:inline-block; animation:spin 1s linear infinite;">⏳</span>
+            <span>Reasoning and generating output...</span>
+          </div>
+        </div>
+      `;
+      stream.appendChild(div);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function updateAIBubble(id, content, reasoning, showThinking) {
+      const bubble = document.getElementById(id);
+      if (!bubble) return;
+
+      let html = '';
+      if (reasoning && showThinking) {
+        html += `
+          <details class="thinking-drawer" open>
+            <summary>🧠 Chain-of-Thought Reasoning (${reasoning.length} chars)</summary>
+            <div class="thinking-text">${escapeHtml(reasoning)}</div>
+          </details>
+        `;
+      }
+
+      html += formatMarkdown(content);
+      bubble.innerHTML = html;
+    }
+
     function formatMarkdown(text) {
-      let html = text
-        .replace(/### (.*?)\n/g, '<h3>$1</h3>')
-        .replace(/## (.*?)\n/g, '<h2>$1</h2>')
-        .replace(/# (.*?)\n/g, '<h1>$1</h1>')
+      let html = escapeHtml(text)
+        .replace(/### (.*?)\n/g, '<h3 style="font-size:16px; margin:12px 0 6px; color:#fff;">$1</h3>')
+        .replace(/## (.*?)\n/g, '<h2 style="font-size:18px; margin:14px 0 8px; color:#fff;">$1</h2>')
+        .replace(/# (.*?)\n/g, '<h1 style="font-size:20px; margin:16px 0 10px; color:#fff;">$1</h1>')
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`([^`]+)`/g, '<code style="background:#000; padding:2px 6px; border-radius:4px; font-family:monospace; color:#a3e635;">$1</code>')
         .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
         .replace(/\n/g, '<br>');
       return html;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // View Code Modal Generators
+    let currentCodeLang = 'python';
+
+    function openCodeModal() {
+      document.getElementById('codeModal').classList.add('active');
+      renderCodeSnippet();
+    }
+
+    function closeCodeModal() {
+      document.getElementById('codeModal').classList.remove('active');
+    }
+
+    function switchCodeLang(lang, btn) {
+      currentCodeLang = lang;
+      document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderCodeSnippet();
+    }
+
+    function renderCodeSnippet() {
+      const codeBlock = document.getElementById('codeSnippet');
+      const temp = document.getElementById('tempSlider').value;
+      const maxTokens = document.getElementById('maxTokensSlider').value;
+      const topP = document.getElementById('topPSlider').value;
+
+      if (currentCodeLang === 'python') {
+        codeBlock.textContent = `import requests
+
+url = "https://api.bharatvoiceduai.website/api/models/chat"
+
+payload = {
+    "model": "${currentModelId}",
+    "messages": [
+        {"role": "user", "content": "Hello! Explain your capabilities."}
+    ],
+    "temperature": ${temp},
+    "top_p": ${topP},
+    "max_tokens": ${maxTokens},
+    "enable_thinking": True
+}
+
+headers = {"Content-Type": "application/json"}
+response = requests.post(url, json=payload)
+print(response.json())`;
+      } else if (currentCodeLang === 'curl') {
+        codeBlock.textContent = `curl -X POST "https://api.bharatvoiceduai.website/api/models/chat" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "${currentModelId}",
+    "messages": [{"role": "user", "content": "Hello! Explain your capabilities."}],
+    "temperature": ${temp},
+    "top_p": ${topP},
+    "max_tokens": ${maxTokens},
+    "enable_thinking": true
+  }'`;
+      } else if (currentCodeLang === 'javascript') {
+        codeBlock.textContent = `const res = await fetch("https://api.bharatvoiceduai.website/api/models/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    model: "${currentModelId}",
+    messages: [{ role: "user", content: "Hello! Explain your capabilities." }],
+    temperature: ${temp},
+    top_p: ${topP},
+    max_tokens: ${maxTokens},
+    enable_thinking: true
+  })
+});
+const data = await res.json();
+console.log(data);`;
+      }
     }
   </script>
 </body>
