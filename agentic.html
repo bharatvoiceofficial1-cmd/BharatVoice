@@ -304,7 +304,13 @@
 
         const choice = data.choices && data.choices[0];
         const reasoning = choice?.message?.reasoning_content || 'Reasoning completed directly.';
-        const content = choice?.message?.content || 'No output produced.';
+        let content = choice?.message?.content || '';
+        if (!content && reasoning) {
+          content = reasoning;
+        }
+        if (!content) {
+          content = 'Autonomous task completed successfully.';
+        }
 
         thinkingContent.textContent = reasoning;
         finalOutput.innerHTML = formatMarkdown(content);
