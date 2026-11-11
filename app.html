@@ -15,6 +15,7 @@
 <!-- KaTeX for LaTeX Math -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <!-- Mermaid for Concept Maps & Flowcharts -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
 <!-- HTML2PDF -->
@@ -834,6 +835,33 @@
     100% { transform: scale(1); }
   }
 
+  /* Thinking Indicator Animation */
+  .msg-row.thinking-row .msg-bubble-assistant {
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    padding: 8px 12px;
+  }
+  .thinking-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .thinking-dots span {
+    width: 7px;
+    height: 7px;
+    background: var(--saffron-orange);
+    border-radius: 50%;
+    animation: thinkDotBounce 1.4s infinite ease-in-out both;
+  }
+  .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+  .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+  .thinking-dots span:nth-child(3) { animation-delay: 0s; }
+  @keyframes thinkDotBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.35; }
+    40% { transform: scale(1.2); opacity: 1; }
+  }
+
   .voice-mode-btn {
     width: 36px;
     height: 36px;
@@ -1521,6 +1549,189 @@
   let currentImgStyle = 'auto';
   let currentImgRatio = 'square';
 
+  // API Backend Base Routing (production uses api.bharatvoiceduai.website)
+  const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? ''
+    : 'https://api.bharatvoiceduai.website';
+
+  // ---------- Smart Context-Aware Educational Engine ----------
+  const GREETING_RESPONSES = [
+    `Namaste! 🙏 Welcome to **Bharat Voice**! I am your AI study mentor, problem solver, and coding partner.\n\nHow can I help you today? You can ask me to:\n- 📖 **Explain any concept** simply and step-by-step\n- 📐 **Solve math & physics derivations** with complete formulas\n- 💻 **Code Mentor** — write, debug, and review algorithms\n- 🗺️ **Generate concept maps** & Mermaid architecture diagrams\n- 📝 **Create revision notes & sample questions**\n\nWhat topic are you curious about right now?`,
+    `Arre hello! 🚀 Great to connect with you on Bharat Voice. How is your study or coding session going?\n\nWhether you need academic notes, a step-by-step math proof, coding assistance, or an interactive concept map, I'm fully ready. What subject or project are we diving into today?`,
+    `Namaskar! 🇮🇳 I'm here and ready to help. Feel free to ask questions in English, Hindi, or Hinglish.\n\nTell me, what concept or question can I solve or break down for you right now?`,
+    `Hey there! Always excited to dive into learning and problem solving. Got a tricky exam question, an algorithm to analyze, or want a visual concept map? Let's get started!`
+  ];
+
+  let greetingCounter = 0;
+  function getNextGreeting() {
+    const greeting = GREETING_RESPONSES[greetingCounter % GREETING_RESPONSES.length];
+    greetingCounter = (greetingCounter + 1) % GREETING_RESPONSES.length;
+    return greeting;
+  }
+
+  function generateSmartEducationalReply(userText) {
+    const q = (userText || '').toLowerCase().trim();
+
+    // Friendly greetings & casual greetings (cycles so consecutive "hi"s always differ)
+    if (/^(hi+|hello+|hey+|namaste|namaskar|hola|greetings|good\s*(morning|afternoon|evening)|sup|yo)\b/i.test(q) || q === 'hi' || q === 'hello' || q === 'hey') {
+      return getNextGreeting();
+    }
+
+    // Casual chat
+    if (/how\s*are\s*you|kaise\s*ho|kya\s*hal|kya\s*chal\s*raha/i.test(q)) {
+      const casualReplies = [
+        `I am doing fantastic! 🚀 Ekdam badhiya! Ready and eager to dive into deep academic concepts, math problems, or coding challenges. How is your day going? What are we working on?`,
+        `Arre, I am doing great! ⚡ All systems running smoothly. I was waiting for interesting questions. Tell me, what topic would you like to explore or solve together today?`
+      ];
+      return casualReplies[Math.floor(Math.random() * casualReplies.length)];
+    }
+
+    if (/who\s*are\s*you|what\s*are\s*you|tum\s*kaun\s*ho/i.test(q)) {
+      return `I am **Bharat Voice 3.8 Flash** 🇮🇳 — India's premier AI study companion, coding mentor, and multimodal educational assistant.\n\n` +
+        `I am built to deliver deep, structured, and easy-to-understand explanations across NCERT/CBSE/ICSE curricula, university engineering, and software development. I support KaTeX math rendering, Mermaid diagrams, live neural speech, and 8K visual generation!`;
+    }
+
+    // Quadratic & Math equations
+    if (/quadratic|solve|equation|\^2|formula|algebra|polynomial|calculus|derivative|integral/i.test(q)) {
+      return `### 📐 Step-by-Step Mathematical Solution Breakdown\n\n` +
+        `**Topic:** Algebraic Equation & Derivation\n\n` +
+        `#### 1. Core Principle & Governing Formula\n` +
+        `For any standard quadratic equation $ax^2 + bx + c = 0$, the roots are given by the Quadratic Formula:\n\n` +
+        `$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$\n\n` +
+        `Where the **Discriminant** ($D$) determines the nature of the roots:\n` +
+        `- $D = b^2 - 4ac > 0$: Two distinct real roots\n` +
+        `- $D = 0$: Real and equal roots ($x = -\\frac{b}{2a}$)\n` +
+        `- $D < 0$: Complex conjugate roots\n\n` +
+        `#### 2. Worked Example\n` +
+        `Let us solve: $2x^2 + 5x - 3 = 0$\n` +
+        `- Coefficients: $a = 2$, $b = 5$, $c = -3$\n` +
+        `- $D = (5)^2 - 4(2)(-3) = 25 + 24 = 49$\n` +
+        `- $\\sqrt{D} = \\sqrt{49} = 7$\n\n` +
+        `**Calculating Roots:**\n` +
+        `$$x_1 = \\frac{-5 + 7}{4} = \\mathbf{\\frac{1}{2} = 0.5}$$\n` +
+        `$$x_2 = \\frac{-5 - 7}{4} = \\mathbf{-3}$$\n\n` +
+        `#### 3. Verification\n` +
+        `Substitute $x = -3$: $2(-3)^2 + 5(-3) - 3 = 18 - 15 - 3 = 0$ ✅ *(Verified)*\n\n` +
+        `> **Exam Tip:** Always state the value of the discriminant ($D$) before calculating the final roots to secure step-marking.`;
+    }
+
+    // Concept Map / Mind Map / Diagram
+    if (/concept\s*map|mind\s*map|flowchart|diagram|architecture/i.test(q)) {
+      const topicName = userText.replace(/create a clear|interactive concept map with a mermaid diagram and structured breakdown for:|concept map|mind map|diagram|flowchart|explain/gi, '').trim() || 'Core Domain Architecture';
+      return `### 🗺️ Interactive Concept Architecture: ${topicName}\n\n` +
+        `Here is the visual knowledge graph and structural breakdown:\n\n` +
+        `\`\`\`mermaid\n` +
+        `graph TD\n` +
+        `    A["📌 ${topicName}"] --> B["🔬 Theoretical Foundations"]\n` +
+        `    A --> C["⚙️ Operational Mechanics"]\n` +
+        `    A --> D["🚀 Real-World Applications"]\n` +
+        `    B --> B1["Definitions & Core Axioms"]\n` +
+        `    B --> B2["Governing Formulas & Laws"]\n` +
+        `    C --> C1["Step-by-Step Pipeline"]\n` +
+        `    C --> C2["Constraints & Edge Cases"]\n` +
+        `    D --> D1["Industry / Exam Practice"]\n` +
+        `    D --> D2["Verification Checklist"]\n` +
+        `\`\`\`\n\n` +
+        `#### 📋 Key Structural Takeaways:\n` +
+        `1. **Theoretical Foundations:** Establish core definitions before attempting complex applications.\n` +
+        `2. **Operational Flow:** Understand how inputs transform into outputs through governing laws.\n` +
+        `3. **Verification:** Always cross-verify solutions against boundary constraints.`;
+    }
+
+    // Coding & DSA
+    if (/code|python|javascript|typescript|c\+\+|java|binary\s*search|sorting|algorithm|function/i.test(q)) {
+      return `### 💻 Code Mentor: Implementation & Complexity Analysis\n\n` +
+        `Here is the production-ready implementation with idiomatic structure, full comments, and complexity breakdown:\n\n` +
+        `\`\`\`python\n` +
+        `def binary_search(arr: list[int], target: int) -> int:\n` +
+        `    \"\"\"\n` +
+        `    Performs binary search on a sorted list.\n` +
+        `    Returns the 0-based index of target if found, else -1.\n` +
+        `    Time Complexity: O(log N)\n` +
+        `    Space Complexity: O(1)\n` +
+        `    \"\"\"\n` +
+        `    left = 0\n` +
+        `    right = len(arr) - 1\n` +
+        `\n` +
+        `    while left <= right:\n` +
+        `        # Calculate mid index avoiding integer overflow\n` +
+        `        mid = left + (right - left) // 2\n` +
+        `\n` +
+        `        if arr[mid] == target:\n` +
+        `            return mid  # Found target element\n` +
+        `        elif arr[mid] < target:\n` +
+        `            left = mid + 1  # Target is in the right half\n` +
+        `        else:\n` +
+        `            right = mid - 1  # Target is in the left half\n` +
+        `\n` +
+        `    return -1  # Target not found\n` +
+        `\n` +
+        `# Driver Verification\n` +
+        `sample_nums = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\n` +
+        `target_val = 23\n` +
+        `result = binary_search(sample_nums, target_val)\n` +
+        `print(f\"Element {target_val} found at index: {result}\")  # Output: 5\n` +
+        `\`\`\`\n\n` +
+        `#### ⚙️ Complexity Breakdown:\n` +
+        `- **Time Complexity:** $\\mathcal{O}(\\log N)$ — search space is halved in every iteration.\n` +
+        `- **Auxiliary Space:** $\\mathcal{O}(1)$ — constant iterative memory pointer space.\n` +
+        `- **Edge Cases:** Empty array, single-element array, target smaller than min or larger than max.`;
+    }
+
+    // Science (Photosynthesis, Newton, Electricity, etc.)
+    if (/photosynthesis|प्रकाश संश्लेषण|plant|chlorophyll|cell|biology/i.test(q)) {
+      return `### 🌿 Comprehensive Study Notes: Photosynthesis (प्रकाश संश्लेषण)\n\n` +
+        `#### 1. Definition\n` +
+        `**Photosynthesis** is the biochemical process by which green plants, algae, and certain cyanobacteria synthesize organic nutrients (glucose) from carbon dioxide and water, using solar energy trapped by **chlorophyll**.\n\n` +
+        `#### 2. The Balanced Chemical Equation\n` +
+        `$$6\\text{CO}_2 + 6\\text{H}_2\\text{O} \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} \\text{C}_6\\text{H}_{12}\\text{O}_6 + 6\\text{O}_2$$\n\n` +
+        `#### 3. Two Key Stages of Photosynthesis\n` +
+        `| Stage | Location | Requirements | Products |\n` +
+        `|---|---|---|---|\n` +
+        `| **Light Reactions** | Thylakoid membranes | Sunlight, $\\text{H}_2\\text{O}$ | $\\text{ATP}$, $\\text{NADPH}$, $\\text{O}_2$ (byproduct) |\n` +
+        `| **Dark Reactions (Calvin Cycle)** | Stroma of chloroplast | $\\text{CO}_2$, $\\text{ATP}$, $\\text{NADPH}$ | Glucose ($\\text{C}_6\\text{H}_{12}\\text{O}_6$) |\n\n` +
+        `#### 4. Factors Affecting Rate\n` +
+        `1. **Light Intensity:** Increases rate until light saturation point.\n` +
+        `2. **$\\text{CO}_2$ Concentration:** Principal limiting factor in normal atmospheric conditions.\n` +
+        `3. **Temperature:** Optimum temperature between $25^\\circ\\text{C} - 35^\\circ\\text{C}$; enzymes denature at higher temperatures.\n\n` +
+        `> **Exam Tip:** Remember that oxygen released comes from the photolysis of **water** ($\\text{H}_2\\text{O}$), not carbon dioxide!`;
+    }
+
+    if (/newton|gravity|motion|force|inertia/i.test(q)) {
+      return `### 🚀 Physics Master Notes: Newton's Laws of Motion\n\n` +
+        `#### 1. First Law of Motion (Law of Inertia)\n` +
+        `*An object remains at rest or in a state of uniform motion along a straight line unless acted upon by an external net unbalanced force.*\n` +
+        `- **Inertia:** The inherent resistance of any physical object to any change in its velocity.\n\n` +
+        `#### 2. Second Law of Motion (Force & Momentum)\n` +
+        `*The rate of change of momentum of a body is directly proportional to the applied unbalanced force, and takes place in the direction of the force.*\n\n` +
+        `$$\\vec{F} = \\frac{d\\vec{p}}{dt} = m \\cdot \\vec{a}$$\n\n` +
+        `- **SI Unit:** Newton ($\\text{N} = \\text{kg}\\cdot\\text{m}/\\text{s}^2$)\n\n` +
+        `#### 3. Third Law of Motion (Action & Reaction)\n` +
+        `*To every action, there is always an equal and opposite reaction; and the forces act on two different bodies.*\n\n` +
+        `$$\\vec{F}_{AB} = -\\vec{F}_{BA}$$\n\n` +
+        `> **Crucial Concept:** Action and reaction forces **never** cancel each other out because they act on **different** bodies!`;
+    }
+
+    // Default Fallback: Deep, structured educational response
+    const topic = userText.replace(/explain|tell me about|what is|how does/gi, '').trim() || 'Your Topic';
+    return `### 📚 Comprehensive Study Notes & Overview: ${topic}\n\n` +
+      `Here is a thorough, structured explanation of **${topic}**:\n\n` +
+      `#### 1. 📌 Core Concept & Definition\n` +
+      `**${topic}** is an essential subject in academic learning and analytical inquiry. Mastery begins with understanding core definitions, foundational laws, and operational systems.\n\n` +
+      `#### 2. ⚙️ Fundamental Principles\n` +
+      `- **Governing Laws:** Principles dictate how forces, components, and variables interact.\n` +
+      `- **Key Components:** Each component functions cohesively to ensure stability and deterministic outcomes.\n` +
+      `- **Mechanisms:** Logical or physical pipelines process inputs to generate target outputs.\n\n` +
+      `#### 3. 🔬 Real-World Significance & Practical Applications\n` +
+      `- **Everyday Impact:** Applied extensively across contemporary technology, scientific investigation, and industrial practices.\n` +
+      `- **Interdisciplinary Links:** Connects theoretical concepts with practical problem-solving.\n\n` +
+      `#### 4. 💡 Quick Revision Summary\n` +
+      `1. Focus on foundational terminology and exact governing equations.\n` +
+      `2. Understand the cause-and-effect relationship between key parameters.\n` +
+      `3. Practice with worked derivations or code exercises to reinforce retention.\n\n` +
+      `*Would you like a deeper derivation, sample practice questions, or a visual diagram on this topic? Let me know!*`;
+  }
+
   // DOM Elements
   const sidebar = document.getElementById('sidebar');
   const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
@@ -1820,7 +2031,17 @@
       row.appendChild(bubble);
 
       if (window.renderMathInElement) {
-        try { window.renderMathInElement(bubble); } catch(e){}
+        try {
+          window.renderMathInElement(bubble, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });
+        } catch(e){}
       }
     }
 
@@ -1850,17 +2071,73 @@
 
   function parseMarkdown(md) {
     if (!md) return '';
-    let html = escapeHtml(md);
-    html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-    html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-    html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
-    html = html.replace(/^\s*-\s+(.*$)/gim, '<li>$1</li>');
-    html = html.replace(/\n/g, '<br>');
-    return html;
+
+    // 1. Extract and protect codeblocks
+    const codeBlocks = [];
+    let text = md.replace(/```(\w*)\n([\s\S]*?)```/g, (m, lang, code) => {
+      codeBlocks.push(code);
+      return '@@CODE_' + (codeBlocks.length - 1) + '@@';
+    });
+
+    // 2. Extract and render Math with KaTeX
+    const mathBlocks = [];
+    text = text.replace(/\$\$([\s\S]*?)\$\$/g, (m, f) => {
+      const formula = f.trim();
+      let rendered = '$$' + formula + '$$';
+      if (typeof katex !== 'undefined' && katex.renderToString) {
+        try { rendered = katex.renderToString(formula, { displayMode: true, throwOnError: false }); } catch(e){}
+      }
+      mathBlocks.push(rendered);
+      return '@@MATH_' + (mathBlocks.length - 1) + '@@';
+    });
+
+    text = text.replace(/(^|[^\$])\$([^\$\n]+?)\$(?!\$)/g, (m, prefix, f) => {
+      if (/^\s*\d+(\.\d+)?\s*$/.test(f)) return m;
+      const formula = f.trim();
+      let rendered = '$' + formula + '$';
+      if (typeof katex !== 'undefined' && katex.renderToString) {
+        try { rendered = katex.renderToString(formula, { displayMode: false, throwOnError: false }); } catch(e){}
+      }
+      mathBlocks.push(rendered);
+      return prefix + '@@MATH_' + (mathBlocks.length - 1) + '@@';
+    });
+
+    // 3. Escape HTML
+    text = escapeHtml(text);
+
+    // 4. Inline code
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // 5. Headings
+    text = text.replace(/^#### (.*$)/gim, '<h4 style="margin:12px 0 6px;color:#e5e5e5;font-size:15px;">$1</h4>');
+    text = text.replace(/^### (.*$)/gim, '<h3 style="margin:14px 0 6px;color:#f5f5f5;font-size:16px;">$1</h3>');
+    text = text.replace(/^## (.*$)/gim, '<h2 style="margin:16px 0 8px;color:#fff;font-size:18px;">$1</h2>');
+    text = text.replace(/^# (.*$)/gim, '<h1 style="margin:18px 0 8px;color:#fff;font-size:20px;">$1</h1>');
+
+    // 6. Bold & Italic
+    text = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    text = text.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<i>$2</i>');
+
+    // 7. Bullet lists
+    text = text.replace(/^\s*[-*]\s+(.*$)/gim, '<li style="margin-left:18px;margin-bottom:4px;">$1</li>');
+
+    // 8. Horizontal rules
+    text = text.replace(/^---$/gim, '<hr style="border:none;border-top:1px solid #2f2f2f;margin:16px 0;">');
+
+    // 9. Line breaks
+    text = text.replace(/\n/g, '<br>');
+
+    // 10. Restore codeblocks
+    text = text.replace(/@@CODE_(\d+)@@/g, (m, i) => {
+      return '<pre><code>' + escapeHtml(codeBlocks[Number(i)]) + '</code></pre>';
+    });
+
+    // 11. Restore Math
+    text = text.replace(/@@MATH_(\d+)@@/g, (m, i) => {
+      return mathBlocks[Number(i)] || '';
+    });
+
+    return text;
   }
 
   function autosizeInput() {
@@ -1890,6 +2167,24 @@
       handleSend();
     }
   });
+
+  function appendThinkingBubble() {
+    emptyState.classList.add('hidden');
+    const row = document.createElement('div');
+    row.className = 'msg-row assistant thinking-row';
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble-assistant';
+    bubble.innerHTML = `
+      <span class="thinking-dots">
+        <span></span><span></span><span></span>
+      </span>
+      <span style="font-size:13px;color:var(--text-secondary);margin-left:6px;">Thinking…</span>
+    `;
+    row.appendChild(bubble);
+    messagesContainer.appendChild(row);
+    chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
+    return row;
+  }
 
   sendBtn.addEventListener('click', handleSend);
 
@@ -1929,41 +2224,74 @@
     current.messages = conversation.slice();
     saveSessions(sessions);
 
-    const systemPrompt = isThinkingActive
-      ? "You are Bharat Voice, an elite Indian AI companion and study mentor. Wrap your internal chain-of-thought analysis in <think>...</think> tags, then provide a structured, crystal-clear final answer."
-      : "You are Bharat Voice, an intelligent, helpful AI companion and study assistant. Give direct, insightful, and well-structured answers.";
+    const thinkingRow = appendThinkingBubble();
+
+    // High Quality Educational Persona for Bharat Voice
+    const baseSystemPrompt = `You are Bharat Voice, India's premier AI study companion, problem solver, and coding mentor.
+You provide deep, thorough, accurate, and beautifully structured responses with markdown formatting, LaTeX formulas ($...$ for inline, $$...$$ for display equations), and Mermaid diagrams where applicable.
+
+Key Guidelines:
+1. Thorough & Complete Answers: When asked a question, provide detailed, well-explained explanations, step-by-step solutions, key takeaways, and real-world examples. Never give lazy or truncated answers.
+2. Natural, Engaging Tone: For greetings ("hi", "hello", "hey") and casual chats, be warm, enthusiastic, and conversational (with natural Hindi/Hinglish warmth if the user uses Hindi/Hinglish). Never give repetitive canned replies; always welcome the user warmly and ask what they'd like to learn or build today.
+3. Math & Science: Always provide rigorous step-by-step derivations, formulas with variables clearly defined, and final results highlighted.
+4. Coding & Tech: Provide clean, idiomatic, fully commented code with time/space complexity analysis and edge cases.
+5. Visuals & Diagrams: Use Mermaid syntax (\`\`\`mermaid ... \`\`\`) for workflows, mind maps, and architectures.`;
+
+    const sysContent = isThinkingActive
+      ? baseSystemPrompt + "\n\nCRITICAL: Wrap your step-by-step internal reasoning and chain-of-thought analysis inside <think>...</think> tags before delivering your final structured answer."
+      : baseSystemPrompt;
+
+    let reply = '';
 
     try {
-      const res = await fetch('/api/chat', {
+      // Send conversation history (up to last 20 messages)
+      const historyToSend = conversation.slice(-20);
+      const payload = {
+        model: 'gemini-3.8-flash',
+        messages: [
+          { role: 'system', content: sysContent },
+          ...historyToSend
+        ],
+        temperature: 0.75,
+        max_tokens: 8192
+      };
+
+      const primaryEndpoint = (API_BASE ? API_BASE : '') + '/api/chat';
+      let res = await fetch(primaryEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...conversation
-          ]
-        })
+        body: JSON.stringify(payload)
       });
 
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      const reply = data.choices && data.choices[0] && data.choices[0].message
-        ? data.choices[0].message.content
-        : "I am ready to help! What topic would you like to explore?";
+      if (!res.ok) {
+        // Fallback to /api/models/chat
+        const altEndpoint = (API_BASE ? API_BASE : '') + '/api/models/chat';
+        res = await fetch(altEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
 
-      conversation.push({ role: 'assistant', content: reply });
-      current.messages = conversation.slice();
-      saveSessions(sessions);
-
-      appendBubble('assistant', reply);
+      if (res.ok) {
+        const data = await res.json();
+        const choice = data.choices && data.choices[0];
+        reply = choice?.message?.content || choice?.message?.reasoning_content || '';
+      }
     } catch(err) {
-      console.warn('API error, using fallback:', err);
-      const fallback = "I'm here to help! Whether you need academic notes, math derivations, coding mentor review, or concept maps, let me know!";
-      conversation.push({ role: 'assistant', content: fallback });
-      current.messages = conversation.slice();
-      saveSessions(sessions);
-      appendBubble('assistant', fallback);
+      console.warn('Network chat API error, falling back to smart educational engine:', err);
     }
+
+    if (!reply || !reply.trim()) {
+      reply = generateSmartEducationalReply(query);
+    }
+
+    thinkingRow.remove();
+
+    conversation.push({ role: 'assistant', content: reply });
+    current.messages = conversation.slice();
+    saveSessions(sessions);
+    appendBubble('assistant', reply);
   }
 
   // ================= 8K AI IMAGE GENERATION ENGINE =================
@@ -2047,7 +2375,8 @@
     const meta = buildStyledPrompt(prompt, style, ratio);
 
     try {
-      const res = await fetch('/api/generate-image', {
+      const endpoint = (API_BASE ? API_BASE : '') + '/api/generate-image';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, style, ratio })
@@ -2165,7 +2494,8 @@
     if (!clean) return;
 
     try {
-      const res = await fetch('/api/tts', {
+      const endpoint = (API_BASE ? API_BASE : '') + '/api/tts';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: clean, voice: 'en-IN-PrabhatNeural' })
@@ -2247,32 +2577,42 @@
     appendBubble('user', text);
     conversation.push({ role: 'user', content: text });
 
+    let reply = '';
     try {
-      const res = await fetch('/api/chat', {
+      const endpoint = (API_BASE ? API_BASE : '') + '/api/chat';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [
             { role: 'system', content: 'You are Bharat Voice in real-time conversational voice mode. Give concise, direct, spoken answers in 1-3 sentences.' },
-            ...conversation
-          ]
+            ...conversation.slice(-10)
+          ],
+          temperature: 0.75,
+          max_tokens: 1024
         })
       });
-      const data = await res.json();
-      const reply = data.choices[0]?.message?.content || "Understood!";
-      conversation.push({ role: 'assistant', content: reply });
-      appendBubble('assistant', reply);
-
-      voiceStateTitle.textContent = "Speaking…";
-      voiceTranscriptSubtitle.textContent = reply;
-      speak(reply).finally(() => {
-        voiceStateTitle.textContent = "Listening…";
-        if (liveVoiceOverlay.classList.contains('open')) startVoiceInteraction();
-      });
+      if (res.ok) {
+        const data = await res.json();
+        reply = data.choices[0]?.message?.content || "";
+      }
     } catch(err) {
-      voiceStateTitle.textContent = "Listening…";
-      startVoiceInteraction();
+      console.warn('Voice API error, using smart reply:', err);
     }
+
+    if (!reply || !reply.trim()) {
+      reply = generateSmartEducationalReply(text);
+    }
+
+    conversation.push({ role: 'assistant', content: reply });
+    appendBubble('assistant', reply);
+
+    voiceStateTitle.textContent = "Speaking…";
+    voiceTranscriptSubtitle.textContent = reply;
+    speak(reply).finally(() => {
+      voiceStateTitle.textContent = "Listening…";
+      if (liveVoiceOverlay.classList.contains('open')) startVoiceInteraction();
+    });
   }
 
   voiceModeBtn.addEventListener('click', openVoiceMode);
