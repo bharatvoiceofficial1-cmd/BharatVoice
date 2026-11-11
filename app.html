@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -12,6 +12,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251310303606994" crossorigin="anonymous"></script>
+<!-- Google Identity Services (Sign-In) -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <!-- KaTeX for LaTeX Math -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -1266,11 +1268,11 @@
 
     <!-- Sidebar Footer: Profile & Claim Offer -->
     <div class="sidebar-footer">
-      <div class="user-profile-row" id="userProfileRow">
-        <div class="avatar-circle" id="userAvatarCircle">AX</div>
+      <div class="user-profile-row" id="userProfileRow" title="View Account & Settings">
+        <div class="avatar-circle" id="userAvatarCircle">G</div>
         <div class="user-details">
-          <span class="user-name" id="userNameLabel">abhi xd</span>
-          <span class="user-plan" id="userPlanLabel">Free</span>
+          <span class="user-name" id="userNameLabel">Guest</span>
+          <span class="user-plan" id="userPlanLabel">Free Plan</span>
         </div>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
       </div>
@@ -1294,7 +1296,7 @@
         </button>
         <button class="model-pill" id="modelSelectorPill">
           <span id="activeModelLabel">Bharat Voice 3.8 Flash</span>
-          <span class="model-pill-chevron">â–¾</span>
+          <span class="model-pill-chevron">▾</span>
         </button>
       </div>
 
@@ -1303,7 +1305,7 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
           <span>Free offer</span>
         </button>
-        <button class="top-avatar-btn" id="topAvatarBtn" title="Account & Settings">AX</button>
+        <button class="top-avatar-btn" id="topAvatarBtn" title="Account & Settings">G</button>
       </div>
     </header>
 
@@ -1491,14 +1493,31 @@
   </div>
 </div>
 
-<!-- Settings Modal -->
+<!-- Settings & Account Modal -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal-card">
     <div class="modal-header">
-      <h3 class="modal-title">âš™ï¸ Settings &amp; Connection</h3>
-      <button class="modal-close" id="closeSettingsModal">âœ•</button>
+      <h3 class="modal-title">⚙️ Account &amp; Settings</h3>
+      <button class="modal-close" id="closeSettingsModal">✕</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:12px;font-size:13.5px;">
+    <div style="display:flex;flex-direction:column;gap:14px;font-size:13.5px;">
+      
+      <!-- User Profile & Authentication Section -->
+      <div style="background:#171717;border:1px solid var(--border-subtle);border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+          <div id="modalAvatarPreview" style="width:44px;height:44px;border-radius:50%;background:var(--teal-avatar);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;overflow:hidden;flex-shrink:0;">G</div>
+          <div style="flex:1;min-width:0;">
+            <div id="modalUserName" style="font-weight:600;font-size:15px;color:#fff;">Guest</div>
+            <div id="modalUserEmail" style="font-size:12px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Not signed in (Guest mode)</div>
+          </div>
+          <button id="modalSignOutBtn" style="display:none;padding:6px 12px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#ef4444;font-size:12px;font-weight:600;cursor:pointer;">Sign out</button>
+        </div>
+
+        <div id="modalLoginPrompt" style="font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:10px;">
+          Sign in with your Google account to personalize Bharat Voice, or continue as Guest with full functionality.
+        </div>
+        <div id="googleBtnContainer" style="display:flex;justify-content:center;min-height:44px;"></div>
+      </div>
       <div>
         <label style="display:block;margin-bottom:4px;color:var(--text-secondary);">AI Engine Provider</label>
         <select id="settingProviderSelect" style="width:100%;background:#111;border:1px solid var(--border-subtle);color:#fff;padding:8px;border-radius:8px;">
@@ -2748,7 +2767,159 @@ Key Guidelines:
     settingsModal.classList.add('open');
   });
 
+  
+  // ---------- User Authentication & Account System ----------
+  const USER_SESSION_KEY = 'bharatVoice.user';
+  const DEFAULT_CLIENT_ID = '776102824567-n3t4nlj7kvt8aosi85jo968eebehkc84.apps.googleusercontent.com';
+
+  function decodeJwtPayload(jwt) {
+    try {
+      const base64 = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const json = decodeURIComponent(atob(base64).split('').map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+      return JSON.parse(json);
+    } catch(e) { return null; }
+  }
+
+  function getStoredUser() {
+    try {
+      const raw = localStorage.getItem(USER_SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) { return null; }
+  }
+
+  function saveStoredUser(user) {
+    try { localStorage.setItem(USER_SESSION_KEY, JSON.stringify(user)); } catch(e){}
+  }
+
+  function clearStoredUser() {
+    try { localStorage.removeItem(USER_SESSION_KEY); } catch(e){}
+    try { localStorage.removeItem('bharatVoice.jwt'); } catch(e){}
+  }
+
+  function updateUserUI(user) {
+    const avatarCircle = document.getElementById('userAvatarCircle');
+    const nameLabel = document.getElementById('userNameLabel');
+    const planLabel = document.getElementById('userPlanLabel');
+    const topAvatarBtn = document.getElementById('topAvatarBtn');
+
+    const modalAvatar = document.getElementById('modalAvatarPreview');
+    const modalName = document.getElementById('modalUserName');
+    const modalEmail = document.getElementById('modalUserEmail');
+    const modalSignOut = document.getElementById('modalSignOutBtn');
+    const modalPrompt = document.getElementById('modalLoginPrompt');
+    const gBtnWrap = document.getElementById('googleBtnContainer');
+
+    if (user && user.name && user.name !== 'Guest') {
+      const initial = (user.name.charAt(0) || 'U').toUpperCase();
+      nameLabel.textContent = user.name;
+      planLabel.textContent = user.plan || 'Free Account';
+
+      if (user.picture) {
+        avatarCircle.innerHTML = `<img src="${user.picture}" alt="${user.name}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+        topAvatarBtn.innerHTML = `<img src="${user.picture}" alt="${user.name}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+        modalAvatar.innerHTML = `<img src="${user.picture}" alt="${user.name}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+      } else {
+        avatarCircle.textContent = initial;
+        topAvatarBtn.textContent = initial;
+        modalAvatar.textContent = initial;
+      }
+
+      modalName.textContent = user.name;
+      modalEmail.textContent = user.email || 'Signed in with Google';
+      if (modalSignOut) modalSignOut.style.display = 'block';
+      if (modalPrompt) modalPrompt.style.display = 'none';
+      if (gBtnWrap) gBtnWrap.style.display = 'none';
+    } else {
+      avatarCircle.textContent = 'G';
+      nameLabel.textContent = 'Guest';
+      planLabel.textContent = 'Free Plan';
+      topAvatarBtn.textContent = 'G';
+
+      if (modalAvatar) modalAvatar.textContent = 'G';
+      if (modalName) modalName.textContent = 'Guest';
+      if (modalEmail) modalEmail.textContent = 'Not signed in (Guest mode)';
+      if (modalSignOut) modalSignOut.style.display = 'none';
+      if (modalPrompt) modalPrompt.style.display = 'block';
+      if (gBtnWrap) gBtnWrap.style.display = 'flex';
+    }
+  }
+
+  async function handleGoogleCredential(response) {
+    const payload = decodeJwtPayload(response.credential);
+    if (!payload) {
+      showToast('Could not read Google sign-in response');
+      return;
+    }
+
+    const user = {
+      type: 'google',
+      name: payload.name || payload.given_name || 'Learner',
+      email: payload.email || '',
+      picture: payload.picture || '',
+      token: response.credential,
+      plan: 'Free Account'
+    };
+
+    saveStoredUser(user);
+    updateUserUI(user);
+    showToast(`Signed in as ${user.name}`);
+
+    // Sync with backend if available
+    try {
+      const authEndpoint = (API_BASE ? API_BASE : '') + '/api/auth/google';
+      fetch(authEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: response.credential })
+      }).then(r => r.json()).then(data => {
+        if (data.token) {
+          try { localStorage.setItem('bharatVoice.jwt', data.token); } catch(e){}
+        }
+      }).catch(() => {});
+    } catch(e){}
+  }
+
+  function initGoogleButton() {
+    if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+      setTimeout(initGoogleButton, 400);
+      return;
+    }
+    const container = document.getElementById('googleBtnContainer');
+    if (!container) return;
+
+    try {
+      window.google.accounts.id.initialize({
+        client_id: DEFAULT_CLIENT_ID,
+        callback: handleGoogleCredential,
+        auto_select: false
+      });
+      container.innerHTML = '';
+      window.google.accounts.id.renderButton(container, {
+        theme: 'filled_black',
+        size: 'large',
+        shape: 'pill',
+        width: 250
+      });
+    } catch(e) {
+      console.warn('Google Sign-In init error:', e);
+    }
+  }
+
+  const modalSignOutBtn = document.getElementById('modalSignOutBtn');
+  if (modalSignOutBtn) {
+    modalSignOutBtn.addEventListener('click', () => {
+      clearStoredUser();
+      updateUserUI(null);
+      initGoogleButton();
+      showToast('Signed out. Continuing as Guest');
+    });
+  }
+
   // Initial Boot
+  const currentUser = getStoredUser();
+  updateUserUI(currentUser);
+  initGoogleButton();
   initSeedSessions();
   renderRecents();
   if (activeSessionId) {
