@@ -1537,7 +1537,8 @@
   // ---------- State ----------
   const CHAT_SESSIONS_KEY = 'bharatVoice.chatSessions';
   const ACTIVE_SESSION_KEY = 'bharatVoice.activeSessionId';
-  const NV_IMAGE_API_KEY = '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';
+  const NV_IMAGE_API_KEY = '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';
+  const NV_IMAGE_MODEL = 'flux-3-image-klein'; // Upgraded: Black Forest Labs FLUX 3 (latest, 26d old)
   const IMG_TRIGGER = /^(generate|create|draw|make|paint|design|show me|illustrate|sketch)\s+(me\s+)?(an?\s+)?(image|picture|photo|photograph|illustration|artwork|drawing|concept map|mind map|diagram|flowchart|infographic|poster)\s*(of|for|showing)?\s*[:\\-]?\s*/i;
 
   let activeSessionId = localStorage.getItem(ACTIVE_SESSION_KEY) || null;
@@ -2366,7 +2367,7 @@ Key Guidelines:
 
     const status = document.createElement('div');
     status.style.cssText = 'font-size:14px;color:var(--gold-marigold);display:flex;align-items:center;gap:8px;padding:8px 0;';
-    status.innerHTML = '<span style="display:inline-block;">⚡</span> Painting 8K image via NVIDIA FLUX engine…';
+    status.innerHTML = '<span style="display:inline-block;">⚡</span> Painting 8K image via NVIDIA FLUX 3 engine…';
     bubble.appendChild(status);
     row.appendChild(bubble);
     messagesContainer.appendChild(row);
@@ -2393,7 +2394,7 @@ Key Guidelines:
     } catch(e) {}
 
     try {
-      const nvRes = await fetch('https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.2-klein-4b', {
+      const nvRes = await fetch(`https://ai.api.nvidia.com/v1/genai/black-forest-labs/${NV_IMAGE_MODEL}`, {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + NV_IMAGE_API_KEY,
@@ -2447,7 +2448,7 @@ Key Guidelines:
 
     const metaDiv = document.createElement('div');
     metaDiv.className = 'gen-img-meta';
-    metaDiv.innerHTML = `<span>🎨 ${meta.style.toUpperCase()}</span><span>📐 ${meta.width}×${meta.height}</span><span>⚡ NVIDIA FLUX</span>`;
+    metaDiv.innerHTML = `<span>🎨 ${meta.style.toUpperCase()}</span><span>📐 ${meta.width}×${meta.height}</span><span>⚡ NVIDIA FLUX 3</span>`;
     footer.appendChild(metaDiv);
 
     const actions = document.createElement('div');
