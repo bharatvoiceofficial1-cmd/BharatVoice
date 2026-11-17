@@ -623,42 +623,6 @@
   }
   .gen-img-btn:hover { background: rgba(255, 255, 255, 0.16); }
 
-  /* Image Options Bar */
-  .image-options-bar {
-    max-width: 780px;
-    width: 100%;
-    background: #1a1a1a;
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    display: none;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .image-options-bar.open { display: flex; }
-  .iob-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    font-size: 12px;
-  }
-  .iob-pill {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    padding: 4px 10px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 12px;
-  }
-  .iob-pill.active {
-    background: rgba(255, 159, 28, 0.2);
-    border-color: var(--saffron-orange);
-    color: var(--gold-marigold);
-  }
-
   /* Think Accordion */
   .think-accordion {
     background: rgba(255, 255, 255, 0.04);
@@ -1368,7 +1332,6 @@
     <div class="attach-popup-menu" id="attachPopupMenu">
       <button type="button" class="attach-menu-item" id="popupPhotoBtn">📷 Attach photo / page</button>
       <button type="button" class="attach-menu-item" id="popupChapterBtn">📄 Add chapter / source text</button>
-      <button type="button" class="attach-menu-item" id="popupImageGenBtn">🎨 Generate 8K AI Image</button>
       <button type="button" class="attach-menu-item" id="popupConceptMapBtn">🗺️ Interactive Concept Map</button>
       <a href="workspace.html" class="attach-menu-item">⚡ Multi-Model AI Studio (New Page)</a>
     </div>
@@ -1376,28 +1339,7 @@
     <!-- Bottom Input Dock -->
     <div class="input-dock">
       
-      <!-- Image Generation Options Bar -->
-      <div class="image-options-bar" id="imageOptionsBar">
-        <div class="iob-row">
-          <span style="color:var(--text-muted);font-weight:500;">🎨 Style:</span>
-          <button type="button" class="iob-pill active" data-img-style="auto">✨ Auto</button>
-          <button type="button" class="iob-pill" data-img-style="photo">📸 8K Photo</button>
-          <button type="button" class="iob-pill" data-img-style="conceptmap">🗺️ Concept Map</button>
-          <button type="button" class="iob-pill" data-img-style="diagram">🔬 Diagram</button>
-          <button type="button" class="iob-pill" data-img-style="art">🎨 Digital Art</button>
-          <button type="button" class="iob-pill" data-img-style="3d">🧊 3D</button>
-          <button type="button" id="iobCloseBtn" style="margin-left:auto;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;">✕</button>
-        </div>
-        <div class="iob-row">
-          <span style="color:var(--text-muted);font-weight:500;">📐 Ratio:</span>
-          <button type="button" class="iob-pill active" data-img-ratio="square">🔲 1:1 Square</button>
-          <button type="button" class="iob-pill" data-img-ratio="landscape">🖥️ 16:9 Wide</button>
-          <button type="button" class="iob-pill" data-img-ratio="portrait">📱 9:16 Tall</button>
-          <span style="font-size:11px;color:var(--gold-marigold);margin-left:auto;">⚡ Powered by NVIDIA FLUX 8K</span>
-        </div>
-      </div>
-
-            <!-- Scroll To Bottom Button (ChatGPT Style) -->
+      <!-- Scroll To Bottom Button (ChatGPT Style) -->
       <button type="button" class="scroll-to-bottom-btn" id="scrollToBottomBtn" title="Scroll down" aria-label="Scroll to bottom">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
@@ -1608,9 +1550,7 @@
   let isListeningVoice = false;
   let currentAudio = null;
   let recognition = null;
-  let currentImgStyle = 'auto';
-  let currentImgRatio = 'square';
-
+  
   // API Backend Base Routing (production uses api.bharatvoiceduai.website)
   const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? ''
@@ -1813,9 +1753,7 @@
   const thinkToggleBtn = document.getElementById('thinkToggleBtn');
   const attachBtn = document.getElementById('attachBtn');
   const attachPopupMenu = document.getElementById('attachPopupMenu');
-  const imageOptionsBar = document.getElementById('imageOptionsBar');
-  const iobCloseBtn = document.getElementById('iobCloseBtn');
-  const photoInput = document.getElementById('photoInput');
+      const photoInput = document.getElementById('photoInput');
   const toast = document.getElementById('toast');
 
   // Modals
@@ -2262,11 +2200,11 @@
     autosizeInput();
     updateSendButtonVisibility();
 
-    if (IMG_TRIGGER.test(query)) {
-      const cleanPrompt = query.replace(IMG_TRIGGER, '').trim() || query;
+    const imgInfo = extractImageInfo(query);
+    if (imgInfo && imgInfo.isMatch) {
       appendBubble('user', query);
       conversation.push({ role: 'user', content: query });
-      generateImage(cleanPrompt, currentImgStyle, currentImgRatio);
+      generateImage(imgInfo);
       return;
     }
 
@@ -2365,51 +2303,82 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
     appendBubble('assistant', reply);
   }
 
-  // ================= 8K AI IMAGE GENERATION ENGINE =================
-  function buildStyledPrompt(raw, style, ratio) {
-    let detectedStyle = style;
-    if (detectedStyle === 'auto'){
-      if (/concept\s*map|mind\s*map|infographic/i.test(raw)) detectedStyle = 'conceptmap';
-      else if (/photo|realistic|portrait|scenery/i.test(raw)) detectedStyle = 'photo';
-      else if (/diagram|anatomy|cell|circuit/i.test(raw)) detectedStyle = 'diagram';
-      else if (/3d|render|isometric/i.test(raw)) detectedStyle = '3d';
-      else detectedStyle = 'photo';
+    // ================= NATURAL AI IMAGE GENERATION ENGINE (NVIDIA FLUX 3) =================
+  function extractImageInfo(text) {
+    const q = (text || '').trim();
+    if (!q) return null;
+
+    // Natural command triggers: 'create an image of this [object]', 'generate an image of ...', 'image of this: ...', etc.
+    const triggerPattern = /^(please\s+)?(can\s+you\s+)?(create|generate|make|draw|paint|produce|render|show\s+me)\s+(me\s+)?((an?\s+|a\s+)?(8k|4k|3d|hd|ultra\s*hd|realistic|photorealistic)?\s*)?(image|picture|photo|photograph|pic|illustration|artwork|rendering|visual)\s*(of\s+this|of|for|showing|about)?\s*[:\-]?\s*(this\s*[:\-]?)?\s*/i;
+
+    const startsWithImageOf = /^(image|picture|photo)\s+(of\s+this|of|for|showing|about)?\s*[:\-]?\s*(this\s*[:\-]?)?\s*/i;
+
+    const isMatch = triggerPattern.test(q) || startsWithImageOf.test(q);
+    if (!isMatch) return null;
+
+    let rawSubject = '';
+    if (triggerPattern.test(q)) {
+      rawSubject = q.replace(triggerPattern, '');
+    } else if (startsWithImageOf.test(q)) {
+      rawSubject = q.replace(startsWithImageOf, '');
     }
 
-    let styleSuffix = '';
-    let appliedRatio = ratio;
+    // Strip leading 'this: ', 'this - ', 'this '
+    rawSubject = rawSubject.replace(/^this\s*[:\-]?\s*/i, '').trim();
+    rawSubject = rawSubject.replace(/^[,,\.\-:\s]+|[,,\.\-:\s]+$/g, '').trim();
 
-    if (detectedStyle === 'conceptmap'){
-      styleSuffix = ', clear educational concept map infographic, structured connected nodes, modern minimalist vector typography, high visual contrast, ultra-sharp 8k uhd';
-      if (appliedRatio === 'auto' || appliedRatio === 'square') appliedRatio = 'landscape';
-    } else if (detectedStyle === 'diagram'){
-      styleSuffix = ', accurate 3d educational scientific illustration, clear labeled parts, clean dark background, vivid colors, sharp focus, 8k uhd';
-      if (appliedRatio === 'auto') appliedRatio = 'landscape';
-    } else if (detectedStyle === 'photo'){
-      styleSuffix = ', photorealistic, masterwork photography, 8k uhd, cinematic lighting, sharp focus, high dynamic range, breathtaking detail';
-    } else if (detectedStyle === 'art'){
-      styleSuffix = ', stunning digital art, vibrant color grading, intricate details, artistic masterpiece, trending on artstation, 8k';
-    } else if (detectedStyle === '3d'){
-      styleSuffix = ', 3d isometric render, blender 3d style, octane render, soft ambient shadows, modern clean 3d illustration, 8k';
-    } else {
-      styleSuffix = ', high quality, ultra detailed, sharp focus, clean composition, 8k';
-    }
+    const subject = rawSubject || 'a beautiful scenic Indian landscape with mountains and river at golden hour';
 
-    let nvRatio = '1:1';
+    // 3D Rule: ONLY generate 3D if the user explicitly mentions 3D!
+    const is3D = /(\b3d\b|3-d|three-dimensional|isometric|blender|octane|unreal\s*engine|cgi|claymation)/i.test(q);
+    const is4K = /(\b4k\b|4-k)/i.test(q) && !is3D;
+    const is8K = (/\b8k\b/i.test(q) || (!is3D && !is4K));
+
+    let ratio = 'square';
+    let aspect_ratio = '1:1';
     let width = 1024, height = 1024;
-    if (appliedRatio === 'landscape' || appliedRatio === '16:9'){
-      nvRatio = '4:3'; width = 1152; height = 864;
-    } else if (appliedRatio === 'portrait' || appliedRatio === '9:16'){
-      nvRatio = '3:4'; width = 864; height = 1152;
+
+    if (/landscape|wallpaper|desktop|widescreen|16:9|panoramic/i.test(q)) {
+      ratio = 'landscape';
+      aspect_ratio = '4:3';
+      width = 1152; height = 864;
+    } else if (/portrait|phone|mobile|story|vertical|9:16/i.test(q)) {
+      ratio = 'portrait';
+      aspect_ratio = '3:4';
+      width = 864; height = 1152;
+    }
+
+    let style = 'photo-8k';
+    let modeTitle = '8K UHD Photo';
+    let styleSuffix = '';
+
+    if (is3D) {
+      style = '3d';
+      modeTitle = '3D Masterpiece';
+      styleSuffix = ', 3D digital render, Pixar and Unreal Engine 5 aesthetic, Octane Render 3D, ray-traced ambient occlusion, subsurface scattering, volumetric studio lighting, highly detailed 3D model, ultra-high resolution 8K 3D masterpiece';
+    } else if (is4K) {
+      style = 'photo-4k';
+      modeTitle = '4K UHD Photo';
+      styleSuffix = ', ultra-sharp 4K UHD photograph, photorealistic, natural cinematic lighting, highly detailed textures, DSLR crisp focus, professional photography, 4K resolution';
+    } else {
+      style = 'photo-8k';
+      modeTitle = '8K UHD Photo';
+      styleSuffix = ', award-winning masterpiece photograph, ultra-detailed 8K UHD, photorealistic, hyper-realistic textures, professional studio lighting, razor-sharp focus, cinematic depth of field, breathtaking 8K resolution, raw photograph';
     }
 
     return {
-      finalPrompt: raw + styleSuffix,
-      style: detectedStyle,
-      ratio: appliedRatio,
-      aspect_ratio: nvRatio,
+      isMatch: true,
+      subject,
+      is3D,
+      is4K,
+      is8K,
+      ratio,
+      aspect_ratio,
       width,
-      height
+      height,
+      style,
+      modeTitle,
+      finalPrompt: subject + styleSuffix
     };
   }
 
@@ -2425,8 +2394,8 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
     return new Blob(byteArrays, { type: contentType });
   }
 
-  async function generateImage(prompt, style = currentImgStyle, ratio = currentImgRatio) {
-    if (!prompt || !prompt.trim()) return;
+  async function generateImage(imgInfo) {
+    if (!imgInfo || !imgInfo.subject) return;
 
     emptyState.classList.add('hidden');
     const row = document.createElement('div');
@@ -2437,27 +2406,42 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
 
     const status = document.createElement('div');
     status.style.cssText = 'font-size:14px;color:var(--gold-marigold);display:flex;align-items:center;gap:8px;padding:8px 0;';
-    status.innerHTML = '<span style="display:inline-block;">⚡</span> Painting 8K image via NVIDIA FLUX 3 engine…';
+    
+    const engineLabel = imgInfo.is3D 
+      ? '⚡ Painting 3D Masterpiece via NVIDIA FLUX 3 engine…' 
+      : (imgInfo.is4K ? '⚡ Painting 4K UHD photo via NVIDIA FLUX 3 engine…' : '⚡ Painting 8K UHD photo via NVIDIA FLUX 3 engine…');
+    
+    status.innerHTML = '<span style="display:inline-block;">⚡</span> ' + engineLabel;
     bubble.appendChild(status);
     row.appendChild(bubble);
     messagesContainer.appendChild(row);
-    chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
-
-    const meta = buildStyledPrompt(prompt, style, ratio);
+    chatScrollArea.scrollTo({ top: chatScrollArea.scrollHeight, behavior: 'smooth' });
 
     try {
       const endpoint = (API_BASE ? API_BASE : '') + '/api/generate-image';
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, style, ratio })
+        body: JSON.stringify({
+          prompt: imgInfo.subject,
+          finalPrompt: imgInfo.finalPrompt,
+          style: imgInfo.style,
+          ratio: imgInfo.ratio,
+          aspect_ratio: imgInfo.aspect_ratio,
+          width: imgInfo.width,
+          height: imgInfo.height,
+          is3D: imgInfo.is3D,
+          is4K: imgInfo.is4K
+        })
       });
       if (res.ok) {
         const data = await res.json();
         if (data && data.image) {
-          const b64 = data.image.includes('base64,') ? data.image.split('base64,')[1] : data.image;
-          const blob = b64ToBlob(b64, 'image/jpeg');
-          renderImageCard(bubble, status, URL.createObjectURL(blob), prompt, meta);
+          let imgUrl = data.image;
+          if (!imgUrl.startsWith('data:') && !imgUrl.startsWith('http')) {
+            imgUrl = 'data:image/jpeg;base64,' + imgUrl;
+          }
+          renderImageCard(bubble, status, imgUrl, imgInfo.subject, imgInfo);
           return;
         }
       }
@@ -2472,8 +2456,8 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          prompt: meta.finalPrompt,
-          aspect_ratio: meta.aspect_ratio
+          prompt: imgInfo.finalPrompt,
+          aspect_ratio: imgInfo.aspect_ratio
         })
       });
       if (nvRes.ok) {
@@ -2481,19 +2465,19 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
         const rawB64 = nvData?.artifacts?.[0]?.base64 || nvData?.b64_json;
         if (rawB64) {
           const blob = b64ToBlob(rawB64, 'image/jpeg');
-          renderImageCard(bubble, status, URL.createObjectURL(blob), prompt, meta);
+          renderImageCard(bubble, status, URL.createObjectURL(blob), imgInfo.subject, imgInfo);
           return;
         }
       }
     } catch(e) {}
 
     try {
-      const cleanPrompt = encodeURIComponent(meta.finalPrompt);
-      const fluxUrl = 'https://image.pollinations.ai/prompt/' + cleanPrompt + '?width=' + meta.width + '&height=' + meta.height + '&model=flux&nologo=true&seed=' + Math.floor(Math.random() * 999999);
+      const cleanPrompt = encodeURIComponent(imgInfo.finalPrompt);
+      const fluxUrl = 'https://image.pollinations.ai/prompt/' + cleanPrompt + '?width=' + imgInfo.width + '&height=' + imgInfo.height + '&model=flux&nologo=true&seed=' + Math.floor(Math.random() * 999999);
       const imgRes = await fetch(fluxUrl);
       if (imgRes.ok) {
         const blob = await imgRes.blob();
-        renderImageCard(bubble, status, URL.createObjectURL(blob), prompt, meta);
+        renderImageCard(bubble, status, URL.createObjectURL(blob), imgInfo.subject, imgInfo);
         return;
       }
     } catch(e) {}
@@ -2518,7 +2502,7 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
 
     const metaDiv = document.createElement('div');
     metaDiv.className = 'gen-img-meta';
-    metaDiv.innerHTML = `<span>🎨 ${meta.style.toUpperCase()}</span><span>📐 ${meta.width}×${meta.height}</span><span>⚡ NVIDIA FLUX 3</span>`;
+    metaDiv.innerHTML = `<span>🎨 ${meta.modeTitle || meta.style.toUpperCase()}</span><span>📐 ${meta.width}×${meta.height}</span><span>⚡ NVIDIA FLUX 3</span>`;
     footer.appendChild(metaDiv);
 
     const actions = document.createElement('div');
@@ -2532,7 +2516,7 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
 
     const dl = document.createElement('a');
     dl.href = objectUrl;
-    dl.download = 'bharat-voice-' + meta.style + '.jpg';
+    dl.download = 'bharat-voice-' + (meta.style || 'image') + '.jpg';
     dl.className = 'gen-img-btn';
     dl.textContent = '⬇ Save HD';
     actions.appendChild(dl);
@@ -2761,40 +2745,13 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
     chatInput.value = 'Analyze this chapter text and create key summary points with formula sheets: ';
     chatInput.focus(); autosizeInput(); updateSendButtonVisibility();
   });
-  document.getElementById('popupImageGenBtn').addEventListener('click', () => {
-    imageOptionsBar.classList.add('open');
-    chatInput.value = 'Generate an 8K photo of ';
-    chatInput.focus(); autosizeInput(); updateSendButtonVisibility();
-  });
-  document.getElementById('popupConceptMapBtn').addEventListener('click', () => {
-    chatInput.value = 'Create a clear, interactive concept map with a Mermaid diagram for: ';
-    chatInput.focus(); autosizeInput(); updateSendButtonVisibility();
-  });
-
-  // Images Nav
+  // Images Nav - natural image prompt shortcut (no buttons)
   document.getElementById('navImagesBtn').addEventListener('click', () => {
-    imageOptionsBar.classList.toggle('open');
-    chatInput.value = 'Generate an 8K photo of ';
-    chatInput.focus(); autosizeInput(); updateSendButtonVisibility();
+    chatInput.value = 'create an image of this: ';
+    chatInput.focus();
+    autosizeInput();
+    updateSendButtonVisibility();
   });
-  iobCloseBtn.addEventListener('click', () => imageOptionsBar.classList.remove('open'));
-
-  document.querySelectorAll('[data-img-style]').forEach(btn => {
-    btn.onclick = () => {
-      document.querySelectorAll('[data-img-style]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentImgStyle = btn.dataset.imgStyle;
-    };
-  });
-  document.querySelectorAll('[data-img-ratio]').forEach(btn => {
-    btn.onclick = () => {
-      document.querySelectorAll('[data-img-ratio]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentImgRatio = btn.dataset.imgRatio;
-    };
-  });
-
-  // Offer Modal
   const openOfferModal = () => offerModal.classList.add('open');
   document.getElementById('sidebarClaimOfferBtn').addEventListener('click', openOfferModal);
   document.getElementById('topFreeOfferBtn').addEventListener('click', openOfferModal);

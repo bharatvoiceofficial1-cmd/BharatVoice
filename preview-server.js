@@ -336,54 +336,115 @@ Match the user's language (English, Hindi, or Hinglish).`;
     return;
   }
 
-  // AI Image Generation Endpoint
+  // AI Image Generation Endpoint (NVIDIA FLUX 3 Live Proxy)
   if (req.url === '/api/generate-image' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => { body += chunk; });
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const data = JSON.parse(body || '{}');
-        const prompt = data.prompt || 'Cyberpunk educational diagram';
-        // Generate crisp technological SVG image
-        const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-          <defs>
-            <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#050811" />
-              <stop offset="50%" stop-color="#0c1838" />
-              <stop offset="100%" stop-color="#001824" />
-            </linearGradient>
-            <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#00f5d4" />
-              <stop offset="100%" stop-color="#3b82f6" />
-            </linearGradient>
-            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="15" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-          </defs>
-          <rect width="1024" height="1024" fill="url(#g1)" />
-          <circle cx="512" cy="512" r="320" fill="none" stroke="#00f5d4" stroke-width="2" stroke-opacity="0.3" stroke-dasharray="8 8" />
-          <circle cx="512" cy="512" r="240" fill="none" stroke="#3b82f6" stroke-width="3" stroke-opacity="0.5" />
-          <circle cx="512" cy="512" r="160" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-opacity="0.6" filter="url(#glow)" />
-          <polygon points="512,380 620,570 404,570" fill="none" stroke="url(#g2)" stroke-width="4" filter="url(#glow)" />
-          <circle cx="512" cy="512" r="28" fill="#00f5d4" filter="url(#glow)" />
-          <text x="512" y="740" text-anchor="middle" fill="#00f5d4" font-family="monospace" font-size="28" font-weight="bold" letter-spacing="4">BHARAT VOICE // VISUAL ENGINE</text>
-          <text x="512" y="780" text-anchor="middle" fill="#94a3b8" font-family="sans-serif" font-size="18">${prompt.slice(0, 50).replace(/[<>&]/g, '')}</text>
-        </svg>`;
-        const dataUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgContent);
+        const raw = (data.prompt || '').trim();
+        const clientFinalPrompt = data.finalPrompt;
 
-        res.writeHead(200, {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        });
-        res.end(JSON.stringify({
-          image: dataUrl,
-          imageUrl: dataUrl,
-          meta: {
-            style: data.style || 'auto',
-            provider: 'nvidia-klein'
+        const is3D = (data.is3D !== undefined)
+          ? Boolean(data.is3D)
+          : /(\b3d\b|3-d|three-dimensional|isometric|blender|octane|unreal\s*engine|cgi|claymation)/i.test(raw);
+        
+        const is4K = (data.is4K !== undefined)
+          ? Boolean(data.is4K)
+          : (/\b4k\b/i.test(raw) && !is3D);
+
+        let styleSuffix = '';
+        let modeTitle = '8K UHD Photo';
+        let detectedStyle = 'photo-8k';
+
+        if (is3D) {
+          detectedStyle = '3d';
+          modeTitle = '3D Masterpiece';
+          styleSuffix = ', 3D digital render, Pixar and Unreal Engine 5 aesthetic, Octane Render 3D, ray-traced ambient occlusion, subsurface scattering, volumetric studio lighting, highly detailed 3D model, ultra-high resolution 8K 3D masterpiece';
+        } else if (is4K) {
+          detectedStyle = 'photo-4k';
+          modeTitle = '4K UHD Photo';
+          styleSuffix = ', ultra-sharp 4K UHD photograph, photorealistic, natural cinematic lighting, highly detailed textures, DSLR crisp focus, professional photography, 4K resolution';
+        } else {
+          detectedStyle = 'photo-8k';
+          modeTitle = '8K UHD Photo';
+          styleSuffix = ', award-winning masterpiece photograph, ultra-detailed 8K UHD, photorealistic, hyper-realistic textures, professional studio lighting, razor-sharp focus, cinematic depth of field, breathtaking 8K resolution, raw photograph';
+        }
+
+        const finalPrompt = clientFinalPrompt || (raw + styleSuffix);
+        const aspect_ratio = data.aspect_ratio || '1:1';
+        const apiKey = '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';
+
+        // Call NVIDIA FLUX 3 Image Klein
+        try {
+          const nvRes = await fetch('https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux-3-image-klein', {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + apiKey,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              prompt: finalPrompt,
+              aspect_ratio: aspect_ratio
+            })
+          });
+
+          if (nvRes.ok) {
+            const nvData = await nvRes.json();
+            const b64 = nvData?.artifacts?.[0]?.base64 || nvData?.b64_json;
+            if (b64) {
+              res.writeHead(200, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+              });
+              return res.end(JSON.stringify({
+                status: 'success',
+                image: 'data:image/jpeg;base64,' + b64,
+                meta: {
+                  style: detectedStyle,
+                  modeTitle: modeTitle,
+                  width: data.width || 1024,
+                  height: data.height || 1024,
+                  provider: 'nvidia-flux-3'
+                }
+              }));
+            }
           }
-        }));
+        } catch(nvErr) {
+          console.warn('NVIDIA FLUX 3 proxy error in preview server:', nvErr.message);
+        }
+
+        // High quality fallback
+        const width = data.width || 1024;
+        const height = data.height || 1024;
+        const fallbackUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}?width=${width}&height=${height}&model=flux&nologo=true`;
+        try {
+          const fRes = await fetch(fallbackUrl);
+          if (fRes.ok) {
+            const ab = await fRes.arrayBuffer();
+            const b64 = Buffer.from(ab).toString('base64');
+            res.writeHead(200, {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            });
+            return res.end(JSON.stringify({
+              status: 'success',
+              image: 'data:image/jpeg;base64,' + b64,
+              meta: {
+                style: detectedStyle,
+                modeTitle: modeTitle,
+                width: width,
+                height: height,
+                provider: 'flux-fallback'
+              }
+            }));
+          }
+        } catch(fErr) {}
+
+        res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ error: { message: 'Image generation service temporarily unavailable.' } }));
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
         res.end(JSON.stringify({ error: { message: err.message } }));
