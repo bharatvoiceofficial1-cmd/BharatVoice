@@ -374,7 +374,7 @@ Match the user's language (English, Hindi, or Hinglish).`;
 
         const finalPrompt = clientFinalPrompt || (raw + styleSuffix);
         const aspect_ratio = data.aspect_ratio || '1:1';
-        const apiKey = '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';
+        const apiKey = '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';
 
         // Call NVIDIA FLUX 3 Image Klein
         try {
