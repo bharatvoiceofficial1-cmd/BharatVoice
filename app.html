@@ -713,6 +713,43 @@
   }
 
   /* ================= BOTTOM INPUT DOCK ================= */
+  
+  /* Scroll To Bottom Floating Button (ChatGPT Style) */
+  .scroll-to-bottom-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #212121;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s, opacity 0.2s, visibility 0.2s;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    pointer-events: none;
+    z-index: 30;
+  }
+  .scroll-to-bottom-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .scroll-to-bottom-btn:hover {
+    background: #2f2f2f;
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+  }
+  .scroll-to-bottom-btn:active {
+    transform: translateY(0);
+  }
+
   .input-dock {
     position: absolute;
     bottom: 0;
@@ -1360,6 +1397,11 @@
         </div>
       </div>
 
+            <!-- Scroll To Bottom Button (ChatGPT Style) -->
+      <button type="button" class="scroll-to-bottom-btn" id="scrollToBottomBtn" title="Scroll down" aria-label="Scroll to bottom">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
       <!-- Pill Container -->
       <div class="input-pill-wrapper" id="inputPillWrapper">
         <button type="button" class="attach-btn" id="attachBtn" title="Add attachment or launch tool">+</button>
@@ -1575,11 +1617,11 @@
     : 'https://api.bharatvoiceduai.website';
 
   // ---------- Smart Context-Aware Educational Engine ----------
-  const GREETING_RESPONSES = [
-    `Namaste! 🙏 Welcome to **Bharat Voice**! I am your AI study mentor, problem solver, and coding partner.\n\nHow can I help you today? You can ask me to:\n- 📖 **Explain any concept** simply and step-by-step\n- 📐 **Solve math & physics derivations** with complete formulas\n- 💻 **Code Mentor** — write, debug, and review algorithms\n- 🗺️ **Generate concept maps** & Mermaid architecture diagrams\n- 📝 **Create revision notes & sample questions**\n\nWhat topic are you curious about right now?`,
-    `Arre hello! 🚀 Great to connect with you on Bharat Voice. How is your study or coding session going?\n\nWhether you need academic notes, a step-by-step math proof, coding assistance, or an interactive concept map, I'm fully ready. What subject or project are we diving into today?`,
-    `Namaskar! 🇮🇳 I'm here and ready to help. Feel free to ask questions in English, Hindi, or Hinglish.\n\nTell me, what concept or question can I solve or break down for you right now?`,
-    `Hey there! Always excited to dive into learning and problem solving. Got a tricky exam question, an algorithm to analyze, or want a visual concept map? Let's get started!`
+    const GREETING_RESPONSES = [
+    `Namaste! 🙏 How can I help you learn or code today?`,
+    `Hello! 👋 What would you like to explore or solve today?`,
+    `Namaskar! 🇮🇳 What's on your mind? Ready whenever you are.`,
+    `Hey there! How can I assist you today?`
   ];
 
   let greetingCounter = 0;
@@ -2065,8 +2107,12 @@
       }
     }
 
-    messagesContainer.appendChild(row);
-    chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
+        messagesContainer.appendChild(row);
+    if (role === 'user') {
+      chatScrollArea.scrollTo({ top: chatScrollArea.scrollHeight, behavior: 'smooth' });
+    } else {
+      setTimeout(updateScrollButtonVisibility, 60);
+    }
     return row;
   }
 
@@ -2202,7 +2248,7 @@
     `;
     row.appendChild(bubble);
     messagesContainer.appendChild(row);
-    chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
+    chatScrollArea.scrollTo({ top: chatScrollArea.scrollHeight, behavior: 'smooth' });
     return row;
   }
 
@@ -2246,16 +2292,21 @@
 
     const thinkingRow = appendThinkingBubble();
 
-    // High Quality Educational Persona for Bharat Voice
+        // Adaptive Educational & Conversational Persona for Bharat Voice
     const baseSystemPrompt = `You are Bharat Voice, India's premier AI study companion, problem solver, and coding mentor.
-You provide deep, thorough, accurate, and beautifully structured responses with markdown formatting, LaTeX formulas ($...$ for inline, $$...$$ for display equations), and Mermaid diagrams where applicable.
+You provide convenient, clear, and context-adaptive responses formatted with Markdown, LaTeX ($...$ inline, ... display), and Mermaid diagrams.
 
-Key Guidelines:
-1. Thorough & Complete Answers: When asked a question, provide detailed, well-explained explanations, step-by-step solutions, key takeaways, and real-world examples. Never give lazy or truncated answers.
-2. Natural, Engaging Tone: For greetings ("hi", "hello", "hey") and casual chats, be warm, enthusiastic, and conversational (with natural Hindi/Hinglish warmth if the user uses Hindi/Hinglish). Never give repetitive canned replies; always welcome the user warmly and ask what they'd like to learn or build today.
-3. Math & Science: Always provide rigorous step-by-step derivations, formulas with variables clearly defined, and final results highlighted.
-4. Coding & Tech: Provide clean, idiomatic, fully commented code with time/space complexity analysis and edge cases.
-5. Visuals & Diagrams: Use Mermaid syntax (\`\`\`mermaid ... \`\`\`) for workflows, mind maps, and architectures.`;
+CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent):
+1. Greetings ("hi", "hello", "hey", "namaste", "what's up"):
+   - Reply in 1 short, warm, polite sentence only! NEVER dump a list of capabilities, bullet points, or menus onto a simple greeting.
+2. Short or Factual Questions ("what is 15 * 8", "capital of India", "define gravity"):
+   - Answer directly, crisply, and conveniently in 1-3 sentences without fluff.
+3. Detailed Explanations / Long Answers:
+   - When the user asks for detail ("explain in detail", "step-by-step", "derive", "write complete code", "concept map", "comprehensive notes", or complex derivations), provide a full, deep, structured answer with headers, step-by-step reasoning, and formulas.
+4. User-Directed Length (Strict Command Obeyance):
+   - If user asks "in short", "briefly", or "summarize" -> keep it concise and direct.
+   - If user asks "in detail", "long answer", or "elaborate" -> provide complete, thorough depth.
+5. Tone: Warm, helpful, polite, and bilingual-friendly (English, Hindi, Hinglish as preferred by the user).`;
 
     const sysContent = isThinkingActive
       ? baseSystemPrompt + "\n\nCRITICAL: Wrap your step-by-step internal reasoning and chain-of-thought analysis inside <think>...</think> tags before delivering your final structured answer."
@@ -2489,7 +2540,7 @@ Key Guidelines:
     footer.appendChild(actions);
     card.appendChild(footer);
     bubble.appendChild(card);
-    chatScrollArea.scrollTop = chatScrollArea.scrollHeight;
+    setTimeout(updateScrollButtonVisibility, 60);
   }
 
   function openLightbox(url) {
@@ -2912,6 +2963,30 @@ Key Guidelines:
       updateUserUI(null);
       initGoogleButton();
       showToast('Signed out. Continuing as Guest');
+    });
+  }
+
+  
+  // ---------- Scroll-To-Bottom Button Controller (ChatGPT Style) ----------
+  const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+
+  function updateScrollButtonVisibility() {
+    if (!scrollToBottomBtn) return;
+    const threshold = 90; // px distance from bottom to trigger button
+    const distanceFromBottom = chatScrollArea.scrollHeight - chatScrollArea.scrollTop - chatScrollArea.clientHeight;
+    if (distanceFromBottom > threshold) {
+      scrollToBottomBtn.classList.add('visible');
+    } else {
+      scrollToBottomBtn.classList.remove('visible');
+    }
+  }
+
+  chatScrollArea.addEventListener('scroll', updateScrollButtonVisibility);
+
+  if (scrollToBottomBtn) {
+    scrollToBottomBtn.addEventListener('click', () => {
+      chatScrollArea.scrollTo({ top: chatScrollArea.scrollHeight, behavior: 'smooth' });
+      setTimeout(updateScrollButtonVisibility, 350);
     });
   }
 
