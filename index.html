@@ -2,750 +2,1416 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bharat Voice — Bilingual AI Study Companion &amp; Multi-Model AI Studio (Mistral, Nemotron, Gemini)</title>
-  <meta name="description" content="Bharat Voice is India's leading bilingual AI study companion and unified multi-model workspace featuring Mistral Large 1T, NVIDIA Nemotron 120B, and Google Gemini. Equipped with natural voice learning, deep step-by-step solutions, and instant exam prep." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Bharat Voice — Voice Intelligence Platform</title>
+  <meta name="description" content="Low-latency neural voice synthesis and autonomous agent execution." />
 
-  <!-- Google Fonts: Inter + Poppins -->
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="alternate icon" type="image/png" href="assets/logo.png">
 
   <style>
     :root {
-      --bg-1: #0a0714;
-      --bg-2: #160f26;
-      --bg-3: #221438;
-      --accent: #ff9f1c;
-      --accent-2: #ffc93c;
-      --accent-glow: rgba(255, 159, 28, 0.35);
-      --text-main: #ffffff;
-      --muted: #c9c0d4;
-      --card-bg: rgba(26, 18, 42, 0.75);
-      --card-border: rgba(255, 159, 28, 0.18);
-      --radius: 14px;
+      /* Monochrome Foundation (Deep Obsidian Black & Pure White) */
+      --bg-black: #000000;
+      --bg-card: #0a0a0d;
+      --bg-card-inner: #111116;
+      
+      --text-white: #ffffff;
+      --text-silver: #f4f4f5;
+      --text-muted: #8b8b94;
+      --text-dim: #52525b;
+
+      /* Middle Accent Light: Electric Cyan & Indigo */
+      --accent-cyan: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-violet: #818cf8;
+
+      /* Borders & Rails */
+      --border-outer: #27272a;
+      --border-inner: #3f3f46;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-chamfer: rgba(255, 255, 255, 0.85);
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; scroll-behavior: smooth; }
-    body {
-      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: radial-gradient(circle at 50% 0%, #201338 0%, var(--bg-1) 70%);
-      color: var(--text-main);
+    html, body {
+      min-height: 100%;
+      background-color: var(--bg-black);
+      color: var(--text-silver);
+      font-family: var(--font-sans);
       -webkit-font-smoothing: antialiased;
-      line-height: 1.6;
       overflow-x: hidden;
+      line-height: 1.5;
     }
 
+    /* Fixed Precision Studio Framing Rails (Like Qronos) */
+    .framing-rails-fixed {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 1344px;
+      pointer-events: none;
+      z-index: 45;
+    }
+    .rail-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      mix-blend-difference: difference;
+    }
+    .rail-line.left { left: 0; }
+    .rail-line.right { right: 0; }
 
-    /* Top navigation */
-    .topbar {
-      position: sticky;
+    /* 3D Hyperboloid Waving Particle Strand Canvas */
+    #particleWaveCanvas {
+      position: fixed;
       top: 0;
       left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Subtle Middle Accent Radial Light Flow */
+    .ambient-middle-glow {
+      position: fixed;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 950px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, rgba(56, 189, 248, 0.06) 40%, transparent 70%);
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Layout Wrapper */
+    .layout-wrapper {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Floating Top Header (Qronos Structure) */
+    header.floating-header {
+      position: fixed;
+      top: 14px;
+      left: 0;
       right: 0;
-      z-index: 40;
+      z-index: 50;
+      transition: all 0.3s ease;
+    }
+    .header-nav-box {
+      max-width: 1344px;
+      margin: 0 auto;
+      padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 28px;
-      background: rgba(10, 7, 20, 0.85);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255, 159, 28, 0.12);
+      height: 52px;
+      background: rgba(8, 8, 10, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      border-radius: 12px;
     }
-    .brand {
+    .brand-group {
       display: flex;
       align-items: center;
       gap: 12px;
       text-decoration: none;
     }
     .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       display: grid;
       place-items: center;
-      font-weight: 900;
-      font-size: 17px;
-      color: #1a0800;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 0 16px var(--accent-glow);
-      font-family: 'Inter', sans-serif;
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.1);
+    }
+    .brand-mark svg {
+      width: 16px;
+      height: 16px;
+      color: #fff;
     }
     .brand-title {
-      font-family: 'Inter', sans-serif;
-      font-weight: 800;
-      font-size: 20px;
+      font-size: 15px;
+      font-weight: 700;
       color: #fff;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.02em;
     }
-    .brand-sub {
-      font-size: 11.5px;
-      color: var(--muted);
-      margin-top: -2px;
+    .brand-tag {
+      font-size: 10.5px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
     }
 
-    nav.nav {
+    nav.header-links {
       display: flex;
-      gap: 12px;
       align-items: center;
+      gap: 28px;
     }
-    nav.nav a {
-      color: var(--muted);
+    nav.header-links a {
+      color: var(--text-muted);
       text-decoration: none;
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    nav.header-links a:hover {
+      color: #ffffff;
+    }
+    nav.header-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #ffffff;
+      transition: width 0.2s ease;
+    }
+    nav.header-links a:hover::after {
+      width: 100%;
+    }
+
+    .btn-nav-cta {
+      background: #ffffff;
+      color: #000000;
+      text-decoration: none;
+      font-size: 12.5px;
       font-weight: 600;
-      transition: all 0.2s ease;
+      padding: 7px 16px;
+      border-radius: 9999px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.15);
     }
-    nav.nav a:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.06);
-    }
-    .nav-agentic-badge {
-      background: linear-gradient(90deg, #76b900, #a3e635);
-      color: #0b2000;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .cta-btn {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-      color: #1d0900 !important;
-      padding: 9px 18px !important;
-      border-radius: 999px !important;
-      font-weight: 800 !important;
-      font-size: 14px !important;
-      text-decoration: none;
-      box-shadow: 0 4px 18px rgba(255, 159, 28, 0.35);
-      transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-    }
-    .cta-btn:hover {
+    .btn-nav-cta:hover {
+      background: #e4e4e7;
       transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(255, 159, 28, 0.5) !important;
     }
 
+    /* Container */
     .container {
-      max-width: 1180px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 40px 24px 60px;
+      padding: 0 24px;
+      width: 100%;
     }
 
-    /* Hero */
-    .hero {
-      display: grid;
-      grid-template-columns: 1.25fr 0.95fr;
-      gap: 40px;
+    /* Hero Section */
+    .hero-section {
+      padding: 130px 0 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      padding: 30px 0 50px;
     }
-    .eyebrow {
+
+    .status-badge-pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 14px;
-      border-radius: 999px;
-      background: rgba(255, 159, 28, 0.12);
-      border: 1px solid rgba(255, 159, 28, 0.28);
-      color: var(--accent-2);
-      font-weight: 700;
-      font-size: 13px;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+    }
+    .status-dot-pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 8px var(--accent-cyan);
+    }
+
+    h1.hero-heading {
+      font-size: clamp(38px, 5.4vw, 68px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: #ffffff;
+      max-width: 860px;
       margin-bottom: 18px;
     }
-    h1 {
-      font-family: 'Inter', sans-serif;
-      font-weight: 900;
-      font-size: clamp(34px, 4.4vw, 54px);
-      line-height: 1.15;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #ffffff 30%, #ffc93c 100%);
+    .heading-gradient {
+      background: linear-gradient(135deg, #ffffff 40%, #c7d2fe 80%, var(--accent-cyan) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      letter-spacing: -1px;
-    }
-    p.lead {
-      color: var(--muted);
-      font-size: 16.5px;
-      line-height: 1.7;
-      margin-bottom: 28px;
-      max-width: 62ch;
     }
 
-    .hero-actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-      color: #1a0800;
-      padding: 13px 26px;
-      border-radius: 12px;
-      font-weight: 800;
-      font-size: 15px;
-      text-decoration: none;
-      box-shadow: 0 6px 20px rgba(255, 159, 28, 0.35);
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(255, 159, 28, 0.5);
-    }
-    .btn-agentic {
-      background: rgba(118, 185, 0, 0.12);
-      border: 1px solid rgba(118, 185, 0, 0.45);
-      color: #bbf7d0;
-      padding: 12px 22px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 15px;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-agentic:hover {
-      background: rgba(118, 185, 0, 0.22);
-      border-color: #86efac;
-      color: #fff;
-      transform: translateY(-2px);
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 22px;
-      flex-wrap: wrap;
-      padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.07);
-    }
-    .hero-stat-item {
-      display: flex;
-      flex-direction: column;
-    }
-    .hero-stat-val {
-      font-weight: 800;
-      font-size: 15px;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .hero-stat-lbl {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* Hero Card / Interactive preview */
-    .hero-card {
-      background: linear-gradient(170deg, rgba(32, 22, 54, 0.95), rgba(18, 12, 32, 0.95));
-      border: 1px solid rgba(255, 159, 28, 0.25);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(255, 159, 28, 0.08);
-      position: relative;
-    }
-    .hero-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .hero-card-title {
-      font-weight: 700;
-      font-size: 14px;
-      color: #ffc93c;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .live-pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 10px #10b981;
-      display: inline-block;
-    }
-    .model-chip {
-      background: rgba(118, 185, 0, 0.15);
-      border: 1px solid rgba(118, 185, 0, 0.35);
-      color: #a3e635;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 999px;
-    }
-    .preview-box {
-      background: rgba(10, 7, 18, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-    .preview-tag {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-    .preview-prompt {
-      font-size: 13.5px;
-      color: #ffffff;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .preview-response {
-      font-size: 12.5px;
-      color: var(--muted);
-      line-height: 1.55;
-      background: rgba(255, 255, 255, 0.02);
-      padding: 10px;
-      border-radius: 8px;
-      border-left: 3px solid var(--accent);
-    }
-    .preview-action {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .preview-action a {
-      color: var(--accent-2);
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-
-    /* SECTION: Agentic AI */
-    .section-agentic {
-      margin: 60px 0;
-      background: linear-gradient(135deg, rgba(16, 28, 14, 0.6) 0%, rgba(18, 14, 30, 0.8) 100%);
-      border: 1px solid rgba(118, 185, 0, 0.35);
-      border-radius: 20px;
-      padding: 36px 32px;
-      position: relative;
-    }
-    .agentic-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .agentic-badge-title {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(118, 185, 0, 0.15);
-      border: 1px solid rgba(118, 185, 0, 0.4);
-      color: #a3e635;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: 999px;
-      margin-bottom: 8px;
-    }
-    .agentic-h2 {
-      font-family: 'Inter', sans-serif;
-      font-weight: 900;
-      font-size: clamp(24px, 3vw, 34px);
-      color: #fff;
-      margin-bottom: 6px;
-    }
-    .agentic-sub {
-      color: var(--muted);
-      font-size: 15px;
-      max-width: 60ch;
-    }
-    .agentic-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
-    }
-    .agentic-card {
-      background: rgba(12, 10, 20, 0.8);
-      border: 1px solid rgba(118, 185, 0, 0.2);
-      border-radius: 14px;
-      padding: 20px;
-      transition: all 0.2s ease;
-    }
-    .agentic-card:hover {
-      border-color: rgba(118, 185, 0, 0.5);
-      transform: translateY(-3px);
-    }
-    .agentic-card-icon {
-      font-size: 28px;
-      margin-bottom: 12px;
-    }
-    .agentic-card h3 {
-      font-size: 17px;
-      color: #d9f99d;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .agentic-card p {
-      font-size: 13px;
-      color: var(--muted);
+    p.hero-description {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin-bottom: 34px;
       line-height: 1.5;
     }
 
-    /* Core Features Grid */
-    .section-title {
-      text-align: center;
-      margin-bottom: 34px;
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 56px;
     }
-    .section-title h2 {
-      font-family: 'Inter', sans-serif;
-      font-weight: 800;
-      font-size: 30px;
+    .btn-solid {
+      background: #ffffff;
+      color: #000000;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 18px rgba(255, 255, 255, 0.12);
+    }
+    .btn-solid:hover {
+      background: #e4e4e7;
+      transform: translateY(-1px);
+    }
+    .btn-ghost-outline {
+      background: rgba(255, 255, 255, 0.04);
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 11px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-ghost-outline:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* ========================================================
+       3D TILT DASHBOARD CARD (MOVES DYNAMICALLY WITH MOUSE)
+       CNC Milled Chassis + Specular Top Chamfer (Qronos Template)
+       ======================================================== */
+    .tilt-card-container {
+      perspective: 1200px;
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto 70px;
+    }
+    .cnc-card-chassis {
+      position: relative;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #131317 0%, #08080a 100%);
+      border: 1px solid var(--border-outer);
+      padding: 6px; /* Physical Rim Step */
+      box-shadow: 
+        0 30px 80px rgba(0, 0, 0, 0.9),
+        0 0 50px rgba(99, 102, 241, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.9);
+      transform-style: preserve-3d;
+      transition: transform 0.12s ease-out, box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+    .cnc-card-plate {
+      position: relative;
+      border-radius: 14px;
+      background: 
+        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.18) 0%, transparent 68%),
+        linear-gradient(160deg, #0d0d12 0%, #050507 100%);
+      border: 1px solid var(--border-inner);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    /* 1px Razor-Sharp Top Specular Chamfer Highlight Line */
+    .specular-chamfer-line {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--border-chamfer) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    /* Dynamic Specular Spotlight Follower */
+    .card-mouse-spotlight {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      background: radial-gradient(circle 380px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.09), transparent 70%);
+      border-radius: inherit;
+    }
+    .cnc-card-chassis:hover .card-mouse-spotlight {
+      opacity: 1;
+    }
+
+    /* Card Top Window Bar */
+    .card-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.015);
+    }
+    .window-controls {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-red { background: rgba(239, 68, 68, 0.8); }
+    .dot-yellow { background: rgba(234, 179, 8, 0.8); }
+    .dot-green { background: rgba(34, 197, 94, 0.8); }
+
+    .window-session-title {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+    }
+    .window-session-status {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Fast-Scanning 2-Column Content Grid */
+    .card-content-grid {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      min-height: 420px;
+    }
+
+    /* Left Console: Model Selector & Hardware Switches */
+    .card-left-console {
+      border-right: 1px solid var(--border-subtle);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: rgba(0, 0, 0, 0.25);
+    }
+    .console-heading {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .model-tab-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .model-tab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+    .model-tab:hover {
+      background: rgba(255, 255, 255, 0.05);
       color: #fff;
+    }
+    .model-tab.active {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-weight: 600;
+    }
+    .tab-latency {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
+    }
+
+    /* Hardware Switch */
+    .hardware-switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+    }
+    .switch-title {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-silver);
+    }
+    .hardware-switch {
+      position: relative;
+      width: 34px;
+      height: 18px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .hardware-switch.checked {
+      background: #ffffff;
+    }
+    .switch-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #000000;
+      transition: transform 0.2s ease;
+    }
+    .hardware-switch.checked .switch-thumb {
+      transform: translateX(16px);
+      background: #000000;
+    }
+
+    /* Right Main Stage: Stats & Interactive Wave Visualizer */
+    .card-right-stage {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .stage-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .stat-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 16px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 2px;
+    }
+    .stat-number {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      font-family: var(--font-mono);
+    }
+
+    /* Center Audio Visualizer Box */
+    .audio-stage-box {
+      background: #000000;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .stage-prompt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .prompt-text-display {
+      font-size: 14px;
+      font-weight: 500;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 480px;
+    }
+    .voice-engine-pill {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--accent-violet);
+      background: rgba(129, 140, 248, 0.1);
+      border: 1px solid rgba(129, 140, 248, 0.25);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Waveform Bars */
+    .waveform-bars-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 48px;
+      padding: 0 4px;
+    }
+    .wave-bar {
+      flex: 1;
+      height: 6px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.15);
+      transition: height 0.15s ease, background 0.15s ease;
+    }
+    .wave-bar.active {
+      background: linear-gradient(180deg, #ffffff 0%, var(--accent-cyan) 100%);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+    }
+
+    .audio-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 4px;
+    }
+    .btn-play-action {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: none;
+      display: grid;
+      place-items: center;
+      color: #000;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+      transition: all 0.15s ease;
+    }
+    .btn-play-action:hover {
+      transform: scale(1.06);
+      background: #e4e4e7;
+    }
+    .chips-group {
+      display: flex;
+      gap: 6px;
+    }
+    .chip-item {
+      font-size: 11.5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .chip-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    /* Partner Marquee (Qronos Structure) */
+    .marquee-wrap {
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 26px 0;
+      margin-bottom: 70px;
+      text-align: center;
+    }
+    .marquee-label {
+      font-size: 11.5px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+    .marquee-logos-flex {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .marquee-logo-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      opacity: 0.7;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .marquee-logo-text:hover {
+      opacity: 1;
+      color: #fff;
+    }
+
+    /* 3-Column Interactive Template Cards (Moves with Mouse) */
+    .section-templates {
+      padding: 30px 0 80px;
+    }
+    .section-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
       margin-bottom: 8px;
+      letter-spacing: -0.02em;
     }
-    .section-title p {
-      color: var(--muted);
+    .section-sub {
       font-size: 15px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 40px;
     }
-    .grid-features {
+    .templates-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
-    .feature-card {
-      background: rgba(25, 17, 39, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+    .template-box {
+      position: relative;
+      background: #0c0c10;
+      border: 1px solid var(--border-subtle);
       border-radius: 14px;
       padding: 24px;
-      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      transform-style: preserve-3d;
+      transition: transform 0.12s ease-out, border-color 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      overflow: hidden;
     }
-    .feature-card:hover {
-      border-color: rgba(255, 159, 28, 0.3);
-      transform: translateY(-2px);
+    .template-box:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 24px rgba(99, 102, 241, 0.12);
     }
-    .feature-icon {
-      font-size: 32px;
-      margin-bottom: 12px;
-    }
-    .feature-card h3 {
-      font-size: 18px;
+    .template-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      display: grid;
+      place-items: center;
       color: #fff;
-      font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 16px;
     }
-    .feature-card p {
+    .template-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .template-box h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .template-box p {
       font-size: 13.5px;
-      color: var(--muted);
-      line-height: 1.55;
+      color: var(--text-muted);
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+    .template-metric {
+      margin-top: 14px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--accent-cyan);
     }
 
-    /* Footer */
-    footer.footer {
-      padding: 44px 20px 32px;
-      text-align: center;
-      color: var(--muted);
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      margin-top: 60px;
-      background: rgba(8, 5, 16, 0.95);
+    /* Minimal Footer */
+    footer.site-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 36px 0;
+      margin-top: 40px;
+      position: relative;
+      z-index: 20;
+    }
+    .footer-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-dim);
     }
     .footer-links {
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
+      gap: 22px;
     }
     .footer-links a {
-      color: var(--muted);
+      color: var(--text-muted);
       text-decoration: none;
-      font-size: 13.5px;
-      transition: color 0.2s;
+      transition: color 0.15s ease;
     }
     .footer-links a:hover {
       color: #fff;
     }
-    .footer-copy {
-      font-size: 12px;
-      color: #8c8299;
-    }
 
-
-    /* Responsiveness */
-    @media (max-width: 960px) {
-      .hero { grid-template-columns: 1fr; }
-      .grid-features { grid-template-columns: 1fr; }
-      .topbar { padding: 12px 18px; }
-      nav.nav { gap: 6px; }
-      nav.nav a { font-size: 13px; padding: 6px 8px; }
-    }
-    @media (max-width: 640px) {
-      .container { padding: 20px 16px 40px; }
-      .hero { padding: 16px 0 32px; gap: 28px; }
-      .brand-title { font-size: 17px; }
-      .brand-sub { display: none; }
-      h1 { font-size: clamp(28px, 7vw, 40px); margin-bottom: 14px; }
-      p.lead { font-size: 14.5px; line-height: 1.6; margin-bottom: 22px; }
-      .hero-actions { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 22px; }
-      .btn-primary, .btn-agentic { justify-content: center; width: 100%; padding: 12px 18px; font-size: 14px; }
-      .hero-stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px 10px;
-        padding-top: 14px;
-      }
-      .hero-stat-val { font-size: 14px; }
-      .hero-stat-lbl { font-size: 11px; }
-      .hero-card { padding: 18px 14px; border-radius: 14px; }
-      .preview-response { font-size: 12px; }
-      .section-agentic { padding: 22px 16px; margin: 36px 0; border-radius: 16px; }
-      .agentic-h2 { font-size: 22px; }
-      .agentic-sub { font-size: 13.5px; }
-      .feature-card { padding: 18px 16px; }
-      footer.footer { padding: 32px 16px 24px; margin-top: 40px; }
-      .footer-links { gap: 12px 14px; font-size: 12.5px; }
-    }
-    @media (max-width: 480px) {
-      .topbar { padding: 10px 14px; }
-      .brand-mark { width: 34px; height: 34px; font-size: 15px; }
-      .brand-title { font-size: 16px; }
-      nav.nav a:not(.cta-btn) { display: none; }
-      .cta-btn { padding: 7px 14px !important; font-size: 13px !important; }
-      .hero-stats { grid-template-columns: 1fr 1fr; gap: 12px 8px; }
-      .hero-stat-val { font-size: 13px; }
-      .hero-stat-lbl { font-size: 10.5px; }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .card-content-grid { grid-template-columns: 1fr; }
+      .card-left-console { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+      .templates-grid { grid-template-columns: 1fr; }
+      header.floating-header { padding: 0 10px; }
+      nav.header-links { display: none; }
+      .stage-stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Precision Studio Framing Rails -->
+  <div class="framing-rails-fixed" aria-hidden="true">
+    <div class="rail-line left"></div>
+    <div class="rail-line right"></div>
+  </div>
 
-  <!-- Sticky Top Navigation -->
-  <header class="topbar">
-    <a href="index.html" class="brand">
-      <div class="brand-mark">BV</div>
-      <div>
-        <div class="brand-title">Bharat Voice</div>
-        <div class="brand-sub">Bilingual AI &amp; Multi-Model AI Studio</div>
+  <!-- 3D Hyperboloid Waving Particle Strand Canvas -->
+  <canvas id="particleWaveCanvas" aria-hidden="true"></canvas>
+
+  <!-- Ambient Middle Accent Glow -->
+  <div class="ambient-middle-glow" aria-hidden="true"></div>
+
+  <div class="layout-wrapper">
+    <!-- Floating Header -->
+    <header class="floating-header">
+      <div class="header-nav-box">
+        <a href="index.html" class="brand-group">
+          <div class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 10v3" /><path d="M6 6v11" /><path d="M10 3v18" /><path d="M14 8v7" /><path d="M18 5v13" /><path d="M22 10v4" />
+            </svg>
+          </div>
+          <span class="brand-title">Bharat Voice</span>
+          <span class="brand-tag">v2.0</span>
+        </a>
+
+        <nav class="header-links" aria-label="Main Navigation">
+          <a href="#templates">Templates</a>
+          <a href="app.html">Voice Studio</a>
+          <a href="workspace.html">Models</a>
+          <a href="contact.html">Enterprise</a>
+        </nav>
+
+        <a href="app.html" class="btn-nav-cta">
+          Launch App
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </a>
       </div>
-    </a>
+    </header>
 
-    <nav class="nav" aria-label="Main navigation">
-      <a href="index.html">Home</a>
-      <a href="app.html">Study App</a>
-      <a href="workspace.html" style="color:#d9f99d;">
-        ⚡ AI Workspace <span class="nav-agentic-badge">Studio</span>
-      </a>
-      <a href="contact.html">Contact</a>
-      <a href="privacy.html">Privacy</a>
-      <a class="cta-btn" href="app.html">Launch App 🚀</a>
-    </nav>
-  </header>
-
-  <main class="container">
-    <!-- Hero Section -->
-    <section class="hero">
-      <div>
-        <div class="eyebrow">
-          <span>⚡ AI Study Companion</span>
-          <span style="opacity:0.4;">|</span>
-          <span>Bilingual Hindi &amp; English</span>
-          <span style="opacity:0.4;">|</span>
-          <span>Mistral 1T + Nemotron + Gemini</span>
+    <!-- Main Content -->
+    <main class="container">
+      <!-- Minimalist Hero Header -->
+      <section class="hero-section">
+        <div class="status-badge-pill">
+          <span class="status-dot-pulse"></span>
+          <span>Voice Intelligence Platform</span>
+          <span style="opacity:0.3;">/</span>
+          <span>120ms Latency</span>
         </div>
 
-        <h1>Learn faster. Explore models. Study with confidence.</h1>
+        <h1 class="hero-heading">
+          Voice intelligence, <br/>
+          <span class="heading-gradient">engineered for precision.</span>
+        </h1>
 
-        <p class="lead">
-          Bharat Voice gives students, educators, and creators a friendly bilingual AI study companion and unified multi-model workspace — test Mistral Large 1T, NVIDIA Nemotron 120B, and Google Gemini with deep parameter control.
+        <p class="hero-description">
+          Real-time speech synthesis, agent pipelines, and unified model reasoning in one interface.
         </p>
 
-        <div class="hero-actions">
-          <a class="btn-primary" href="app.html">Open Study App 🚀</a>
-          <a class="btn-agentic" href="workspace.html">⚡ AI Model Workspace (Mistral &amp; NVIDIA)</a>
+        <div class="hero-cta-group">
+          <a href="app.html" class="btn-solid">Start Building</a>
+          <button id="heroDemoAudioBtn" class="btn-ghost-outline" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+            <span>Play Sample</span>
+          </button>
         </div>
 
-        <div class="hero-stats">
-          <div class="hero-stat-item">
-            <div class="hero-stat-val">24/7 AI Support</div>
-            <div class="hero-stat-lbl">Hindi + English Bilingual</div>
+        <!-- ========================================================
+             SUPER-REALISTIC CNC CHASSIS DASHBOARD CARD (QRONOS FORMULA)
+             Moves dynamically in 3D perspective with cursor motion
+             ======================================================== -->
+        <div class="tilt-card-container">
+          <div class="cnc-card-chassis" id="heroTiltCard">
+            <!-- Dynamic Specular Spotlight Follower -->
+            <div class="card-mouse-spotlight"></div>
+
+            <div class="cnc-card-plate">
+              <!-- Razor-Sharp 1px Top Specular Chamfer Line -->
+              <div class="specular-chamfer-line"></div>
+
+              <!-- Top Window Bar -->
+              <div class="card-topbar">
+                <div class="window-controls">
+                  <span class="window-dot dot-red"></span>
+                  <span class="window-dot dot-yellow"></span>
+                  <span class="window-dot dot-green"></span>
+                </div>
+                <div class="window-session-title">voice-runtime-studio.session</div>
+                <div class="window-session-status">
+                  <span class="status-dot-pulse"></span>
+                  <span>Active</span>
+                </div>
+              </div>
+
+              <!-- 2-Column Fast-Scanning Interior Grid -->
+              <div class="card-content-grid">
+                <!-- Left Console -->
+                <aside class="card-left-console">
+                  <div class="console-heading">Inference Engine</div>
+                  <div class="model-tab-stack">
+                    <button class="model-tab active" data-model="gemini">
+                      <span>Gemini 3.8 Flash</span>
+                      <span class="tab-latency">120ms</span>
+                    </button>
+                    <button class="model-tab" data-model="mistral">
+                      <span>Mistral 1T MoE</span>
+                      <span class="tab-latency">185ms</span>
+                    </button>
+                    <button class="model-tab" data-model="nemotron">
+                      <span>Nemotron 120B</span>
+                      <span class="tab-latency">165ms</span>
+                    </button>
+                  </div>
+
+                  <div class="console-heading" style="margin-top:4px;">Studio Guardrails</div>
+                  <div class="hardware-switch-row">
+                    <span class="switch-title">Sub-140ms Ultra Latency</span>
+                    <div class="hardware-switch checked" id="switchLatency">
+                      <div class="switch-thumb"></div>
+                    </div>
+                  </div>
+
+                  <div class="hardware-switch-row">
+                    <span class="switch-title">Spectral Denoiser</span>
+                    <div class="hardware-switch checked" id="switchDenoise">
+                      <div class="switch-thumb"></div>
+                    </div>
+                  </div>
+                </aside>
+
+                <!-- Right Stage -->
+                <div class="card-right-stage">
+                  <!-- Stats Row -->
+                  <div class="stage-stats-grid">
+                    <div class="stat-box">
+                      <div class="stat-label">Turnaround</div>
+                      <div class="stat-number">&lt; 140ms</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-label">Buffer Health</div>
+                      <div class="stat-number">99.8%</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-label">Sampling</div>
+                      <div class="stat-number">48 kHz</div>
+                    </div>
+                  </div>
+
+                  <!-- Audio Wave Box -->
+                  <div class="audio-stage-box">
+                    <div class="stage-prompt-row">
+                      <span class="prompt-text-display" id="activePromptSnippet">
+                        "Synthesizing low-latency voice reasoning with chain-of-thought derivations."
+                      </span>
+                      <span class="voice-engine-pill">Neural Voice Studio</span>
+                    </div>
+
+                    <!-- Dynamic Wave Bars -->
+                    <div class="waveform-bars-row" id="waveDisplayBars">
+                      <!-- 36 dynamic bars -->
+                    </div>
+
+                    <!-- Play Toggle & Chips -->
+                    <div class="audio-controls-row">
+                      <button class="btn-play-action" id="playToggleBtn" aria-label="Toggle Play">
+                        <svg id="playIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                          <polygon points="6 4 20 12 6 20 6 4" />
+                        </svg>
+                        <svg id="pauseIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                          <rect x="6" y="4" width="4" height="16" />
+                          <rect x="14" y="4" width="4" height="16" />
+                        </svg>
+                      </button>
+
+                      <div class="chips-group">
+                        <button class="chip-item" data-text="Acoustic physics of sound wave transmission.">Acoustics</button>
+                        <button class="chip-item" data-text="Transformer self-attention in conversational models.">Attention</button>
+                        <button class="chip-item" data-text="Low-latency voice turnaround benchmark.">Benchmark</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="hero-stat-item">
-            <div class="hero-stat-val">Mistral Large 1T</div>
-            <div class="hero-stat-lbl">Frontier Reasoning MoE</div>
+        </div>
+      </section>
+
+      <!-- Partner Marquee (Qronos Template Layout) -->
+      <section class="marquee-wrap">
+        <div class="marquee-label">Integrated with Frontier Infrastructure</div>
+        <div class="marquee-logos-flex">
+          <div class="marquee-logo-text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+            Mistral AI
           </div>
-          <div class="hero-stat-item">
-            <div class="hero-stat-val">NVIDIA Nemotron 120B</div>
-            <div class="hero-stat-lbl">Multimodal Visual Studio</div>
+          <div class="marquee-logo-text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 2 7 12 12 22 7 12 2"/></svg>
+            NVIDIA NIM
           </div>
-          <div class="hero-stat-item">
-            <div class="hero-stat-val">Google Gemini</div>
-            <div class="hero-stat-lbl">Ultra-Fast Bilingual AI</div>
+          <div class="marquee-logo-text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            Google Gemini
           </div>
+          <div class="marquee-logo-text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A7 7 0 0 1 5.07 11H5a1 1 0 0 1 0-2h.07A7 7 0 0 1 11 3.07V3a1 1 0 0 1 2 0v.07A7 7 0 0 1 18.93 9H19a1 1 0 0 1 0 2h-.07A7 7 0 0 1 13 16.93z"/></svg>
+            PyTorch WebRTC
+          </div>
+          <div class="marquee-logo-text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Edge Neural TTS
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 Interactive Production Template Cards (Moves with Mouse) -->
+      <section id="templates" class="section-templates">
+        <h2 class="section-title">Production Templates</h2>
+        <p class="section-sub">Hover over any template to inspect interactive runtime configurations.</p>
+
+        <div class="templates-grid">
+          <!-- Template Card 1 -->
+          <div class="template-box tilt-target">
+            <div class="card-mouse-spotlight"></div>
+            <div class="template-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="22" />
+              </svg>
+            </div>
+            <h3>Low-Latency Voice Stream</h3>
+            <p>Direct PCM streaming architecture designed for zero conversational delay in voice applications.</p>
+            <div class="template-metric">&lt; 140ms turnaround</div>
+          </div>
+
+          <!-- Template Card 2 -->
+          <div class="template-box tilt-target">
+            <div class="card-mouse-spotlight"></div>
+            <div class="template-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+            </div>
+            <h3>Multi-Model Pipeline</h3>
+            <p>Unified inference orchestration across Gemini 3.8, Mistral Large 1T, and NVIDIA Nemotron.</p>
+            <div class="template-metric">120B+ parameters</div>
+          </div>
+
+          <!-- Template Card 3 -->
+          <div class="template-box tilt-target">
+            <div class="card-mouse-spotlight"></div>
+            <div class="template-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+            </div>
+            <h3>Agent Function Calling</h3>
+            <p>Autonomous voice agents capable of querying external tools and returning concise spoken results.</p>
+            <div class="template-metric">Tool-calling runtime</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <div class="container footer-flex">
+        <div>© 2026 Bharat Voice. All rights reserved. Sovereign Voice Intelligence.</div>
+        <div class="footer-links">
+          <a href="index.html">Overview</a>
+          <a href="app.html">Studio</a>
+          <a href="workspace.html">Models</a>
+          <a href="privacy.html">Privacy</a>
         </div>
       </div>
+    </footer>
+  </div>
 
-      <!-- Hero Interactive Preview Card -->
-      <aside class="hero-card">
-        <div class="hero-card-header">
-          <div class="hero-card-title">
-            <span class="live-pulse"></span>
-            <span>Multi-Model Studio</span>
-          </div>
-          <span class="model-chip">Mistral Large 1T + Nemotron</span>
-        </div>
+  <audio id="globalAudioPlayer" preload="none"></audio>
 
-        <div class="preview-box">
-          <div class="preview-tag">⚡ Multi-Model Studio Query</div>
-          <div class="preview-prompt">“Compare Mistral Large 1T vs Nemotron 120B on physics problem solving.”</div>
-          <div class="preview-response">
-            ✓ Mistral Large 1T: Deep chain-of-thought mathematical derivation<br>
-            ✓ Nemotron 3.5 VL: High-fidelity diagram inspection &amp; ray optics<br>
-            ✓ Codestral 22B: Instant automated formula script in Python<br>
-            ✓ Gemini 3.8 Flash: Real-time bilingual Hindi &amp; English synthesis
-          </div>
-        </div>
+  <!-- Interactive Scripts: 3D Hyperboloid Waving Canvas & 3D Tilt Movement -->
+  <script>
+    (function() {
+      // ==========================================
+      // 1. 3D HYPERBOLOID WAVING STRAND & PARTICLE COMET CANVAS
+      // (Exact mathematical motion from Qronos preview)
+      // ==========================================
+      const canvas = document.getElementById('particleWaveCanvas');
+      const ctx = canvas.getContext('2d');
+      let width, height;
 
-        <div class="preview-box" style="margin-bottom:0;">
-          <div class="preview-tag">📚 Concept &amp; Doubt Solver</div>
-          <div class="preview-prompt">“Explain photosynthesis and light reactions in simple bilingual steps.”</div>
-          <div class="preview-response">
-            Light Energy absorbed by chlorophyll ➔ Water split (Photolysis) releasing O₂ ➔ ATP &amp; NADPH generated for Calvin Cycle synthesis.
-          </div>
-        </div>
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
 
-        <div class="preview-action" style="margin-top:14px;">
-          <span>Need full voice solutions?</span>
-          <a href="app.html">Try in App →</a>
-        </div>
-      </aside>
-    </section>
+      // Hyperboloid parameters from Qronos
+      const config = {
+        strandCount: 42,
+        dotsPerStrand: 38,
+        twist: 2.4,
+        speed: 0.008,
+        floorRadius: 420,
+        waistRadius: 180,
+        crownRadius: 460,
+        waistAt: 0.52,
+        cometCount: 16
+      };
 
+      // Generate Comets travelling along strands
+      const comets = [];
+      for (let i = 0; i < config.cometCount; i++) {
+        comets.push({
+          strandIdx: Math.floor(Math.random() * config.strandCount),
+          t: Math.random(),
+          speed: 0.003 + Math.random() * 0.004,
+          size: 2.2 + Math.random() * 1.5
+        });
+      }
 
-    <!-- SECTION: AI Model Workspace (NVIDIA & Mistral Studio) -->
-    <section id="ai-workspace" class="section-agentic">
-      <div class="agentic-header">
-        <div>
-          <div class="agentic-badge-title">
-            <span>⚡ NVIDIA NIM &amp; Mistral Multi-Model Studio</span>
-          </div>
-          <h2 class="agentic-h2">Unified Multi-Model AI Workspace</h2>
-          <p class="agentic-sub">
-            Explore and execute state-of-the-art frontier models in one unified NVIDIA Build–style studio — fine-tune temperature, top-p, max tokens, and chain-of-thought across Mistral Large 1T, NVIDIA Nemotron 120B, Codestral 22B, and Google Gemini.
-          </p>
-        </div>
-        <div>
-          <a href="workspace.html" class="btn-agentic" style="font-size:15px; padding:12px 24px;">
-            Launch AI Workspace 🚀
-          </a>
-        </div>
-      </div>
+      let time = 0;
+      let mouseX = width / 2;
+      let mouseY = height / 3;
+      let targetMouseX = width / 2;
+      let targetMouseY = height / 3;
 
-      <div class="agentic-cards-grid">
-        <div class="agentic-card">
-          <div class="agentic-card-icon">🌪️</div>
-          <h3>Mistral Large 4 1T</h3>
-          <p>Flagship frontier model featuring multimodal vision, deep chain-of-thought reasoning, and top-tier mathematical derivations with 128k context.</p>
-        </div>
+      window.addEventListener('mousemove', (e) => {
+        targetMouseX = e.clientX;
+        targetMouseY = e.clientY;
+      });
 
-        <div class="agentic-card">
-          <div class="agentic-card-icon">⚡</div>
-          <h3>NVIDIA Nemotron 120B</h3>
-          <p>Autonomous agentic intelligence engineered for visual diagram reasoning, flowchart execution, and multi-step complex tasks.</p>
-        </div>
+      function renderHyperboloid() {
+        time += 1;
+        mouseX += (targetMouseX - mouseX) * 0.05;
+        mouseY += (targetMouseY - mouseY) * 0.05;
 
-        <div class="agentic-card">
-          <div class="agentic-card-icon">💻</div>
-          <h3>Codestral 22B &amp; Gemini</h3>
-          <p>Dedicated coding powerhouse for 80+ programming languages combined with Gemini's low-latency bilingual study assistance.</p>
-        </div>
-      </div>
-    </section>
+        ctx.clearRect(0, 0, width, height);
 
-    <!-- SECTION: Core Features -->
-    <section id="features" style="margin-top:40px;">
-      <div class="section-title">
-        <h2>Why Students &amp; Educators Choose Bharat Voice</h2>
-        <p>Built from the ground up for speed, bilingual clarity, and Indian education curricula.</p>
-      </div>
+        const centerX = width * 0.5;
+        const centerY = height * 0.45;
+        const totalHeight = height * 0.85;
 
-      <div class="grid-features">
-        <article class="feature-card">
-          <div class="feature-icon">🧠</div>
-          <h3>Bilingual AI Tutor</h3>
-          <p>Instant doubt clearing in pure Hindi, English, or conversational Hinglish. Perfect for CBSE, ICSE, and State Board curriculums.</p>
-        </article>
+        // Draw 3D Waving Strands
+        for (let i = 0; i < config.strandCount; i++) {
+          const baseAngle = (i / config.strandCount) * Math.PI * 2 + time * config.speed;
+          
+          ctx.beginPath();
+          let prevX = 0, prevY = 0;
 
-        <article class="feature-card">
-          <div class="feature-icon">🎙️</div>
-          <h3>Natural Voice Learning</h3>
-          <p>Speak naturally into your device and receive friendly, realistic spoken explanations designed to feel like an elder sibling guiding you.</p>
-        </article>
+          for (let step = 0; step <= config.dotsPerStrand; step++) {
+            const t = step / config.dotsPerStrand;
+            
+            // Hyperboloid radius equation: waist pinch at waistAt
+            const distFromWaist = Math.abs(t - config.waistAt);
+            const r = config.waistRadius + Math.pow(distFromWaist * 2.1, 1.8) * (config.floorRadius - config.waistRadius);
+            
+            // Twist angle with height
+            const angle = baseAngle + t * config.twist + Math.sin(time * 0.02 + t * 4) * 0.15;
 
-        <article class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Multi-Model Workspace</h3>
-          <p>Run Mistral Large 1T, Nemotron 120B, Codestral 22B, and Gemini side-by-side with full hyperparameter tuning and vision support.</p>
-        </article>
+            // 3D coordinates (with isometric tilt)
+            const x3d = Math.cos(angle) * r;
+            const z3d = Math.sin(angle) * r;
+            const y3d = (t - 0.5) * totalHeight;
 
-        <article class="feature-card">
-          <div class="feature-icon">📚</div>
-          <h3>Mock Tests &amp; Revision</h3>
-          <p>Generate timed quizzes, past-year question simulations, and bullet-point summaries to ensure exam readiness.</p>
-        </article>
+            // Project to 2D screen
+            let screenX = centerX + x3d;
+            let screenY = centerY + y3d + z3d * 0.22;
 
-        <article class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Step-by-Step Solutions</h3>
-          <p>Complex problem breakdown in mathematics, science, and coding with clear chain-of-thought derivations and formulas.</p>
-        </article>
+            // Mouse Repulsion Field (Qronos formula: exp(-dist^2 / 2r^2))
+            const dx = screenX - mouseX;
+            const dy = screenY - mouseY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const repelRadius = 220;
+            if (dist < repelRadius && dist > 1) {
+              const force = (1 - dist / repelRadius) * 45;
+              screenX += (dx / dist) * force;
+              screenY += (dy / dist) * force;
+            }
 
-        <article class="feature-card">
-          <div class="feature-icon">📱</div>
-          <h3>Fast on Any Device</h3>
-          <p>Lightweight, zero bloat, runs smoothly even on entry-level Android smartphones and 4G/3G mobile networks without lag.</p>
-        </article>
-      </div>
-    </section>
-  </main>
+            if (step === 0) {
+              ctx.moveTo(screenX, screenY);
+            } else {
+              ctx.lineTo(screenX, screenY);
+            }
 
-  <!-- Footer -->
-  <footer class="footer">
+            // Draw glowing dots on strands
+            if (step % 4 === 0) {
+              const depthAlpha = 0.15 + (z3d + config.floorRadius) / (config.floorRadius * 2) * 0.5;
+              ctx.fillStyle = `rgba(255, 255, 255, ${depthAlpha * 0.6})`;
+              ctx.fillRect(screenX - 1, screenY - 1, 2, 2);
+            }
+          }
 
-    <div class="footer-links">
-      <a href="index.html">Home</a>
-      <a href="app.html">Study App</a>
-      <a href="workspace.html">AI Workspace</a>
-      <a href="contact.html">Contact Us</a>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-      <a href="disclaimer.html">Disclaimer</a>
-    </div>
+          // Subtle strand stroke (monochrome white with depth)
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.055)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
 
-    <div class="footer-copy">
-      © 2026 Bharat Voice — Built with pride &amp; devotion for learners across Bharat 🇮🇳
-    </div>
-  </footer>
+        // Draw Flowing Comets along Strands
+        comets.forEach(c => {
+          c.t += c.speed;
+          if (c.t > 1) {
+            c.t = 0;
+            c.strandIdx = Math.floor(Math.random() * config.strandCount);
+          }
 
+          const baseAngle = (c.strandIdx / config.strandCount) * Math.PI * 2 + time * config.speed;
+          const distFromWaist = Math.abs(c.t - config.waistAt);
+          const r = config.waistRadius + Math.pow(distFromWaist * 2.1, 1.8) * (config.floorRadius - config.waistRadius);
+          const angle = baseAngle + c.t * config.twist;
 
+          const x3d = Math.cos(angle) * r;
+          const z3d = Math.sin(angle) * r;
+          const y3d = (c.t - 0.5) * totalHeight;
+
+          let sx = centerX + x3d;
+          let sy = centerY + y3d + z3d * 0.22;
+
+          // Mouse Repel on comet
+          const dx = sx - mouseX;
+          const dy = sy - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 220 && dist > 1) {
+            const f = (1 - dist / 220) * 45;
+            sx += (dx / dist) * f;
+            sy += (dy / dist) * f;
+          }
+
+          // Draw Comet Head (Luminous Cyan / Pure White)
+          ctx.beginPath();
+          ctx.arc(sx, sy, c.size, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+          ctx.shadowColor = 'rgba(56, 189, 248, 0.9)';
+          ctx.shadowBlur = 10;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+
+        requestAnimationFrame(renderHyperboloid);
+      }
+      renderHyperboloid();
+
+      // ==========================================
+      // 2. 3D MOUSE MOVEMENT TILT ON CARDS & TEMPLATES
+      // "whenever my mouse goes to any template, it moves"
+      // ==========================================
+      const tiltTargets = document.querySelectorAll('.cnc-card-chassis, .tilt-target');
+
+      tiltTargets.forEach(card => {
+        let isHovered = false;
+
+        card.addEventListener('mouseenter', () => {
+          isHovered = true;
+          card.style.transition = 'transform 0.1s ease-out, box-shadow 0.25s ease';
+        });
+
+        card.addEventListener('mousemove', (e) => {
+          if (!isHovered) return;
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const deltaX = (x - centerX) / centerX;
+          const deltaY = (y - centerY) / centerY;
+
+          const rotX = (-deltaY * 9).toFixed(2);
+          const rotY = (deltaX * 9).toFixed(2);
+
+          card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(10px) scale3d(1.015, 1.015, 1.015)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+          isHovered = false;
+          card.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease';
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale3d(1, 1, 1)';
+        });
+      });
+
+      // ==========================================
+      // 3. HARDWARE SWITCHES & MODEL SELECTOR
+      // ==========================================
+      document.querySelectorAll('.hardware-switch').forEach(sw => {
+        sw.addEventListener('click', () => sw.classList.toggle('checked'));
+      });
+
+      document.querySelectorAll('.model-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.model-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+        });
+      });
+
+      // ==========================================
+      // 4. AUDIO WAVEFORM BARS & SPEECH ENGINE
+      // ==========================================
+      const waveBarsContainer = document.getElementById('waveDisplayBars');
+      const numBars = 36;
+      const waveBars = [];
+
+      for (let i = 0; i < numBars; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'wave-bar';
+        waveBarsContainer.appendChild(bar);
+        waveBars.push(bar);
+      }
+
+      let isAudioPlaying = false;
+      let eqTimer = null;
+      let tickCount = 0;
+
+      function updateWaveBars() {
+        tickCount += 1;
+        waveBars.forEach((b, idx) => {
+          if (isAudioPlaying) {
+            b.classList.add('active');
+            const h = 6 + Math.floor(Math.sin(tickCount * 0.3 + idx * 0.35) * 16 + 16);
+            b.style.height = `${Math.max(6, h)}px`;
+          } else {
+            b.classList.remove('active');
+            b.style.height = '6px';
+          }
+        });
+      }
+
+      const globalAudio = document.getElementById('globalAudioPlayer');
+      const playBtn = document.getElementById('playToggleBtn');
+      const playIcon = document.getElementById('playIcon');
+      const pauseIcon = document.getElementById('pauseIcon');
+      const promptSnippet = document.getElementById('activePromptSnippet');
+      const heroAudioBtn = document.getElementById('heroDemoAudioBtn');
+
+      function setAudioPlayState(playing) {
+        isAudioPlaying = playing;
+        if (playing) {
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+          if (!eqTimer) eqTimer = setInterval(updateWaveBars, 50);
+        } else {
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+          if (eqTimer) {
+            clearInterval(eqTimer);
+            eqTimer = null;
+          }
+          updateWaveBars();
+        }
+      }
+
+      globalAudio.addEventListener('play', () => setAudioPlayState(true));
+      globalAudio.addEventListener('pause', () => setAudioPlayState(false));
+      globalAudio.addEventListener('ended', () => setAudioPlayState(false));
+
+      async function playNeuralTTS(text) {
+        try {
+          const res = await fetch('/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text || promptSnippet.textContent })
+          });
+          if (!res.ok) throw new Error('TTS service error');
+          const blob = await res.blob();
+          globalAudio.src = URL.createObjectURL(blob);
+          await globalAudio.play();
+        } catch (e) {
+          globalAudio.src = 'assets/teen_male_voice_prompt.mp3';
+          globalAudio.play().catch(() => {});
+        }
+      }
+
+      playBtn.addEventListener('click', () => {
+        if (isAudioPlaying) globalAudio.pause();
+        else playNeuralTTS(promptSnippet.textContent);
+      });
+
+      if (heroAudioBtn) {
+        heroAudioBtn.addEventListener('click', () => {
+          if (isAudioPlaying) globalAudio.pause();
+          else playNeuralTTS("Bharat Voice platform operational. Real-time neural voice synthesis and autonomous agent execution.");
+        });
+      }
+
+      document.querySelectorAll('.chip-item').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const t = chip.getAttribute('data-text');
+          promptSnippet.textContent = `"${t}"`;
+          playNeuralTTS(t);
+        });
+      });
+
+    })();
+  </script>
 </body>
 </html>

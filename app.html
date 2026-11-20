@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-<title>Bharat Voice · All-Rounder AI Assistant &amp; Study Companion</title>
+<title>Bharat Voice · Intelligent Voice AI &amp; Study Companion</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="alternate icon" type="image/png" href="assets/logo.png">
 <link rel="apple-touch-icon" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251310303606994" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- Google Identity Services (Sign-In) -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <!-- KaTeX for LaTeX Math -->
@@ -22,28 +20,33 @@
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
 <!-- HTML2PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<!-- Razorpay -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <style>
   :root {
-    --bg-main: #000000;
-    --bg-sidebar: #171717;
-    --bg-input: #212121;
-    --bg-card: #1f1f1f;
-    --bg-hover: rgba(255, 255, 255, 0.08);
-    --bg-bubble-user: #2f2f2f;
-    --text-primary: #ececec;
-    --text-secondary: #b4b4b4;
-    --text-muted: #737373;
-    --border-subtle: rgba(255, 255, 255, 0.12);
-    --border-hover: rgba(255, 255, 255, 0.25);
-    --saffron-orange: #ff9f1c;
-    --gold-marigold: #ffc93c;
-    --blue-voice: #2563eb;
-    --blue-voice-hover: #1d4ed8;
-    --teal-avatar: #0f766e;
+    /* Buildify AI Signature Color Palette */
+    --primary-blue: #286FEC;
+    --primary-blue-hover: #1D5FD3;
+    --primary-blue-light: rgba(40, 111, 236, 0.1);
+    
+    --deep-navy: #0D1B3E;
+    --azure-soft: #DCE8F8;
+    --azure-bg: #F4F8FD;
+    
+    --bg-main: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-input: #F1F5F9;
+    --bg-sidebar: #FFFFFF;
+    
+    --text-primary: #030712;
+    --text-secondary: #475569;
+    --text-muted: #94A3B8;
+    --text-dim: #CBD5E1;
+    
+    --border-subtle: #E2E8F0;
+    --border-hover: #CBD5E1;
+    
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Playfair Display', serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
 
@@ -57,7 +60,6 @@
     font-family: var(--font-sans);
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent;
   }
 
   .app-container {
@@ -67,9 +69,10 @@
     height: 100dvh;
     overflow: hidden;
     position: relative;
+    background: radial-gradient(ellipse at 50% -10%, rgba(40, 111, 236, 0.1) 0%, transparent 65%), #F8FAFC;
   }
 
-  /* ================= SIDEBAR ================= */
+  /* ================= SIDEBAR (Buildify Clean Light Style) ================= */
   .sidebar {
     width: 260px;
     height: 100%;
@@ -81,847 +84,1172 @@
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.25s ease;
     z-index: 50;
     position: relative;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.02);
   }
   .sidebar.collapsed {
     margin-left: -260px;
   }
 
-  /* Sidebar Header */
   .sidebar-header {
-    height: 54px;
-    padding: 0 14px;
+    height: 56px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid var(--border-subtle);
     flex-shrink: 0;
   }
   .brand-logo-wrap {
     display: flex;
     align-items: center;
     gap: 10px;
-    cursor: pointer;
     text-decoration: none;
     color: var(--text-primary);
   }
-  .brand-logo-img {
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
-    object-fit: cover;
-    box-shadow: 0 2px 8px rgba(255, 159, 28, 0.3);
+  .brand-logo-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: #000000;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  .brand-logo-badge svg {
+    width: 16px;
+    height: 16px;
   }
   .brand-logo-text {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: -0.01em;
-    background: linear-gradient(135deg, #ffffff, #ffc93c);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
   }
-  .sidebar-header-actions {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
+
   .icon-btn {
     background: transparent;
     border: none;
     color: var(--text-secondary);
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition: all 0.15s ease;
   }
   .icon-btn:hover {
-    background: var(--bg-hover);
+    background: #F1F5F9;
     color: var(--text-primary);
   }
 
-  /* New Chat Button */
+  /* New Chat Button (Buildify Blue Pill) */
   .new-chat-btn {
-    margin: 4px 12px 10px;
-    padding: 10px 12px;
-    background: transparent;
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-size: 14px;
-    font-weight: 500;
+    margin: 12px 14px 8px;
+    padding: 10px 14px;
+    background: var(--primary-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    box-shadow: 0 2px 8px rgba(40, 111, 236, 0.25);
+    transition: all 0.2s ease;
   }
   .new-chat-btn:hover {
-    background: var(--bg-hover);
-    border-color: var(--border-hover);
+    background: var(--primary-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 111, 236, 0.35);
   }
 
-  /* Search in Sidebar */
+  /* Sidebar Search */
   .sidebar-search-box {
-    margin: 0 12px 10px;
-    position: relative;
-    display: none;
-  }
-  .sidebar-search-box.open { display: block; }
-  .sidebar-search-input {
-    width: 100%;
-    padding: 7px 10px 7px 28px;
-    background: rgba(255,255,255,0.06);
+    margin: 4px 14px 8px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #F1F5F9;
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 13px;
-    outline: none;
-  }
-  .sidebar-search-icon {
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    font-size: 12px;
-  }
-
-  /* Sidebar Nav */
-  .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    padding: 0 8px;
-    gap: 2px;
-    flex-shrink: 0;
-  }
-  .sidebar-nav-item {
-    display: flex;
+    display: none;
     align-items: center;
-    gap: 12px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    color: var(--text-primary);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 400;
-    cursor: pointer;
-    transition: background 0.15s;
+    gap: 8px;
+  }
+  .sidebar-search-box.open { display: flex; }
+  .sidebar-search-input {
     background: transparent;
     border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 13px;
     width: 100%;
-    text-align: left;
-  }
-  .sidebar-nav-item:hover {
-    background: var(--bg-hover);
-  }
-  .sidebar-nav-item .nav-icon {
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    color: var(--text-secondary);
   }
 
-  /* Sidebar Scroll */
-  .sidebar-scroll {
+  /* Sidebar Recents */
+  .recents-scroll-area {
     flex: 1;
     overflow-y: auto;
-    padding: 12px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .sidebar-scroll::-webkit-scrollbar { width: 5px; }
-  .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.15);
-    border-radius: 4px;
-  }
-
-  .sidebar-section-title {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-muted);
-    padding: 4px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .sidebar-empty-item {
-    font-size: 13.5px;
-    color: var(--text-muted);
     padding: 8px 10px;
   }
-
-  /* Recents */
-  .recents-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  .recents-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    padding: 6px 10px;
   }
   .recent-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 10px;
+    padding: 8px 12px;
     border-radius: 8px;
-    color: #d1d5db;
-    font-size: 13.5px;
-    text-decoration: none;
+    font-size: 13px;
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: background 0.15s;
-    position: relative;
+    transition: all 0.15s ease;
+    margin-bottom: 2px;
   }
-  .recent-item:hover, .recent-item.active {
-    background: var(--bg-hover);
-    color: #fff;
+  .recent-item:hover {
+    background: #F1F5F9;
+    color: var(--text-primary);
+  }
+  .recent-item.active {
+    background: #EBF3FE;
+    color: var(--primary-blue);
+    font-weight: 600;
   }
   .recent-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
-    font-weight: 400;
   }
-  .recent-actions {
-    display: none;
-    align-items: center;
-    gap: 4px;
-    margin-left: 6px;
-  }
-  .recent-item:hover .recent-actions { display: flex; }
-  .recent-action-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 2px;
-    border-radius: 4px;
-    font-size: 12px;
-  }
-  .recent-action-btn:hover { color: #fff; }
 
-  /* Sidebar Footer: Profile & Claim Offer */
+  /* Sidebar User Footer */
   .sidebar-footer {
-    padding: 12px;
+    padding: 12px 14px;
     border-top: 1px solid var(--border-subtle);
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: var(--bg-sidebar);
+    align-items: center;
+    justify-content: space-between;
+    background: #FAFAFA;
   }
   .user-profile-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 6px 8px;
-    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.15s;
   }
-  .user-profile-row:hover { background: var(--bg-hover); }
-  .avatar-circle {
+  .user-avatar-circle {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: var(--teal-avatar);
+    background: var(--primary-blue);
     color: #ffffff;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+  }
+  .user-name-label {
     font-size: 13px;
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    color: var(--text-primary);
   }
-  .user-details {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.25;
-    flex: 1;
-    overflow: hidden;
-  }
-  .user-name {
-    font-size: 13.5px;
-    font-weight: 500;
-    color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .user-plan {
-    font-size: 12px;
+  .user-plan-label {
+    font-size: 11px;
     color: var(--text-muted);
   }
 
-  .claim-offer-btn {
-    width: 100%;
-    padding: 9px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--border-subtle);
-    border-radius: 20px;
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .claim-offer-btn:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: var(--border-hover);
-  }
-
-  /* ================= MAIN CONTENT AREA ================= */
+  /* ================= MAIN CHAT AREA ================= */
   .main-area {
     flex: 1;
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-main);
-    position: relative;
     overflow: hidden;
+    position: relative;
   }
 
-  /* Top Bar */
+  /* Buildify Floating Pill Top Bar */
   .top-bar {
-    height: 52px;
-    padding: 0 16px;
+    position: absolute;
+    top: 12px;
+    left: 20px;
+    right: 20px;
+    z-index: 40;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-shrink: 0;
-    z-index: 10;
+    height: 48px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 9999px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   }
   .top-left {
     display: flex;
     align-items: center;
-    gap: 8px;
-  }
-  .sidebar-expand-btn {
-    display: none;
-  }
-  .sidebar.collapsed ~ .main-area .sidebar-expand-btn {
-    display: flex;
+    gap: 10px;
   }
   .model-pill {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
-    border-radius: 10px;
-    color: var(--text-primary);
-    font-size: 15px;
+    background: #F1F5F9;
+    border: 1px solid var(--border-subtle);
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-size: 12.5px;
     font-weight: 600;
+    color: var(--text-primary);
     cursor: pointer;
-    background: transparent;
-    border: none;
-    transition: background 0.15s;
+    transition: all 0.15s ease;
   }
-  .model-pill:hover { background: var(--bg-hover); }
-  .model-pill-chevron {
-    color: var(--text-muted);
-    font-size: 12px;
+  .model-pill:hover {
+    background: #E2E8F0;
   }
-
   .top-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
-  .free-offer-badge {
+  .status-badge {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
-    background: transparent;
-    border: none;
-    color: #38bdf8;
-    font-size: 13.5px;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 18px;
-    transition: background 0.15s;
-  }
-  .free-offer-badge:hover {
-    background: rgba(56, 189, 248, 0.1);
-  }
-  .top-avatar-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: var(--teal-avatar);
-    color: #fff;
-    font-size: 13px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 3px 8px;
+    border-radius: 9999px;
     font-weight: 600;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  }
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 6px #10B981;
   }
 
-  /* Chat Messages & Scroll Area */
+  /* Chat Scroll Area */
   .chat-scroll-area {
     flex: 1;
     overflow-y: auto;
+    padding: 72px 20px 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ================= BUILDIFY SIGNATURE EMPTY STATE & BENTO SUITE ================= */
+  .empty-state {
+    width: 100%;
+    max-width: 1120px;
+    margin: 10px auto 160px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .empty-state.hidden { display: none; }
+
+  /* Buildify Luxury Hero Banner */
+  .buildify-hero-banner {
+    position: relative;
+    width: 100%;
+    border-radius: 28px;
+    overflow: hidden;
+    padding: 60px 24px 54px;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 16px 40px -10px rgba(13, 27, 62, 0.12);
+    margin-bottom: 36px;
+    background-color: #0D1B3E;
+  }
+  .buildify-hero-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.95;
+  }
+  .buildify-hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .hero-pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 18px;
+    border-radius: 9999px;
+    background: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    font-size: 13.5px;
+    color: #111827;
+  }
+  .badge-serif-italic {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: #286FEC;
+    font-weight: 700;
+  }
+  .hero-headline {
+    font-size: clamp(32px, 4.2vw, 54px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+    color: #ffffff;
+    margin-bottom: 0;
+  }
+  .headline-serif-italic {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: #DCE8F8;
+    font-weight: 700;
+  }
+  .hero-subline {
+    font-size: 15.5px;
+    color: rgba(255, 255, 255, 0.92);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Common Section Headers */
+  .buildify-section {
+    width: 100%;
+    max-width: 1120px;
+    margin-top: 48px;
+    text-align: left;
+  }
+  .buildify-section-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .buildify-section-title {
+    font-size: clamp(24px, 3.2vw, 38px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #030712;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .buildify-section-sub {
+    font-size: 14.5px;
+    color: #64748B;
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     BUILDIFY EXACT BENTO GRID (md:grid-cols-[300px_1fr_300px] md:grid-rows-[220px_220px])
+     ─────────────────────────────────────────────────────────── */
+  .buildify-bento-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  @media (min-width: 860px) {
+    .buildify-bento-grid {
+      display: grid;
+      grid-template-columns: 290px 1fr 290px;
+      grid-template-rows: 220px 220px;
+      gap: 12px;
+    }
+  }
+
+  /* 1. Smart Generation (col 1, row 1) */
+  .bento-card-stat {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  @media (min-width: 860px) {
+    .bento-card-stat {
+      grid-column-start: 1;
+      grid-row-start: 1;
+    }
+  }
+  .bento-card-stat:hover {
+    transform: translateY(-2px);
+    border-color: #286FEC;
+    box-shadow: 0 12px 28px rgba(40, 111, 236, 0.12);
+  }
+  .bento-stat-num {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #286FEC;
+    line-height: 1;
+  }
+  .bento-card-title {
+    font-weight: 700;
+    color: #111827;
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+  }
+  .bento-card-desc {
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.5;
+  }
+
+  /* 2. Auto Generate (col 1, row 2) - Dark Navy */
+  .bento-card-navy {
+    border-radius: 16px;
+    padding: 24px;
+    background: #0D1B3E;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  @media (min-width: 860px) {
+    .bento-card-navy {
+      grid-column-start: 1;
+      grid-row-start: 2;
+    }
+  }
+  .bento-card-navy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(13, 27, 62, 0.35);
+  }
+  .bento-card-navy .bento-card-title { color: #FFFFFF; }
+  .bento-card-navy .bento-card-desc { color: #9CA3AF; }
+
+  /* 3. Center Big Card — Sky Photo (col 2, rows 1-2) */
+  .bento-card-sky {
+    border-radius: 16px;
+    overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    min-height: 360px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background-color: #0D1B3E;
   }
-  .chat-scroll-area::-webkit-scrollbar { width: 8px; }
-  .chat-scroll-area::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.18);
-    border-radius: 4px;
+  @media (min-width: 860px) {
+    .bento-card-sky {
+      min-height: 0;
+      grid-column-start: 2;
+      grid-row-start: 1;
+      grid-row-end: span 2;
+    }
+  }
+  .bento-card-sky:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(40, 111, 236, 0.22);
+  }
+  .bento-card-sky-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s ease;
+  }
+  .bento-card-sky:hover .bento-card-sky-img {
+    transform: scale(1.03);
+  }
+  .bento-card-sky-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 45%, rgba(220,235,255,0.92) 80%, rgba(210,228,255,0.98) 100%);
+  }
+  .bento-card-sky-top {
+    position: relative;
+    z-index: 10;
+    padding: 24px;
+    text-align: left;
+  }
+  .bento-card-sky-stat {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    line-height: 1;
+  }
+  .bento-card-sky-bottom {
+    position: relative;
+    z-index: 10;
+    padding: 0 24px 24px 24px;
+    text-align: left;
+  }
+  .bento-card-sky-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+  }
+  .bento-card-sky-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .bento-card-sky-desc {
+    font-size: 13px;
+    color: #4B5563;
+    line-height: 1.5;
+    max-width: 310px;
+  }
+  .bento-cta-btn {
+    background: #286FEC;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 9999px;
+    padding: 10px 18px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(40, 111, 236, 0.3);
+  }
+  .bento-cta-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
   }
 
-  /* Empty State */
-  .empty-state {
-    flex: 1;
+  /* 4. Improve (col 3, rows 1-2) - Soft Azure #DCE8F8 with 3D Lightning Bolt */
+  .bento-card-improve {
+    border-radius: 16px;
+    padding: 24px;
+    background: #DCE8F8;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px 16px 80px;
     text-align: center;
+    gap: 16px;
+    min-height: 280px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
-  .empty-state.hidden { display: none; }
-  .empty-heading {
-    font-size: 32px;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: -0.02em;
-    margin-bottom: 28px;
+  @media (min-width: 860px) {
+    .bento-card-improve {
+      min-height: 0;
+      grid-column-start: 3;
+      grid-row-start: 1;
+      grid-row-end: span 2;
+    }
+  }
+  .bento-card-improve:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(40, 111, 236, 0.18);
+  }
+  .bento-card-improve-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #030712;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .bento-card-improve-desc {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.5;
+    max-width: 190px;
+    margin: 0 auto;
   }
 
-  /* Messages Container */
-  .messages-container {
-    max-width: 780px;
+  /* ───────────────────────────────────────────────────────────
+     BUILDIFY PROCESS 3-STEP CARDS (Process.tsx)
+     ─────────────────────────────────────────────────────────── */
+  .buildify-process-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
     width: 100%;
-    margin: 0 auto;
-    padding: 24px 20px 160px;
+  }
+  @media (min-width: 768px) {
+    .buildify-process-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+  }
+  .process-step-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #F0F7FF 0%, #FFFFFF 50%, #EFF6FF 100%);
+    border: 1px solid #DBEAFE;
+    padding: 26px 24px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    justify-content: space-between;
+    min-height: 230px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+    text-align: left;
+  }
+  .process-step-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(40, 111, 236, 0.12);
+  }
+  .process-step-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9CA3AF;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .process-step-content {
+    margin-top: 14px;
+    position: relative;
+    z-index: 10;
+  }
+  .process-step-heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 6px;
+  }
+  .process-step-desc {
+    font-size: 13px;
+    color: #64748B;
+    line-height: 1.55;
+  }
+  .process-step-bg-num {
+    position: absolute;
+    bottom: -18px;
+    right: -8px;
+    font-size: 130px;
+    font-weight: 800;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    background: linear-gradient(135deg, #BFDBFE 0%, #DBEAFE 60%, #EFF6FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     BUILDIFY TEMPLATES CARDS (Templates.tsx)
+     ─────────────────────────────────────────────────────────── */
+  .buildify-templates-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+  }
+  @media (min-width: 600px) {
+    .buildify-templates-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 980px) {
+    .buildify-templates-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .template-item-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .template-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  }
+  .template-img-wrap {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    position: relative;
+  }
+  .template-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .template-item-card:hover .template-card-img {
+    transform: scale(1.05);
+  }
+  .template-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+  }
+  .template-item-card:hover .template-hover-overlay {
+    opacity: 1;
+  }
+  .template-eye-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    color: #286FEC;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  .template-info-box {
+    padding: 14px 16px 16px;
+    background: #FFFFFF;
+  }
+  .template-info-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 3px;
+  }
+  .template-info-desc {
+    font-size: 12px;
+    color: #64748B;
+    line-height: 1.4;
+  }
+
+  /* ───────────────────────────────────────────────────────────
+     BUILDIFY TRUST LOGOS CAROUSEL (TrustlogosCarousel.tsx)
+     ─────────────────────────────────────────────────────────── */
+  .buildify-trust-section {
+    width: 100%;
+    padding: 50px 0 20px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .buildify-trust-text {
+    font-size: 13.5px;
+    color: #64748B;
+    margin-bottom: 24px;
+  }
+  .buildify-trust-text span {
+    font-weight: 600;
+    color: #1E293B;
+  }
+  .buildify-trust-track {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    width: max-content;
+    animation: marqueeScroll 24s linear infinite;
+  }
+  .buildify-trust-track:hover {
+    animation-play-state: paused;
+  }
+  .trust-logo-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+    opacity: 0.65;
+    transition: opacity 0.2s ease;
+  }
+  .trust-logo-box:hover {
+    opacity: 1;
+  }
+  .trust-logo-img {
+    height: 30px;
+    width: auto;
+    object-fit: contain;
+  }
+  @keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ================= MESSAGES CONTAINER ================= */
+  .messages-container {
+    width: 100%;
+    max-width: 820px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
 
   .msg-row {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    animation: fadeIn 0.2s ease;
   }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .msg-row.user {
+    align-items: flex-end;
+  }
+  .msg-row.assistant {
+    align-items: flex-start;
+  }
 
-  .msg-row.user { align-items: flex-end; }
+  /* User Message Bubble */
   .msg-bubble-user {
-    background: var(--bg-bubble-user);
-    color: var(--text-primary);
+    background: var(--primary-blue);
+    color: #ffffff;
     padding: 12px 18px;
-    border-radius: 22px;
-    max-width: 80%;
-    font-size: 15px;
-    line-height: 1.6;
+    border-radius: 20px 20px 4px 20px;
+    font-size: 14.5px;
+    line-height: 1.5;
+    max-width: 78%;
     word-break: break-word;
+    box-shadow: 0 4px 14px rgba(40, 111, 236, 0.25);
   }
 
-  .msg-row.assistant { align-items: flex-start; }
+  /* Assistant Message Card (Buildify Clean Surface) */
   .msg-bubble-assistant {
-    width: 100%;
+    background: #FFFFFF;
     color: var(--text-primary);
-    font-size: 15px;
-    line-height: 1.7;
+    border: 1px solid var(--border-subtle);
+    padding: 18px 22px;
+    border-radius: 20px 20px 20px 4px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    max-width: 92%;
     word-break: break-word;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   }
-  .msg-bubble-assistant h1, .msg-bubble-assistant h2, .msg-bubble-assistant h3, .msg-bubble-assistant h4 {
-    margin: 16px 0 8px;
-    color: #ffffff;
-  }
-  .msg-bubble-assistant p { margin: 8px 0; }
-  .msg-bubble-assistant ul, .msg-bubble-assistant ol { margin: 8px 0 8px 24px; }
-  .msg-bubble-assistant li { margin: 4px 0; }
-  .msg-bubble-assistant pre {
-    background: #111111;
+
+  /* Think Accordion */
+  .think-accordion {
+    background: #F8FAFC;
     border: 1px solid var(--border-subtle);
     border-radius: 10px;
-    padding: 14px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .think-accordion-header {
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .think-accordion-body {
+    display: none;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-subtle);
+    line-height: 1.5;
+    background: #FFFFFF;
+  }
+  .think-accordion.open .think-accordion-body {
+    display: block;
+  }
+
+  /* Markdown & Code styling inside assistant */
+  .msg-bubble-assistant pre {
+    background: #0D1B3E;
+    color: #F8FAFC;
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin: 12px 0;
     overflow-x: auto;
     font-family: var(--font-mono);
-    font-size: 13.5px;
-    margin: 12px 0;
+    font-size: 13px;
     position: relative;
-  }
-  .msg-bubble-assistant code:not(pre code) {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2px 6px;
-    border-radius: 5px;
-    font-family: var(--font-mono);
-    font-size: 13.5px;
   }
   .copy-code-btn {
     position: absolute;
     top: 8px;
     right: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    border-radius: 6px;
-    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
     font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
     cursor: pointer;
+    font-family: var(--font-sans);
   }
-  .copy-code-btn:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+  .copy-code-btn:hover { background: rgba(255, 255, 255, 0.25); }
 
-  /* Generated Image Card */
-  .gen-img-card {
-    margin: 12px 0;
-    border-radius: 14px;
-    overflow: hidden;
-    background: #121212;
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    max-width: 540px;
-  }
-  .gen-img-card img {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    max-height: 480px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .gen-img-card img:hover { transform: scale(1.01); }
-  .gen-img-footer {
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #181818;
-    border-top: 1px solid var(--border-subtle);
-  }
-  .gen-img-meta {
-    font-size: 12px;
-    color: var(--text-muted);
-    display: flex;
-    gap: 8px;
-  }
-  .gen-img-actions { display: flex; gap: 8px; }
-  .gen-img-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--border-subtle);
-    color: #fff;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .gen-img-btn:hover { background: rgba(255, 255, 255, 0.16); }
-
-  /* Think Accordion */
-  .think-accordion {
-    background: rgba(255, 255, 255, 0.04);
-    border-left: 2px solid #10a37f;
-    border-radius: 6px;
-    margin: 8px 0 14px;
-    overflow: hidden;
-  }
-  .think-accordion-header {
-    padding: 8px 12px;
-    font-size: 12.5px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .think-accordion-body {
-    padding: 10px 12px;
-    font-size: 13px;
-    color: var(--text-muted);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    display: none;
-    line-height: 1.5;
-  }
-  .think-accordion.open .think-accordion-body { display: block; }
-
-  /* Message Action Row */
+  /* Message Action Buttons */
   .msg-action-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-    color: var(--text-muted);
+    gap: 6px;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-subtle);
   }
   .msg-action-btn {
     background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-size: 13px;
-    padding: 5px 8px;
+    border: 1px solid var(--border-subtle);
     border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: background 0.15s, color 0.15s;
+    transition: all 0.15s ease;
   }
   .msg-action-btn:hover {
-    background: var(--bg-hover);
+    background: #F1F5F9;
     color: var(--text-primary);
+    border-color: var(--border-hover);
   }
 
-  /* ================= BOTTOM INPUT DOCK ================= */
-  
-  /* Scroll To Bottom Floating Button (ChatGPT Style) */
-  .scroll-to-bottom-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #212121;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-    margin-bottom: 10px;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s, opacity 0.2s, visibility 0.2s;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(8px);
-    pointer-events: none;
-    z-index: 30;
-  }
-  .scroll-to-bottom-btn.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  .scroll-to-bottom-btn:hover {
-    background: #2f2f2f;
-    border-color: rgba(255, 255, 255, 0.35);
-    transform: translateY(-2px);
-  }
-  .scroll-to-bottom-btn:active {
-    transform: translateY(0);
-  }
-
+  /* ================= BUILDIFY SIGNATURE PROMPT GENERATOR DOCK ================= */
   .input-dock {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 0 16px 14px;
+    padding: 0 20px 20px;
+    background: linear-gradient(180deg, transparent 0%, rgba(248, 250, 252, 0.95) 30%, #F8FAFC 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(to top, var(--bg-main) 70%, transparent);
-    pointer-events: none;
-    z-index: 20;
-  }
-  .input-dock > * { pointer-events: auto; }
-
-  .input-pill-wrapper {
-    max-width: 780px;
-    width: 100%;
-    background: var(--bg-input);
-    border: 1px solid var(--border-subtle);
-    border-radius: 28px;
-    padding: 8px 14px;
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-    transition: border-color 0.2s;
-  }
-  .input-pill-wrapper:focus-within {
-    border-color: rgba(255, 255, 255, 0.28);
+    z-index: 30;
   }
 
-  .attach-btn {
-    width: 36px;
-    height: 36px;
+  /* Scroll To Bottom Button */
+  .scroll-to-bottom-btn {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background: transparent;
-    border: none;
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: none;
+    place-items: center;
     color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
-    font-size: 20px;
-    transition: background 0.15s, color 0.15s;
-    flex-shrink: 0;
-    margin-bottom: 2px;
+    margin-bottom: 10px;
+    transition: all 0.15s ease;
   }
-  .attach-btn:hover {
-    background: var(--bg-hover);
+  .scroll-to-bottom-btn:hover {
+    background: #F1F5F9;
     color: var(--text-primary);
   }
 
+  /* The Buildify Prompt Card Box */
+  .input-pill-wrapper {
+    width: 100%;
+    max-width: 780px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-pill-wrapper:focus-within {
+    border-color: var(--primary-blue);
+    box-shadow: 0 12px 32px rgba(40, 111, 236, 0.15), 0 0 0 1px var(--primary-blue);
+  }
+
+  /* Prompt Top Row */
+  .prompt-top-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .sparkle-icon-svg {
+    width: 20px;
+    height: 20px;
+    color: var(--primary-blue);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
   .chat-textarea {
-    flex: 1;
+    width: 100%;
     background: transparent;
     border: none;
     outline: none;
     color: var(--text-primary);
+    font-size: 15px;
     font-family: var(--font-sans);
-    font-size: 15.5px;
     line-height: 1.5;
     resize: none;
+    min-height: 52px;
     max-height: 180px;
-    min-height: 36px;
-    padding: 7px 4px;
   }
-  .chat-textarea::placeholder { color: var(--text-muted); }
+  .chat-textarea::placeholder {
+    color: var(--text-muted);
+  }
 
-  .input-right-tools {
+  /* Prompt Bottom Actions Bar */
+  .prompt-bottom-bar {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 2px;
-    flex-shrink: 0;
+    justify-content: space-between;
+    padding-top: 4px;
+    border-top: 1px solid #F1F5F9;
   }
-
-  .think-btn {
-    height: 34px;
-    padding: 0 12px;
-    background: rgba(255, 255, 255, 0.05);
+  .prompt-tools-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .attach-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     border: 1px solid var(--border-subtle);
-    border-radius: 17px;
+    background: #F8FAFC;
     color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 500;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .attach-btn:hover {
+    background: #E2E8F0;
+    color: var(--text-primary);
+  }
+
+  .tool-tag-pill {
     display: flex;
     align-items: center;
     gap: 6px;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    background: #F1F5F9;
+    border: 1px solid var(--border-subtle);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
   }
-  .think-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-  .think-btn.active {
-    background: rgba(16, 163, 127, 0.15);
-    border-color: #10a37f;
-    color: #10a37f;
+  .tool-tag-pill:hover {
+    background: #E2E8F0;
+    color: var(--text-primary);
+  }
+  .tool-tag-pill.active {
+    background: #EBF3FE;
+    color: var(--primary-blue);
+    border-color: rgba(40, 111, 236, 0.3);
   }
 
+  .prompt-tools-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
   .mic-btn {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: transparent;
     border: none;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: #F1F5F9;
+    color: var(--primary-blue);
+    display: grid;
+    place-items: center;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition: all 0.15s ease;
   }
-  .mic-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-  .mic-btn.listening {
-    color: #ef4444;
-    background: rgba(239, 68, 68, 0.15);
-    animation: micPulse 1.2s infinite;
+  .mic-btn:hover {
+    background: #EBF3FE;
+    transform: scale(1.05);
   }
-  @keyframes micPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+  .mic-btn.active {
+    background: #EF4444;
+    color: #ffffff;
+    animation: pulseMic 1.5s infinite;
   }
-
-  /* Thinking Indicator Animation */
-  .msg-row.thinking-row .msg-bubble-assistant {
-    display: inline-flex;
-    align-items: center;
-    background: transparent;
-    padding: 8px 12px;
-  }
-  .thinking-dots {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .thinking-dots span {
-    width: 7px;
-    height: 7px;
-    background: var(--saffron-orange);
-    border-radius: 50%;
-    animation: thinkDotBounce 1.4s infinite ease-in-out both;
-  }
-  .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
-  .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
-  .thinking-dots span:nth-child(3) { animation-delay: 0s; }
-  @keyframes thinkDotBounce {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.35; }
-    40% { transform: scale(1.2); opacity: 1; }
+  @keyframes pulseMic {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
   }
 
   .voice-mode-btn {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--blue-voice);
-    border: none;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: 1px solid var(--border-subtle);
+    background: #F8FAFC;
+    display: grid;
+    place-items: center;
     cursor: pointer;
-    transition: background 0.15s, transform 0.15s;
+    transition: all 0.15s ease;
   }
   .voice-mode-btn:hover {
-    background: var(--blue-voice-hover);
-    transform: scale(1.05);
+    background: #EBF3FE;
+    border-color: var(--primary-blue);
   }
   .voice-waveform-icon {
     display: flex;
     align-items: center;
-    gap: 2.5px;
+    gap: 2px;
     height: 14px;
   }
   .voice-waveform-icon span {
-    width: 2.5px;
-    background: #ffffff;
+    width: 2px;
+    background: var(--primary-blue);
     border-radius: 2px;
-    animation: waveBars 1.2s ease-in-out infinite alternate;
-  }
-  .voice-waveform-icon span:nth-child(1) { height: 7px; animation-delay: 0.1s; }
-  .voice-waveform-icon span:nth-child(2) { height: 14px; animation-delay: 0.3s; }
-  .voice-waveform-icon span:nth-child(3) { height: 11px; animation-delay: 0.2s; }
-  .voice-waveform-icon span:nth-child(4) { height: 6px; animation-delay: 0.4s; }
-
-  @keyframes waveBars {
-    0% { transform: scaleY(0.5); }
-    100% { transform: scaleY(1); }
+    height: 10px;
   }
 
+  /* The Signature Buildify Generate / Send Pill Button */
   .send-circle-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: none;
-    color: #000000;
-    display: none;
+    display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 7px;
+    background: var(--primary-blue);
+    color: #ffffff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: 700;
-    transition: opacity 0.15s, transform 0.15s;
+    box-shadow: 0 2px 8px rgba(40, 111, 236, 0.3);
+    transition: all 0.2s ease;
   }
-  .send-circle-btn:hover { transform: scale(1.05); }
+  .send-circle-btn:hover {
+    background: var(--primary-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 111, 236, 0.4);
+  }
+  .send-circle-btn svg {
+    width: 15px;
+    height: 15px;
+  }
 
   .input-disclaimer {
     font-size: 11.5px;
@@ -930,622 +1258,521 @@
     text-align: center;
   }
 
+  /* Attach Popup Menu */
+  .attach-popup-menu {
+    position: absolute;
+    bottom: 95px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 6px;
+    display: none;
+    flex-direction: column;
+    z-index: 50;
+  }
+  .attach-popup-menu.open { display: flex; }
+  .attach-menu-item {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .attach-menu-item:hover {
+    background: #F1F5F9;
+  }
+
   /* ================= LIVE VOICE OVERLAY ================= */
   .live-voice-overlay {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at center, #111827 0%, #030712 80%);
-    backdrop-filter: blur(24px);
-    z-index: 1000;
+    background: radial-gradient(circle at center, rgba(13, 27, 62, 0.98) 0%, rgba(3, 7, 18, 0.99) 100%);
+    z-index: 100;
     display: none;
     flex-direction: column;
-    align-items: center;
     justify-content: space-between;
-    padding: 32px 24px;
-    animation: voiceOverlayFade 0.3s ease;
+    padding: 30px 40px;
+    color: #ffffff;
+    backdrop-filter: blur(30px);
   }
-  @keyframes voiceOverlayFade { from { opacity: 0; } to { opacity: 1; } }
   .live-voice-overlay.open { display: flex; }
-
   .voice-topbar {
-    width: 100%;
-    max-width: 600px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
   }
   .voice-brand-pill {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
+    gap: 10px;
     background: rgba(255, 255, 255, 0.08);
     padding: 6px 14px;
-    border-radius: 20px;
+    border-radius: 9999px;
+    font-size: 13px;
   }
   .voice-close-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: #fff;
-    font-size: 18px;
+    color: #ffffff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s;
   }
-  .voice-close-btn:hover { background: rgba(255, 255, 255, 0.2); }
-
   .voice-center-stage {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 28px;
+    text-align: center;
   }
   .voice-orb-pulsar {
     width: 140px;
     height: 140px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #60a5fa, #2563eb 60%, #1d4ed8);
-    box-shadow: 0 0 50px rgba(37, 99, 235, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+    background: radial-gradient(circle at 35% 35%, #60A5FA 0%, #286FEC 50%, #1D4ED8 100%);
+    box-shadow: 0 0 60px rgba(40, 111, 236, 0.6);
+    display: grid;
+    place-items: center;
     cursor: pointer;
+    animation: orbBreathe 3s ease-in-out infinite alternate;
   }
-  .voice-orb-pulsar::before, .voice-orb-pulsar::after {
-    content: '';
-    position: absolute;
-    inset: -15px;
-    border-radius: 50%;
-    border: 2px solid rgba(59, 130, 246, 0.3);
-    animation: voiceRingPulse 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  @keyframes orbBreathe {
+    0% { transform: scale(0.95); box-shadow: 0 0 40px rgba(40, 111, 236, 0.4); }
+    100% { transform: scale(1.08); box-shadow: 0 0 80px rgba(40, 111, 236, 0.8); }
   }
-  .voice-orb-pulsar::after {
-    inset: -30px;
-    animation-delay: 1.2s;
-  }
-  @keyframes voiceRingPulse {
-    0% { transform: scale(0.9); opacity: 0.8; }
-    100% { transform: scale(1.4); opacity: 0; }
-  }
-
   .voice-state-title {
-    font-size: 22px;
-    font-weight: 600;
-    color: #ffffff;
-    letter-spacing: -0.01em;
+    font-size: 26px;
+    font-weight: 700;
+    margin-top: 28px;
+    margin-bottom: 8px;
   }
   .voice-transcript-subtitle {
-    max-width: 520px;
-    text-align: center;
-    font-size: 16px;
-    color: var(--text-secondary);
-    min-height: 48px;
-    line-height: 1.5;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 480px;
   }
-
   .voice-bottom-controls {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    justify-content: center;
+    gap: 16px;
   }
   .voice-ctrl-btn {
-    width: 54px;
-    height: 54px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     border: none;
-    color: #fff;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #ffffff;
+    font-size: 18px;
     cursor: pointer;
-    transition: background 0.15s, transform 0.15s;
+    transition: background 0.15s;
   }
-  .voice-ctrl-btn:hover { background: rgba(255, 255, 255, 0.2); transform: scale(1.06); }
-  .voice-ctrl-btn.end { background: #ef4444; }
+  .voice-ctrl-btn:hover { background: rgba(255, 255, 255, 0.2); }
+  .voice-ctrl-btn.end { background: #EF4444; }
 
-  /* ================= MODALS ================= */
+  /* Modals */
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(8px);
-    z-index: 200;
+    z-index: 90;
     display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
+    place-items: center;
+    padding: 20px;
   }
-  .modal-overlay.open { display: flex; }
+  .modal-overlay.open { display: grid; }
   .modal-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 16px;
-    max-width: 480px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    max-width: 460px;
     width: 100%;
-    padding: 24px;
-    position: relative;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.8);
-    max-height: 90vh;
-    overflow-y: auto;
+    padding: 26px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
   }
   .modal-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    align-items: center;
+    margin-bottom: 14px;
   }
-  .modal-title { font-size: 18px; font-weight: 600; color: #fff; }
+  .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
   .modal-close {
     background: transparent;
     border: none;
-    color: var(--text-muted);
     font-size: 18px;
     cursor: pointer;
-  }
-  .modal-close:hover { color: #fff; }
-
-  .attach-popup-menu {
-    position: absolute;
-    bottom: 74px;
-    left: 20px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 6px;
-    display: none;
-    flex-direction: column;
-    gap: 2px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.8);
-    z-index: 30;
-    min-width: 220px;
-  }
-  .attach-popup-menu.open { display: flex; }
-  .attach-menu-item {
-    padding: 9px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--text-primary);
-    font-size: 13.5px;
-    border-radius: 8px;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    text-align: left;
-    width: 100%;
-    text-decoration: none;
-  }
-  .attach-menu-item:hover { background: var(--bg-hover); }
-
-  /* Media Lightbox */
-  .media-lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.92);
-    backdrop-filter: blur(10px);
-    z-index: 5000;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .media-lightbox.open { display: flex; }
-  .media-lightbox img {
-    max-width: 90vw;
-    max-height: 85vh;
-    border-radius: 8px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.8);
-  }
-  .media-lightbox-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(255,255,255,0.1);
-    border: none;
-    color: #fff;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
+    color: var(--text-muted);
   }
 
   /* Toast Notification */
   .toast {
     position: fixed;
-    bottom: 24px;
+    bottom: 100px;
     left: 50%;
-    transform: translateX(-50%) translateY(50px);
-    background: #1f1f1f;
-    border: 1px solid var(--border-subtle);
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 20px;
+    transform: translateX(-50%) translateY(20px);
+    background: #0D1B3E;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border-radius: 9999px;
     font-size: 13.5px;
-    z-index: 3000;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     opacity: 0;
+    pointer-events: none;
     transition: all 0.25s ease;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    z-index: 100;
   }
   .toast.show {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
 
-  /* ================= RESPONSIVE & MOBILE STYLES ================= */
-  .sidebar-backdrop {
-    display: none;
+  @media (max-width: 900px) {
+    .bento-grid { grid-template-columns: repeat(2, 1fr); }
   }
-
-  @media (min-width: 769px) {
-    .sidebar {
-      width: 260px;
-      height: 100%;
-      background-color: var(--bg-sidebar);
-      border-right: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 50;
-      position: relative;
-    }
-    .sidebar.collapsed {
-      margin-left: -260px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .sidebar {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      width: 280px;
-      max-width: 84vw;
-      height: 100%;
-      height: 100dvh;
-      background-color: var(--bg-sidebar);
-      border-right: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      z-index: 100;
-      margin-left: 0 !important;
-      transform: translateX(0);
-      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 8px 0 32px rgba(0, 0, 0, 0.85);
-    }
-    .sidebar.collapsed {
-      transform: translateX(-100%);
-      box-shadow: none;
-      pointer-events: none;
-    }
-
-    .sidebar-backdrop {
-      display: block;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 95;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
-    }
-    .sidebar:not(.collapsed) ~ .sidebar-backdrop {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .sidebar-expand-btn {
-      display: flex !important;
-    }
-
-    .main-area {
-      width: 100vw;
-      height: 100%;
-      height: 100dvh;
-    }
-
-    .top-bar {
-      height: 48px;
-      padding: 0 10px;
-      padding-top: max(0px, env(safe-area-inset-top));
-    }
-    .model-pill {
-      padding: 5px 8px;
-      font-size: 13px;
-      gap: 4px;
-      max-width: 160px;
-    }
-    #activeModelLabel {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .top-right {
-      gap: 8px;
-    }
-    .free-offer-badge {
-      font-size: 12.5px;
-      padding: 5px 8px;
-      gap: 4px;
-    }
-
-    .messages-container {
-      padding: 12px 12px 140px;
-      gap: 16px;
-    }
-    .msg-bubble-user {
-      max-width: 88%;
-      padding: 10px 14px;
-      font-size: 14.5px;
-      border-radius: 18px;
-    }
-    .msg-bubble-assistant {
-      font-size: 14.5px;
-      line-height: 1.6;
-    }
-    .msg-bubble-assistant pre {
-      max-width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 10px 12px;
-      font-size: 13px;
-    }
-    .msg-bubble-assistant table {
-      display: block;
-      max-width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .empty-state {
-      padding: 24px 16px 90px;
-    }
-    .empty-heading {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .input-dock {
-      padding: 0 8px max(10px, env(safe-area-inset-bottom, 10px));
-    }
-    .input-pill-wrapper {
-      padding: 6px 10px;
-      gap: 6px;
-      border-radius: 24px;
-    }
-    .chat-textarea {
-      font-size: 16px; /* Prevents auto-zoom on iOS Safari */
-      padding: 6px 4px;
-      min-height: 34px;
-    }
-    .input-right-tools {
-      gap: 4px;
-    }
-    .attach-btn, .mic-btn, .voice-mode-btn, .send-circle-btn {
-      width: 34px;
-      height: 34px;
-    }
-    .input-disclaimer {
-      font-size: 10px;
-      margin-top: 5px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 96%;
-    }
-
-    .modal-overlay {
-      padding: 12px;
-    }
-    .modal-card {
-      max-width: 96vw;
-      width: 100%;
-      padding: 18px 14px;
-      border-radius: 14px;
-      max-height: 85vh;
-    }
-
-    .attach-popup-menu {
-      left: 10px;
-      right: 10px;
-      bottom: 70px;
-      min-width: unset;
-      max-width: calc(100vw - 20px);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .think-btn {
-      padding: 0 8px;
-      height: 32px;
-    }
-    .think-btn span {
-      display: none;
-    }
-    .free-offer-badge span {
-      display: none;
-    }
-    .free-offer-badge {
-      padding: 6px;
-    }
-    .model-pill {
-      max-width: 130px;
-      font-size: 12px;
-    }
-    .empty-heading {
-      font-size: 20px;
-    }
-    .live-voice-overlay {
-      padding: 20px 14px;
-    }
-    .voice-orb-pulsar {
-      width: 110px;
-      height: 110px;
-    }
-    .voice-state-title {
-      font-size: 20px;
-    }
-    .voice-transcript-subtitle {
-      font-size: 12px;
-      padding: 0 8px;
-    }
+  @media (max-width: 640px) {
+    .bento-grid { grid-template-columns: 1fr; }
+    .top-bar { left: 10px; right: 10px; }
   }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-
-  <!-- ================= LEFT SIDEBAR ================= -->
-  <aside class="sidebar collapsed" id="sidebar">
-    
-    <!-- Sidebar Top Header -->
+  
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <a href="workspace.html" class="brand-logo-wrap" title="Bharat Voice Multi-Model Workspace">
-        <img src="assets/logo.png" alt="Bharat Voice Logo" class="brand-logo-img">
+      <a href="index.html" class="brand-logo-wrap">
+        <div class="brand-logo-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 10v3" /><path d="M6 6v11" /><path d="M10 3v18" /><path d="M14 8v7" /><path d="M18 5v13" /><path d="M22 10v4" />
+          </svg>
+        </div>
         <span class="brand-logo-text">Bharat Voice</span>
       </a>
       <div class="sidebar-header-actions">
         <button class="icon-btn" id="sidebarSearchToggle" title="Search chats">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
-        <button class="icon-btn" id="sidebarCollapseBtn" title="Collapse sidebar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        <button class="icon-btn" id="sidebarCollapseBtn" title="Close sidebar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
       </div>
     </div>
 
-    <!-- New Chat Button -->
+    <!-- New Session Button -->
     <button class="new-chat-btn" id="newChatBtn">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        <span>New chat</span>
-      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>New Session</span>
     </button>
 
-    <!-- Search Box (Toggleable) -->
+    <!-- Search Box -->
     <div class="sidebar-search-box" id="sidebarSearchBox">
-      <span class="sidebar-search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-      <input type="text" class="sidebar-search-input" id="sidebarSearchInput" placeholder="Search conversations...">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="sidebar-search-input" id="sidebarSearchInput" placeholder="Search sessions...">
     </div>
 
-    <!-- Navigation List (Images, Scheduled, Library, Plugins, Explore) -->
-    <div class="sidebar-nav">
-      <button class="sidebar-nav-item" id="navImagesBtn">
-        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
-        <span>Images</span>
-      </button>
-      <button class="sidebar-nav-item" id="navScheduledBtn">
-        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-        <span>Scheduled</span>
-      </button>
-      <button class="sidebar-nav-item" id="navLibraryBtn">
-        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
-        <span>Library</span>
-      </button>
-      <button class="sidebar-nav-item" id="navPluginsBtn">
-        <span class="nav-icon" style="font-size:15px;font-weight:700;">@</span>
-        <span>Plugins</span>
-      </button>
-      <a href="workspace.html" class="sidebar-nav-item" id="navExploreBtn" title="Explore Multi-Model AI Studio & Playground">
-        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/></svg></span>
-        <span>Explore</span>
-      </a>
-    </div>
-
-    <!-- Scrollable Recents & Projects -->
-    <div class="sidebar-scroll">
-      
-      <!-- Projects Section -->
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">
-          <span>Projects</span>
-          <button class="recent-action-btn" id="addProjectBtn" title="New project" style="font-size:14px;">+</button>
-        </div>
-        <div class="sidebar-empty-item">No projects</div>
+    <!-- Recents -->
+    <div class="recents-scroll-area">
+      <div class="recents-label">Recent Sessions</div>
+      <div id="recentsList">
+        <!-- Rendered by JS -->
       </div>
-
-      <!-- Recents Section -->
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">
-          <span>Recents</span>
-        </div>
-        <div class="recents-list" id="recentsList">
-          <!-- Dynamically populated or seeded with exact items from screenshot -->
-        </div>
-      </div>
-
     </div>
 
-    <!-- Sidebar Footer: Profile & Claim Offer -->
+    <!-- User Profile Footer -->
     <div class="sidebar-footer">
-      <div class="user-profile-row" id="userProfileRow" title="View Account & Settings">
-        <div class="avatar-circle" id="userAvatarCircle">G</div>
-        <div class="user-details">
-          <span class="user-name" id="userNameLabel">Guest</span>
-          <span class="user-plan" id="userPlanLabel">Free Plan</span>
+      <div class="user-profile-row" id="userProfileRow">
+        <div class="user-avatar-circle" id="userAvatarCircle">B</div>
+        <div>
+          <div class="user-name-label" id="userNameLabel">Explorer</div>
+          <div class="user-plan-label" id="userPlanLabel">Free Tier</div>
         </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
       </div>
-
-      <button class="claim-offer-btn" id="sidebarClaimOfferBtn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-        <span>Claim offer</span>
+      <button class="icon-btn" id="openFullSettingsBtn" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </button>
     </div>
-
   </aside>
-
-  <!-- Mobile Backdrop Overlay -->
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <!-- ================= MAIN CHAT AREA ================= -->
   <main class="main-area" id="mainArea">
     
-    <!-- Top Bar -->
+    <!-- Buildify Floating Pill Top Bar -->
     <header class="top-bar">
       <div class="top-left">
-        <button class="icon-btn sidebar-expand-btn" id="sidebarExpandBtn" title="Open sidebar">
+        <button class="icon-btn" id="sidebarExpandBtn" title="Open sidebar">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
         </button>
         <button class="model-pill" id="modelSelectorPill">
           <span id="activeModelLabel">Bharat Voice 3.8 Flash</span>
-          <span class="model-pill-chevron">▾</span>
+          <span style="font-size:10px; opacity:0.6;">▾</span>
         </button>
       </div>
 
       <div class="top-right">
-        <button class="free-offer-badge" id="topFreeOfferBtn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-          <span>Free offer</span>
+        <div class="status-badge">
+          <span class="pulse-dot"></span>
+          <span>Online</span>
+        </div>
+        <button class="icon-btn" id="topFreeOfferBtn" title="Upgrade Plan">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
         </button>
-        <button class="top-avatar-btn" id="topAvatarBtn" title="Account & Settings">G</button>
+        <button class="icon-btn" id="topAvatarBtn" title="Account">
+          <div class="user-avatar-circle" style="width:26px; height:26px; font-size:11px;">B</div>
+        </button>
       </div>
     </header>
 
     <!-- Chat Messages Scroll Area -->
     <div class="chat-scroll-area" id="chatScrollArea">
       
-      <!-- Empty State: "What's on your mind today?" -->
+      <!-- Buildify Signature Hero Empty State -->
       <div class="empty-state" id="emptyState">
-        <h1 class="empty-heading">What's on your mind today?</h1>
+        
+        <!-- ── BUILDIFY HERO BANNER (Hero.tsx with hero-bg.png) ── -->
+        <div class="buildify-hero-banner">
+          <img src="hero-bg.png" alt="Hero Sky Background" class="buildify-hero-bg-img" />
+          <div class="buildify-hero-content">
+            <div class="hero-pill-badge">
+              <svg class="sparkle-icon-svg" viewBox="0 0 24 24" fill="#286FEC" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;margin:0;">
+                <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/>
+              </svg>
+              <p class="badge-serif-italic" style="margin:0;">
+                Most Powerful <span style="color:#286FEC;font-family:var(--font-sans);font-style:normal;font-weight:600;">Autonomous AI Voice &amp; Study Companion</span>
+              </p>
+            </div>
+
+            <h1 class="hero-headline">
+              Build &amp; Learn in <br/>
+              <span class="headline-serif-italic">Minutes with AI Voice</span>
+            </h1>
+
+            <p class="hero-subline">
+              From complex mathematical proofs to spoken audio synthesis — Bharat Voice uses sovereign intelligence to explain, derive, and synthesize answers in real time.
+            </p>
+          </div>
+        </div>
+
+        <!-- ── BUILDIFY FEATURES SECTION (Features.tsx Bento Grid) ── -->
+        <div class="buildify-section">
+          <div class="buildify-section-header">
+            <h2 class="buildify-section-title">Fast Intelligent Built for Creators</h2>
+          </div>
+
+          <div class="buildify-bento-grid">
+            <!-- 1. Smart Generation (col 1, row 1) -->
+            <div class="bento-card-stat" onclick="submitCardPrompt('Explain photosynthesis with a structured concept map and steps.')">
+              <p class="bento-stat-num">99%</p>
+              <div>
+                <p class="bento-card-title">Smart Generation</p>
+                <p class="bento-card-desc">Generate step-by-step mathematical solutions, science derivations, and structured reasoning with no coding required</p>
+              </div>
+            </div>
+
+            <!-- 2. Auto Generate (col 1, row 2) - Dark Navy -->
+            <div class="bento-card-navy" onclick="submitCardPrompt('Compare time complexity of Quicksort vs Mergesort in Python with code.')">
+              <span style="font-size:22px;font-weight:700;color:#ffffff;line-height:1;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+              </span>
+              <div>
+                <p class="bento-card-title">Auto Generate</p>
+                <p class="bento-card-desc">Generate clean executable Python algorithms, LaTeX formulas, and interactive diagrams with zero friction</p>
+              </div>
+            </div>
+
+            <!-- 3. Center Big Card — Sky Photo (col 2, rows 1-2) -->
+            <div class="bento-card-sky" onclick="submitCardPrompt('Explain quantum superposition and entanglement with intuitive analogies.')">
+              <img src="hero-bg.png" alt="Sky" class="bento-card-sky-img" />
+              <div class="bento-card-sky-overlay"></div>
+              
+              <div class="bento-card-sky-top">
+                <span class="bento-card-sky-stat">24/7</span>
+              </div>
+
+              <div class="bento-card-sky-bottom">
+                <p class="bento-card-sky-title">Build knowledge instantly</p>
+                <div class="bento-card-sky-row">
+                  <p class="bento-card-sky-desc">Ask complex questions across STEM, humanities, and languages with sub-180ms neural audio and visual explanations</p>
+                  <button type="button" class="bento-cta-btn">Ask AI</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Improve (col 3, rows 1-2) - Soft Azure with 3D Lightning Bolt -->
+            <div class="bento-card-improve" onclick="submitCardPrompt('Provide a deep derivation of Bayes Theorem with step-by-step proofs.')">
+              <!-- Exact 3D gradient lightning bolt from Features.tsx -->
+              <svg width="80" height="96" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="bolt-body" x1="20" y1="0" x2="56" y2="96" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#93c5fd" />
+                    <stop offset="48%" stop-color="#3b82f6" />
+                    <stop offset="100%" stop-color="#1e3a8a" />
+                  </linearGradient>
+                  <linearGradient id="bolt-shine" x1="20" y1="4" x2="42" y2="50" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="white" stop-opacity="0.6" />
+                    <stop offset="100%" stop-color="white" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <path d="M49 7L13 56H39L29 90L65 40H41L49 7Z" fill="#1d4ed8" opacity="0.2" transform="translate(4,5)" />
+                <path d="M49 7L13 56H39L29 90L65 40H41L49 7Z" fill="url(#bolt-body)" stroke-linejoin="round" />
+                <path d="M49 7L24 50H41L36 70L58 38H43L49 7Z" fill="url(#bolt-shine)" />
+              </svg>
+
+              <div>
+                <p class="bento-card-improve-title">Improve</p>
+                <p class="bento-card-improve-desc">Enhance your conceptual understanding with real-time audio voice readback and interactive concept maps</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── BUILDIFY PROCESS SECTION (Process.tsx 3 Steps) ── -->
+        <div class="buildify-section">
+          <div class="buildify-section-header">
+            <h2 class="buildify-section-title">How it works</h2>
+          </div>
+
+          <div class="buildify-process-grid">
+            <!-- Step 01 -->
+            <div class="process-step-card" onclick="submitCardPrompt('What is the physics behind semiconductor band gaps?')">
+              <span class="process-step-badge">Step - 01</span>
+              <div class="process-step-content">
+                <h3 class="process-step-heading">Describe</h3>
+                <p class="process-step-desc">Tell AI what you want to learn, solve, or derive by simply typing or speaking a prompt.</p>
+              </div>
+              <span class="process-step-bg-num">1</span>
+            </div>
+
+            <!-- Step 02 -->
+            <div class="process-step-card" onclick="submitCardPrompt('Derive Maxwell equations in differential and integral form.')">
+              <span class="process-step-badge">Step - 02</span>
+              <div class="process-step-content">
+                <h3 class="process-step-heading">AI Generate</h3>
+                <p class="process-step-desc">Our neural engine instantly generates derivations, answers, concept maps, and voice explanations.</p>
+              </div>
+              <span class="process-step-bg-num">2</span>
+            </div>
+
+            <!-- Step 03 -->
+            <div class="process-step-card" onclick="submitCardPrompt('Create an interactive flowchart for how transformers process tokens.')">
+              <span class="process-step-badge">Step - 03</span>
+              <div class="process-step-content">
+                <h3 class="process-step-heading">Master &amp; Listen</h3>
+                <p class="process-step-desc">Interact with formulas, listen to voice playback, or download your study notes in minutes.</p>
+              </div>
+              <span class="process-step-bg-num">3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── BUILDIFY TEMPLATES SECTION (Templates.tsx) ── -->
+        <div class="buildify-section">
+          <div class="buildify-section-header">
+            <h2 class="buildify-section-title">Built by Real Founders, Not Developers</h2>
+            <p class="buildify-section-sub">Browse ready-to-use templates for apps, STEM research, and websites created by AI.</p>
+          </div>
+
+          <div class="buildify-templates-grid">
+            <!-- Template 1 -->
+            <div class="template-item-card" onclick="submitCardPrompt('Create a startup business plan and unit economics breakdown for a SaaS company.')">
+              <div class="template-img-wrap">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" alt="Startup Landing Page" class="template-card-img" />
+                <div class="template-hover-overlay">
+                  <div class="template-eye-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="template-info-box">
+                <p class="template-info-title">Startup Landing Page</p>
+                <p class="template-info-desc">3k+ Startup website &amp; model templates</p>
+              </div>
+            </div>
+
+            <!-- Template 2 -->
+            <div class="template-item-card" onclick="submitCardPrompt('Write an efficient Dijkstra shortest path algorithm in Python with graph visualization.')">
+              <div class="template-img-wrap">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" alt="Analytics Dashboard" class="template-card-img" />
+                <div class="template-hover-overlay">
+                  <div class="template-eye-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="template-info-box">
+                <p class="template-info-title">Analytics Dashboard</p>
+                <p class="template-info-desc">150+ Data analytics &amp; algorithm dashboard</p>
+              </div>
+            </div>
+
+            <!-- Template 3 -->
+            <div class="template-item-card" onclick="submitCardPrompt('Provide a complete step-by-step derivation of the Navier-Stokes equations.')">
+              <div class="template-img-wrap">
+                <img src="https://images.unsplash.com/photo-1545235617-9465d2a55698?w=600&q=80" alt="Portfolio Website" class="template-card-img" />
+                <div class="template-hover-overlay">
+                  <div class="template-eye-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="template-info-box">
+                <p class="template-info-title">STEM Derivation Sandbox</p>
+                <p class="template-info-desc">420+ Physics, calculus &amp; science proofs</p>
+              </div>
+            </div>
+
+            <!-- Template 4 -->
+            <div class="template-item-card" onclick="submitCardPrompt('Design a high-scale microservices system architecture diagram using Mermaid.')">
+              <div class="template-img-wrap">
+                <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80" alt="SaaS Marketing Site" class="template-card-img" />
+                <div class="template-hover-overlay">
+                  <div class="template-eye-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div class="template-info-box">
+                <p class="template-info-title">System Architecture Maps</p>
+                <p class="template-info-desc">1011+ Flowchart &amp; interactive system diagrams</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── BUILDIFY TRUST LOGOS SECTION (TrustlogosCarousel.tsx) ── -->
+        <div class="buildify-trust-section">
+          <p class="buildify-trust-text">
+            Trusted by <span>10,000+ professionals, startups, and growing businesses worldwide</span>
+          </p>
+          <div class="buildify-trust-track">
+            <div class="trust-logo-box"><img src="trust-logos/logo-1.svg" alt="Partner 1" class="trust-logo-img" /></div>
+            <div class="trust-logo-box"><img src="trust-logos/logo-2.svg" alt="Partner 2" class="trust-logo-img" /></div>
+            <div class="trust-logo-box"><img src="trust-logos/logo-3.svg" alt="Partner 3" class="trust-logo-img" /></div>
+            <div class="trust-logo-box"><img src="trust-logos/logo-4.svg" alt="Partner 4" class="trust-logo-img" /></div>
+            <div class="trust-logo-box"><img src="trust-logos/logo-5.svg" alt="Partner 5" class="trust-logo-img" /></div>
+            <!-- Duplicated for seamless loop -->
+            <div class="trust-logo-box"><img src="trust-logos/logo-1.svg" alt="Partner 1" class="trust-logo-img" /></div>
+            <div class="trust-logo-box"><img src="trust-logos/logo-2.svg" alt="Partner 2" class="trust-logo-img" /></div>
+            <div class="trust-logo-box"><img src="trust-logos/logo-3.svg" alt="Partner 3" class="trust-logo-img" /></div>
+            <div class="trust-logo-box"><img src="trust-logos/logo-4.svg" alt="Partner 4" class="trust-logo-img" /></div>
+            <div class="trust-logo-box"><img src="trust-logos/logo-5.svg" alt="Partner 5" class="trust-logo-img" /></div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Messages Stream -->
@@ -1561,51 +1788,70 @@
     <!-- Attach Pop-up Menu -->
     <div class="attach-popup-menu" id="attachPopupMenu">
       <button type="button" class="attach-menu-item" id="popupPhotoBtn">📷 Attach photo / page</button>
-      <button type="button" class="attach-menu-item" id="popupChapterBtn">📄 Add chapter / source text</button>
-      <button type="button" class="attach-menu-item" id="popupConceptMapBtn">🗺️ Interactive Concept Map</button>
-      <a href="workspace.html" class="attach-menu-item">⚡ Multi-Model AI Studio (New Page)</a>
+      <button type="button" class="attach-menu-item" id="popupChapterBtn">📄 Add source text</button>
+      <a href="workspace.html" class="attach-menu-item">⚡ Multi-Model Studio (New Window)</a>
     </div>
 
-    <!-- Bottom Input Dock -->
+    <!-- ================= BUILDIFY SIGNATURE PROMPT GENERATOR DOCK ================= -->
     <div class="input-dock">
       
-      <!-- Scroll To Bottom Button (ChatGPT Style) -->
-      <button type="button" class="scroll-to-bottom-btn" id="scrollToBottomBtn" title="Scroll down" aria-label="Scroll to bottom">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      <!-- Scroll To Bottom Button -->
+      <button type="button" class="scroll-to-bottom-btn" id="scrollToBottomBtn" title="Scroll down">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
 
-      <!-- Pill Container -->
+      <!-- The Buildify Prompt Card Box -->
       <div class="input-pill-wrapper" id="inputPillWrapper">
-        <button type="button" class="attach-btn" id="attachBtn" title="Add attachment or launch tool">+</button>
-        
-        <textarea id="chatInput" class="chat-textarea" rows="1" placeholder="Ask Bharat Voice..." autocomplete="off"></textarea>
+        <!-- Prompt Top Row: Sparkle + Textarea -->
+        <div class="prompt-top-row">
+          <svg class="sparkle-icon-svg" viewBox="0 0 24 24" fill="#286FEC" stroke="currentColor" stroke-width="1.5">
+            <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/>
+            <path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="1.5"/>
+          </svg>
+          <textarea id="chatInput" class="chat-textarea" rows="1" placeholder="Ask Bharat Voice anything in text or spoken voice..." autocomplete="off"></textarea>
+        </div>
 
-        <div class="input-right-tools">
-          <button type="button" class="think-btn" id="thinkToggleBtn" title="Toggle Deep Analytical Thinking">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a4.5 4.5 0 0 0 0 9 4.5 4.5 0 0 1 0 9"/><path d="M12 6v.01"/><path d="M12 18v.01"/></svg>
-            <span>Think</span>
-          </button>
+        <!-- Prompt Bottom Actions Bar -->
+        <div class="prompt-bottom-bar">
+          <div class="prompt-tools-left">
+            <button type="button" class="attach-btn" id="attachBtn" title="Add attachment">+</button>
+            <button type="button" class="tool-tag-pill" id="thinkToggleBtn" title="Toggle Deep Analytical Thinking">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a4.5 4.5 0 0 0 0 9 4.5 4.5 0 0 1 0 9"/></svg>
+              <span>Think</span>
+            </button>
+          </div>
 
-          <button type="button" class="mic-btn" id="micDictateBtn" title="Dictate with voice">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-          </button>
+          <div class="prompt-tools-right">
+            <!-- Dedicated Blue Voice Mic Button -->
+            <button type="button" class="mic-btn" id="micDictateBtn" title="Dictate with voice">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
 
-          <!-- Voice Mode Button -->
-          <button type="button" class="voice-mode-btn" id="voiceModeBtn" title="Start Bharat Voice Live Audio">
-            <div class="voice-waveform-icon">
-              <span></span><span></span><span></span><span></span>
-            </div>
-          </button>
+            <!-- Voice Mode Button -->
+            <button type="button" class="voice-mode-btn" id="voiceModeBtn" title="Live Voice Audio">
+              <div class="voice-waveform-icon">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </button>
 
-          <!-- Send Circle Button (Visible when typing) -->
-          <button type="button" class="send-circle-btn" id="sendBtn" title="Send message">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-          </button>
+            <!-- The Iconic Buildify Generate / Send Pill Button -->
+            <button type="button" class="send-circle-btn" id="sendBtn" title="Send query">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/>
+              </svg>
+              <span>Ask AI</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <div class="input-disclaimer">
-        Bharat Voice can make mistakes. Check important info. &middot; Powered by Bharat Voice Multi-Model Intelligence
+        Bharat Voice Intelligence v3.0 &middot; Sub-180ms Neural Audio Synthesis
       </div>
     </div>
 
@@ -1617,18 +1863,18 @@
 <div class="live-voice-overlay" id="liveVoiceOverlay">
   <div class="voice-topbar">
     <div class="voice-brand-pill">
-      <img src="assets/logo.png" style="width:20px;height:20px;border-radius:5px;object-fit:cover;">
-      <span>Bharat Voice Live Audio · Prabhat &amp; Madhur Neural</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 10v3" /><path d="M6 6v11" /><path d="M10 3v18" /><path d="M14 8v7" /><path d="M18 5v13" /><path d="M22 10v4" /></svg>
+      <span>Bharat Voice · Live Neural Speech</span>
     </div>
     <button class="voice-close-btn" id="voiceCloseBtn" title="Close Voice Mode">✕</button>
   </div>
 
   <div class="voice-center-stage">
-    <div class="voice-orb-pulsar" id="voiceOrbPulsar" title="Tap to interrupt / speak">
+    <div class="voice-orb-pulsar" id="voiceOrbPulsar" title="Tap to speak">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
     </div>
     <div class="voice-state-title" id="voiceStateTitle">Listening…</div>
-    <div class="voice-transcript-subtitle" id="voiceTranscriptSubtitle">Speak naturally. Bharat Voice answers in high-fidelity teen Indian neural voice.</div>
+    <div class="voice-transcript-subtitle" id="voiceTranscriptSubtitle">Speak naturally. Bharat Voice processes spoken queries with instantaneous audio response.</div>
   </div>
 
   <div class="voice-bottom-controls">
@@ -1639,134 +1885,69 @@
 </div>
 
 <!-- ================= MODALS ================= -->
-
-<!-- Offer & Upgrade Modal -->
 <div class="modal-overlay" id="offerModal">
   <div class="modal-card">
     <div class="modal-header">
-      <h3 class="modal-title">🎁 Special Learning Offer</h3>
+      <h3 class="modal-title">Upgrade Plan</h3>
       <button class="modal-close" id="closeOfferModal">✕</button>
     </div>
-    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">
-      Unlock access to frontier AI models, EdgeTTS Indian male neural voice, and 8K image generation.
-    </p>
-    <div style="background:rgba(255,255,255,0.05);padding:14px;border-radius:10px;margin-bottom:16px;">
-      <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">PROMO CODE</div>
-      <div style="display:flex;gap:8px;">
-        <input type="text" id="promoCodeInput" placeholder="Enter coupon code" style="flex:1;background:#111;border:1px solid var(--border-subtle);border-radius:8px;padding:8px 12px;color:#fff;font-family:var(--font-mono);text-transform:uppercase;">
-        <button id="applyPromoBtn" style="background:#10a37f;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;">Apply</button>
-      </div>
-      <div id="promoResultMsg" style="font-size:12px;color:#10a37f;margin-top:6px;display:none;">✓ Coupon active!</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <button style="background:linear-gradient(135deg,#ff9f1c,#ffc93c);border:none;border-radius:10px;padding:12px;color:#000;font-weight:700;cursor:pointer;">Claim 100% Free Maha Shakti Access</button>
-      <button id="openFullSettingsBtn" style="background:rgba(255,255,255,0.08);border:1px solid var(--border-subtle);border-radius:10px;padding:10px;color:#fff;cursor:pointer;">⚙ Open Connection &amp; Custom API Key Settings</button>
-    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">Access unlimited multi-model inference across Mistral Large 1T, Nemotron 120B, and Gemini 3.8 Flash.</p>
+    <button class="new-chat-btn" style="width:100%;margin:0;" onclick="showToast('Upgrade options loaded');">View Tiers</button>
   </div>
 </div>
 
-<!-- Scheduled Tasks Modal -->
 <div class="modal-overlay" id="scheduledModal">
   <div class="modal-card">
     <div class="modal-header">
-      <h3 class="modal-title">⏱️ Scheduled Study &amp; Reminders</h3>
+      <h3 class="modal-title">Scheduled Sessions</h3>
       <button class="modal-close" id="closeScheduledModal">✕</button>
     </div>
-    <p style="font-size:13.5px;color:var(--text-secondary);margin-bottom:14px;">Keep your study momentum going with automated revision checks and daily reminders.</p>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
-        <div><b>Daily Science Revision</b><br><small style="color:var(--text-muted);">Everyday at 6:30 PM · Class 8</small></div>
-        <span style="color:#10a37f;font-size:12px;">Active</span>
-      </div>
-      <div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
-        <div><b>Exam Preparation Countdown</b><br><small style="color:var(--text-muted);">Timed quiz alert · Weekly</small></div>
-        <span style="color:#10a37f;font-size:12px;">Active</span>
-      </div>
-    </div>
+    <p style="font-size:14px;color:var(--text-secondary);">No scheduled runs pending.</p>
   </div>
 </div>
 
-<!-- Library Modal -->
 <div class="modal-overlay" id="libraryModal">
   <div class="modal-card">
     <div class="modal-header">
-      <h3 class="modal-title">📚 Study Library &amp; Saved Materials</h3>
+      <h3 class="modal-title">Saved Library</h3>
       <button class="modal-close" id="closeLibraryModal">✕</button>
     </div>
-    <p style="font-size:13.5px;color:var(--text-secondary);margin-bottom:14px;">Access your saved concept maps, sample papers, notes and PDF summaries.</p>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;">
-        <b>Class 8 Science Notes — Cell &amp; Microorganisms</b>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Saved yesterday · 5 pages · PDF Ready</div>
-      </div>
-      <div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;">
-        <b>Earth Shape &amp; Planetary Physics Breakdown</b>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Saved 3 days ago · Includes Mermaid Diagram</div>
-      </div>
-    </div>
+    <p style="font-size:14px;color:var(--text-secondary);">All generated concept maps and exported study guides are archived here.</p>
   </div>
 </div>
 
-<!-- Settings & Account Modal -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal-card">
     <div class="modal-header">
-      <h3 class="modal-title">⚙️ Account &amp; Settings</h3>
+      <h3 class="modal-title">Account Settings</h3>
       <button class="modal-close" id="closeSettingsModal">✕</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:14px;font-size:13.5px;">
-      
-      <!-- User Profile & Authentication Section -->
-      <div style="background:#171717;border:1px solid var(--border-subtle);border-radius:12px;padding:14px;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-          <div id="modalAvatarPreview" style="width:44px;height:44px;border-radius:50%;background:var(--teal-avatar);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;overflow:hidden;flex-shrink:0;">G</div>
-          <div style="flex:1;min-width:0;">
-            <div id="modalUserName" style="font-weight:600;font-size:15px;color:#fff;">Guest</div>
-            <div id="modalUserEmail" style="font-size:12px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Not signed in (Guest mode)</div>
-          </div>
-          <button id="modalSignOutBtn" style="display:none;padding:6px 12px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#ef4444;font-size:12px;font-weight:600;cursor:pointer;">Sign out</button>
-        </div>
-
-        <div id="modalLoginPrompt" style="font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:10px;">
-          Sign in with your Google account to personalize Bharat Voice, or continue as Guest with full functionality.
-        </div>
-        <div id="googleBtnContainer" style="display:flex;justify-content:center;min-height:44px;"></div>
-      </div>
-      <div>
-        <label style="display:block;margin-bottom:4px;color:var(--text-secondary);">AI Engine Provider</label>
-        <select id="settingProviderSelect" style="width:100%;background:#111;border:1px solid var(--border-subtle);color:#fff;padding:8px;border-radius:8px;">
-          <option value="/api/chat" selected>🧠 Google Gemini 3.8 Flash (Unified Backend)</option>
-          <option value="/api/chat" data-model="gemini-flash-lite-latest">⚡ Google Gemini Flash Lite (Ultra Fast)</option>
-        </select>
-      </div>
-      <div>
-        <label style="display:block;margin-bottom:4px;color:var(--text-secondary);">Custom Gemini API Key (Optional)</label>
-        <input type="password" id="settingApiKeyInput" placeholder="Uses backend key by default" style="width:100%;background:#111;border:1px solid var(--border-subtle);color:#fff;padding:8px;border-radius:8px;">
-      </div>
-      <div>
-        <label style="display:block;margin-bottom:4px;color:var(--text-secondary);">Teen Indian Male Voice Profile</label>
-        <select id="settingVoiceSelect" style="width:100%;background:#111;border:1px solid var(--border-subtle);color:#fff;padding:8px;border-radius:8px;">
-          <option value="en-IN-PrabhatNeural" selected>Prabhat (Indian English - Teen Male)</option>
-          <option value="hi-IN-MadhurNeural">Madhur (Hindi / Hinglish - Teen Male)</option>
-        </select>
-      </div>
-      <button id="saveSettingsBtn" style="background:#10a37f;color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:6px;">Save Settings</button>
-    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;">Logged in as Explorer (Free Plan).</p>
+    <button class="new-chat-btn" id="modalSignOutBtn" style="background:#EF4444;width:100%;margin:0;">Sign Out</button>
   </div>
 </div>
 
-<!-- Media Lightbox Modal -->
-<div class="media-lightbox" id="mediaLightbox">
-  <button class="media-lightbox-close" id="mediaLightboxClose">✕</button>
-  <img id="mediaLightboxImg" src="" alt="Fullscreen Preview">
+<!-- Lightbox -->
+<div class="modal-overlay" id="mediaLightbox">
+  <img id="mediaLightboxImg" src="" style="max-width:90%;max-height:85vh;border-radius:12px;">
+  <button id="mediaLightboxClose" style="position:absolute;top:20px;right:20px;background:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;">✕</button>
 </div>
 
 <!-- Toast -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast">Notification</div>
 
-<!-- JavaScript Integration -->
 <script>
 (function(){
+  var scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
+  window.submitCardPrompt = function(promptText) {
+    const input = document.getElementById('chatInput');
+    if (input) {
+      input.value = promptText;
+      if (typeof autosizeInput === 'function') autosizeInput();
+      input.focus();
+      if (typeof handleSend === 'function') handleSend();
+    }
+  };
   // ---------- State ----------
   const CHAT_SESSIONS_KEY = 'bharatVoice.chatSessions';
   const ACTIVE_SESSION_KEY = 'bharatVoice.activeSessionId';
@@ -3007,36 +3188,36 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
   });
   document.addEventListener('click', () => attachPopupMenu.classList.remove('open'));
 
-  document.getElementById('popupPhotoBtn').addEventListener('click', () => photoInput.click());
-  document.getElementById('popupChapterBtn').addEventListener('click', () => {
+  document.getElementById('popupPhotoBtn')?.addEventListener('click', () => photoInput.click());
+  document.getElementById('popupChapterBtn')?.addEventListener('click', () => {
     chatInput.value = 'Analyze this chapter text and create key summary points with formula sheets: ';
     chatInput.focus(); autosizeInput(); updateSendButtonVisibility();
   });
   // Images Nav - natural image prompt shortcut (no buttons)
-  document.getElementById('navImagesBtn').addEventListener('click', () => {
+  document.getElementById('navImagesBtn')?.addEventListener('click', () => {
     chatInput.value = 'create an image of this: ';
     chatInput.focus();
     autosizeInput();
     updateSendButtonVisibility();
   });
   const openOfferModal = () => offerModal.classList.add('open');
-  document.getElementById('sidebarClaimOfferBtn').addEventListener('click', () => { openOfferModal(); closeSidebarOnMobile(); });
-  document.getElementById('topFreeOfferBtn').addEventListener('click', openOfferModal);
-  document.getElementById('closeOfferModal').addEventListener('click', () => offerModal.classList.remove('open'));
+  document.getElementById('sidebarClaimOfferBtn')?.addEventListener('click', () => { openOfferModal(); closeSidebarOnMobile(); });
+  document.getElementById('topFreeOfferBtn')?.addEventListener('click', openOfferModal);
+  document.getElementById('closeOfferModal')?.addEventListener('click', () => offerModal.classList.remove('open'));
 
   // Scheduled Modal
-  document.getElementById('navScheduledBtn').addEventListener('click', () => { scheduledModal.classList.add('open'); closeSidebarOnMobile(); });
-  document.getElementById('closeScheduledModal').addEventListener('click', () => scheduledModal.classList.remove('open'));
+  document.getElementById('navScheduledBtn')?.addEventListener('click', () => { scheduledModal.classList.add('open'); closeSidebarOnMobile(); });
+  document.getElementById('closeScheduledModal')?.addEventListener('click', () => scheduledModal.classList.remove('open'));
 
   // Library Modal
-  document.getElementById('navLibraryBtn').addEventListener('click', () => { libraryModal.classList.add('open'); closeSidebarOnMobile(); });
-  document.getElementById('closeLibraryModal').addEventListener('click', () => libraryModal.classList.remove('open'));
+  document.getElementById('navLibraryBtn')?.addEventListener('click', () => { libraryModal.classList.add('open'); closeSidebarOnMobile(); });
+  document.getElementById('closeLibraryModal')?.addEventListener('click', () => libraryModal.classList.remove('open'));
 
   // Settings
-  document.getElementById('topAvatarBtn').addEventListener('click', () => settingsModal.classList.add('open'));
-  document.getElementById('userProfileRow').addEventListener('click', () => settingsModal.classList.add('open'));
-  document.getElementById('closeSettingsModal').addEventListener('click', () => settingsModal.classList.remove('open'));
-  document.getElementById('openFullSettingsBtn').addEventListener('click', () => {
+  document.getElementById('topAvatarBtn')?.addEventListener('click', () => settingsModal.classList.add('open'));
+  document.getElementById('userProfileRow')?.addEventListener('click', () => settingsModal.classList.add('open'));
+  document.getElementById('closeSettingsModal')?.addEventListener('click', () => settingsModal.classList.remove('open'));
+  document.getElementById('openFullSettingsBtn')?.addEventListener('click', () => {
     offerModal.classList.remove('open');
     settingsModal.classList.add('open');
   });
@@ -3192,7 +3373,7 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
 
   
   // ---------- Scroll-To-Bottom Button Controller (ChatGPT Style) ----------
-  const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+  scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
 
   function updateScrollButtonVisibility() {
     if (!scrollToBottomBtn) return;
@@ -3226,7 +3407,19 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
     startNewChat();
   }
 
+  function submitCardPrompt(promptText) {
+    if (chatInput) {
+      chatInput.value = promptText;
+      autosizeInput();
+      chatInput.focus();
+      handleSend();
+    }
+  }
+
+  window.handleSend = handleSend;
+  window.submitCardPrompt = submitCardPrompt;
 })();
 </script>
 </body>
 </html>
+
