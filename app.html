@@ -1439,12 +1439,290 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  @media (max-width: 900px) {
-    .bento-grid { grid-template-columns: repeat(2, 1fr); }
+  /* ========================================================
+     MOBILE RESPONSIVE OVERHAUL (PHONE & TABLET OPTIMIZATION)
+     ======================================================== */
+  .sidebar-backdrop {
+    display: none;
   }
-  @media (max-width: 640px) {
-    .bento-grid { grid-template-columns: 1fr; }
-    .top-bar { left: 10px; right: 10px; }
+
+  @media (max-width: 768px) {
+    /* Prevent body horizontal scroll */
+    html, body {
+      overflow-x: hidden !important;
+      width: 100vw !important;
+      height: 100dvh !important;
+    }
+    .app-container {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      overflow-x: hidden !important;
+      position: relative !important;
+    }
+
+    /* 1. Mobile Sidebar Off-Canvas Drawer */
+    .sidebar {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      height: 100% !important;
+      height: 100dvh !important;
+      width: 280px !important;
+      max-width: 82vw !important;
+      z-index: 1000 !important;
+      transform: translateX(0) !important;
+      margin-left: 0 !important;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.25) !important;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease !important;
+    }
+    .sidebar.collapsed {
+      transform: translateX(-100%) !important;
+      box-shadow: none !important;
+      pointer-events: none !important;
+    }
+    .main-area {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      flex: 1 1 100% !important;
+      overflow-x: hidden !important;
+      position: relative !important;
+    }
+    .sidebar-backdrop {
+      display: block !important;
+      position: fixed !important;
+      inset: 0 !important;
+      background: rgba(0, 0, 0, 0.45) !important;
+      backdrop-filter: blur(2px) !important;
+      z-index: 999 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transition: opacity 0.25s ease !important;
+    }
+    .sidebar:not(.collapsed) ~ .sidebar-backdrop,
+    .sidebar-backdrop.active {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+
+    /* 2. Mobile Top Bar */
+    .top-bar {
+      top: 8px !important;
+      left: 8px !important;
+      right: 8px !important;
+      height: 48px !important;
+      padding: 0 10px !important;
+      border-radius: 12px !important;
+    }
+    .top-left {
+      gap: 8px !important;
+    }
+    .model-pill {
+      padding: 5px 8px !important;
+      font-size: 12px !important;
+      max-width: 140px !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+    .status-badge {
+      display: none !important; /* Hide 'Online' status on phone */
+    }
+    .top-right {
+      gap: 6px !important;
+    }
+    .claim-offer-btn,
+    .upgrade-plan-btn,
+    .top-free-offer-btn {
+      display: none !important; /* Hide extra badges from top bar */
+    }
+
+    /* 3. Chat Scroll Area & Empty State */
+    .chat-scroll-area {
+      padding: 62px 10px 175px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .empty-state {
+      max-width: 100% !important;
+      padding: 0 4px !important;
+      margin: 10px auto 140px !important;
+    }
+
+    /* 4. Buildify Hero Banner */
+    .buildify-hero-banner {
+      padding: 32px 14px 26px !important;
+      border-radius: 18px !important;
+      margin-bottom: 24px !important;
+    }
+    .hero-pill-badge {
+      padding: 5px 12px !important;
+      font-size: 11.5px !important;
+      max-width: 100% !important;
+    }
+    .hero-headline {
+      font-size: clamp(24px, 6.5vw, 32px) !important;
+      line-height: 1.2 !important;
+    }
+    .hero-subline {
+      font-size: 13px !important;
+      line-height: 1.5 !important;
+    }
+
+    /* 5. Buildify Bento Grid - Single Fluid Stack on Mobile */
+    .buildify-bento-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      width: 100% !important;
+    }
+    .bento-card-stat,
+    .bento-card-navy,
+    .bento-card-sky,
+    .bento-card-improve {
+      grid-column: auto !important;
+      grid-row: auto !important;
+      width: 100% !important;
+      min-height: auto !important;
+      padding: 20px 16px !important;
+      box-sizing: border-box !important;
+    }
+    .bento-card-sky {
+      min-height: 280px !important;
+    }
+    .bento-card-sky-row {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 12px !important;
+    }
+    .bento-cta-btn {
+      width: 100% !important;
+      text-align: center !important;
+    }
+    .bento-card-improve {
+      min-height: 200px !important;
+      padding: 24px 16px !important;
+    }
+    .bento-card-improve-title {
+      font-size: 1.6rem !important;
+    }
+
+    /* 6. "How It Works" 3 Steps - Single Fluid Stack */
+    .buildify-process-grid {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+      width: 100% !important;
+    }
+    .process-step-card {
+      padding: 20px 16px !important;
+      min-height: 170px !important;
+      box-sizing: border-box !important;
+    }
+    .process-step-bg-num {
+      font-size: 85px !important;
+      bottom: -10px !important;
+      right: -4px !important;
+    }
+
+    /* 7. Templates Grid - Single Fluid Stack */
+    .buildify-templates-grid {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+      width: 100% !important;
+    }
+    .template-item-card {
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .template-img-wrap {
+      height: 140px !important;
+    }
+
+    /* 8. Trust Logos Marquee */
+    .buildify-trust-section {
+      padding: 28px 0 10px !important;
+    }
+    .buildify-trust-text {
+      font-size: 12px !important;
+      padding: 0 10px !important;
+    }
+    .buildify-trust-track {
+      gap: 24px !important;
+    }
+    .trust-logo-box {
+      min-width: 100px !important;
+    }
+    .trust-logo-img {
+      height: 22px !important;
+    }
+
+    /* 9. Messages Bubbles on Mobile */
+    .messages-container {
+      max-width: 100% !important;
+      padding: 0 4px !important;
+    }
+    .msg-bubble-user {
+      max-width: 88% !important;
+      font-size: 13.5px !important;
+      padding: 10px 14px !important;
+    }
+    .msg-bubble-assistant {
+      max-width: 100% !important;
+      font-size: 13.5px !important;
+      padding: 14px 14px !important;
+    }
+
+    /* 10. Prompt Input Dock on Mobile */
+    .input-dock {
+      padding: 0 8px 10px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .input-pill-wrapper {
+      padding: 10px 12px !important;
+      border-radius: 16px !important;
+      gap: 8px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .prompt-top-row {
+      gap: 8px !important;
+    }
+    .sparkle-icon-svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+    .chat-textarea {
+      font-size: 14px !important;
+      min-height: 40px !important;
+      line-height: 1.4 !important;
+    }
+    .prompt-bottom-bar {
+      padding-top: 6px !important;
+      gap: 6px !important;
+    }
+    .prompt-tools-left {
+      gap: 6px !important;
+    }
+    .prompt-tools-right {
+      gap: 6px !important;
+    }
+    .attach-btn, .mic-btn, .voice-mode-btn {
+      width: 32px !important;
+      height: 32px !important;
+      min-width: 32px !important;
+    }
+    .tool-tag-pill {
+      padding: 4px 8px !important;
+      font-size: 11px !important;
+    }
+    .send-circle-btn {
+      padding: 6px 14px !important;
+      font-size: 12.5px !important;
+    }
+    .input-disclaimer {
+      display: none !important; /* Save vertical space on phones */
+    }
   }
 </style>
 </head>
@@ -1507,6 +1785,9 @@
       </button>
     </div>
   </aside>
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <!-- ================= MAIN CHAT AREA ================= -->
   <main class="main-area" id="mainArea">
@@ -3135,37 +3416,58 @@ CRITICAL ADAPTIVE LENGTH RULES (highest priority - match user command and intent
   });
 
   // ---------- Sidebar & Mobile Responsive Controls ----------
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
   function closeSidebarOnMobile() {
     if (window.innerWidth <= 768) {
       sidebar.classList.add('collapsed');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
     }
+  }
+
+  function openSidebarOnMobile() {
+    sidebar.classList.remove('collapsed');
+    if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+    sessionStorage.removeItem('sidebar_user_collapsed');
   }
 
   // Initial check: keep collapsed on mobile so users immediately see chat
   if (window.innerWidth > 768) {
     sidebar.classList.remove('collapsed');
+    if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
   } else {
     sidebar.classList.add('collapsed');
+    if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
   }
 
   window.addEventListener('resize', () => {
     if (window.innerWidth > 768 && !sessionStorage.getItem('sidebar_user_collapsed')) {
       sidebar.classList.remove('collapsed');
+      if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+    } else if (window.innerWidth <= 768) {
+      if (sidebar.classList.contains('collapsed')) {
+        if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+      }
     }
   });
 
   sidebarCollapseBtn.addEventListener('click', () => {
-    sidebar.classList.add('collapsed');
+    closeSidebarOnMobile();
     if (window.innerWidth > 768) {
+      sidebar.classList.add('collapsed');
       sessionStorage.setItem('sidebar_user_collapsed', '1');
     }
   });
+
   sidebarExpandBtn.addEventListener('click', () => {
-    sidebar.classList.remove('collapsed');
-    sessionStorage.removeItem('sidebar_user_collapsed');
+    if (window.innerWidth <= 768) {
+      openSidebarOnMobile();
+    } else {
+      sidebar.classList.remove('collapsed');
+      sessionStorage.removeItem('sidebar_user_collapsed');
+    }
   });
 
-  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
   if (sidebarBackdrop) {
     sidebarBackdrop.addEventListener('click', closeSidebarOnMobile);
   }
